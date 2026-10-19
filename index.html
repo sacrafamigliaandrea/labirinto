@@ -69,6 +69,9 @@ img{-webkit-user-drag:none;user-select:none}
 .mondo-btn[data-m=strade] svg{color:#2CC5C9}
 .mondo-btn[data-m=strade].on{color:#0F6E73}
 .mondo-btn[data-m=strade].on svg{color:#159DA2}
+.mondo-btn[data-m=scuola] svg{color:#A78BFA}
+.mondo-btn[data-m=scuola].on{color:#5B33C2}
+.mondo-btn[data-m=scuola].on svg{color:#7C4DEB}
 .carte{display:grid;grid-template-columns:repeat(4,1fr);gap:2.1vw;align-items:end;min-height:0;padding:0 .6vw}
 .carta{position:relative;height:min(56vh,640px);border-radius:34px;color:var(--ct);outline:none;
   background:radial-gradient(120% 60% at 50% 0%,rgba(255,255,255,.3),transparent 62%),linear-gradient(180deg,var(--c) 0%,var(--cs) 100%);
@@ -318,6 +321,19 @@ img{-webkit-user-drag:none;user-select:none}
 .cap.giu,.tasto.giu{transform:translateY(3px);background:var(--c);color:var(--ct);box-shadow:inset 0 -1px 0 rgba(0,0,0,.2)}
 .pbtn.giu,.risorse .ico.giu{transform:scale(.9)}
 
+/* ---------- Scuola: colore da cercare ---------- */
+.ob-macchia{width:clamp(50px,3.8vw,70px);height:clamp(50px,3.8vw,70px);flex:none;animation:pulsaPlay 1.6s ease-in-out infinite}
+.ob-macchia svg{width:100%;height:100%}
+.slots-col{display:flex;gap:.5vw;margin-left:auto}
+.slots-col .sl{width:clamp(26px,1.9vw,36px);aspect-ratio:1;border-radius:50%;border:4px dashed var(--sc);transition:background .3s,transform .3s}
+.slots-col .sl.pieno{background:var(--sc);border-style:solid;transform:scale(1.1)}
+.seq{display:flex;align-items:center;gap:.5vw}
+.seq span{position:relative;width:clamp(28px,2vw,38px);height:clamp(28px,2vw,38px);opacity:.45;transition:opacity .3s,transform .3s}
+.seq span.ora{opacity:1;transform:scale(1.25)}
+.seq span.fatto{opacity:1}
+.seq svg{width:100%;height:100%}
+.seq .ok{position:absolute;right:-7px;bottom:-7px;width:62%;height:62%}
+
 /* ---------- Overlay sul labirinto ---------- */
 .ov{position:absolute;inset:0;display:none;place-items:center;background:rgba(6,22,56,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:4}
 .ov.on{display:grid;animation:fade .3s ease both}
@@ -470,7 +486,7 @@ img{-webkit-user-drag:none;user-select:none}
   <header class="testata">
     <div class="tit1">IL LABIRINTO</div>
     <div class="tit2">DELLE CASATE</div>
-    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button></div>
+    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button><button class="mondo-btn" data-m="scuola" tabindex="-1"></button></div>
   </header>
   <div class="carte" id="carte"></div>
   <footer class="piede">
@@ -550,7 +566,7 @@ const CONFIG = {
   POLL_MS: 6000,
   AZZERA_OGNI_NOTTE: true,          // la classifica riparte da zero a mezzanotte (ora italiana); deve coincidere con l'Apps Script
 };
-const PUNTI = { stella: 10, numero: 15, chiave: 15, castello: 50, lucina: 2, simbolo: 10, acchiappa: 30, vita: 20 };
+const PUNTI = { oggetto: 10, colore: 10, stella: 10, numero: 15, chiave: 15, castello: 50, lucina: 2, simbolo: 10, acchiappa: 30, vita: 20 };
 
 /* ---------- PRNG deterministico ---------- */
 function cyrb53(s, seed = 0) {
@@ -621,6 +637,7 @@ const ICO = {
   regola: S24('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/>'),
   x: S24('<path d="M6 6l12 12M18 6L6 18"/>'),
   auto: S24('<path d="M2.5 15.5v-2.4c0-.9.6-1.6 1.4-1.8l2.6-.6 2.4-3.1c.4-.5 1-.8 1.6-.8h4.2c.6 0 1.2.3 1.6.8l2.5 3.1 1.9.5c.8.2 1.3.9 1.3 1.7v2.6"/><path d="M2.5 15.5h2.3M9.6 15.5h4.8M19.3 15.5h2.2M10 7.3v3.8M3.8 11.2h16.6"/><circle cx="7.2" cy="15.7" r="2.3"/><circle cx="16.8" cy="15.7" r="2.3"/>'),
+  scuola: S24('<path d="M3 21h18M5 21V10.5L12 6l7 4.5V21"/><path d="M10 21v-5h4v5M8.5 12h1M14.5 12h1"/><path d="M12 6V2.5l3.2 1.3L12 5"/>'),
   labirinto: S24('<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9.2h6.3M14.2 3.5v5.7h3M9.2 14.3h8M9.2 9.2v8.2M14.2 14.3v6.2"/>'),
   gomma: S24('<path d="M9.5 5.5H20v13H9.5L3.5 12z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/>'),
   carta: `<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3.5" fill="currentColor"/><path d="M12 16.5V8M8.5 11.5L12 8l3.5 3.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1186,9 +1203,152 @@ const LIVELLI_STRADE = [
   { nome: 'DA SOLO',           tipo: 'strade', w: 7, h: 5, tema: 'prato', svolte: .55, prefill: 0,  ostacoli: .3,  stelle: 2, minCurve: 4, maxLen: 15, extra: { dritto: 1, curva: 2 } },
   { nome: 'IL GRANDE VIAGGIO', tipo: 'strade', w: 9, h: 5, tema: 'prato', svolte: .6,  prefill: 0,  fiume: true, ostacoli: .3, stelle: 3, minCurve: 4, maxLen: 20, extra: { dritto: 2, curva: 2 } },
 ];
+/* =====================================================================
+   SCUOLA: il primo piano ridisegnato dalla pianta (PianoPrimo.pdf) e dalla ricostruzione 3D.
+   Griglia 39×21: 1 casella ≈ 30 px della pianta. Disegno semplificato: niente misure, niente
+   uscite di sicurezza, esclusa la zona dei padri (abitazione). r = [x0, y0, x1, y1] inclusi;
+   porte = [x, y, verso] dalla casella della stanza verso il corridoio.
+   ===================================================================== */
+const SCUOLA_W = 39, SCUOLA_H = 21;
+const STANZE = [
+  // ala ovest: Primaria
+  { t: 'bagni', r: [0, 0, 3, 1], porte: [[3, 1, 'destra']] },
+  { t: 'insegnanti', r: [0, 2, 3, 3], porte: [[3, 3, 'destra']] },
+  { t: 'aula', r: [0, 4, 3, 5], porte: [[3, 5, 'destra']] },
+  { t: 'aula', r: [0, 6, 3, 7], porte: [[3, 7, 'destra']] },
+  { t: 'aula', r: [0, 8, 3, 9], porte: [[3, 9, 'destra']] },
+  { t: 'aula', r: [0, 10, 3, 11], porte: [[3, 11, 'destra']] },
+  { t: 'aula', r: [0, 12, 3, 13], porte: [[3, 13, 'destra']] },
+  { t: 'corr', r: [4, 0, 5, 16] },
+  { t: 'privato', r: [0, 14, 3, 20] }, { t: 'privato', r: [4, 17, 5, 20] },
+  // nord: palestra, uffici, atrio
+  { t: 'palestra', r: [6, 0, 12, 3] },
+  { t: 'corr', r: [6, 4, 12, 5] },
+  { t: 'ufficio', r: [13, 0, 14, 1], porte: [[14, 1, 'destra']] },
+  { t: 'ufficio', r: [13, 2, 14, 3], porte: [[14, 2, 'destra']] },
+  { t: 'corr', r: [15, 0, 16, 3] },
+  { t: 'ufficio', r: [17, 0, 18, 1], porte: [[17, 1, 'sinistra']] },
+  { t: 'ufficio', r: [17, 2, 18, 3], porte: [[17, 2, 'sinistra']] },
+  { t: 'scale', r: [19, 0, 20, 3] },
+  { t: 'corr', r: [13, 4, 20, 5] },
+  // nord-est
+  { t: 'aula', r: [21, 0, 23, 3], porte: [[22, 3, 'giu']] },
+  { t: 'aula', r: [24, 0, 26, 3], porte: [[25, 3, 'giu']] },
+  { t: 'aula', r: [27, 0, 29, 3], porte: [[28, 3, 'giu']] },
+  { t: 'aula', r: [30, 0, 32, 3], porte: [[31, 3, 'giu']] },
+  { t: 'corr', r: [21, 4, 34, 5] },
+  { t: 'scale', r: [33, 0, 34, 1] },
+  { t: 'corr', r: [33, 2, 34, 3] },
+  { t: 'insegnanti', r: [35, 0, 38, 3], porte: [[35, 2, 'sinistra']] },
+  { t: 'bagni', r: [35, 4, 38, 5], porte: [[35, 4, 'sinistra']] },
+  // ala est
+  { t: 'corr', r: [33, 6, 34, 18] },
+  { t: 'aula', r: [35, 6, 38, 8], porte: [[35, 7, 'sinistra']] },
+  { t: 'aula', r: [35, 9, 38, 11], porte: [[35, 10, 'sinistra']] },
+  { t: 'aula', r: [35, 12, 38, 14], porte: [[35, 13, 'sinistra']] },
+  { t: 'aula', r: [35, 15, 38, 17], porte: [[35, 16, 'sinistra']] },
+  { t: 'aula', r: [35, 18, 38, 20], porte: [[35, 18, 'sinistra']] },
+  { t: 'bagni', r: [33, 19, 34, 20], porte: [[33, 19, 'su']] },
+  // centro: cortile con lo scivolo, passaggio, campo da basket
+  { t: 'cortile', r: [6, 6, 14, 14] },
+  { t: 'corr', r: [15, 6, 16, 14] },
+  { t: 'piazzale', r: [17, 6, 17, 14] },
+  { t: 'campo', r: [18, 6, 32, 20] },
+  // sud
+  { t: 'corr', r: [6, 15, 6, 18] },
+  { t: 'info', r: [7, 15, 9, 16], porte: [[8, 16, 'giu']] },
+  { t: 'info', r: [10, 15, 12, 16], porte: [[11, 16, 'giu']] },
+  { t: 'aula', r: [13, 15, 14, 16], porte: [[13, 16, 'giu']] },
+  { t: 'corr', r: [15, 15, 15, 16] },
+  { t: 'bagni', r: [16, 15, 17, 16], porte: [[16, 15, 'sinistra']] },
+  { t: 'corr', r: [7, 17, 17, 18] },
+  { t: 'aula', r: [15, 19, 17, 20], porte: [[16, 19, 'su']] },
+  { t: 'piazzale', r: [6, 19, 14, 20] },
+];
+const CAMMINA = new Set(['corr', 'aula', 'info', 'insegnanti', 'ufficio', 'bagni']);
+const CON_OGGETTI = new Set(['aula', 'info', 'insegnanti', 'ufficio']);
+/* Colori degli oggetti: i quattro delle casate, poi arancione e viola */
+const COLORI_OGG = [
+  { k: 'rosso', hex: '#E03A3E', scuro: '#9E1B22' }, { k: 'blu', hex: '#2563EB', scuro: '#163E99' },
+  { k: 'giallo', hex: '#F5C211', scuro: '#A87E00' }, { k: 'verde', hex: '#2E9B44', scuro: '#1B5E2A' },
+  { k: 'arancione', hex: '#F97316', scuro: '#B4520C' }, { k: 'viola', hex: '#8B5CF6', scuro: '#5B33C2' },
+];
+const FORME = ['palla', 'libro', 'zaino', 'matita'];
+/* colori = quanti colori cercare (uno alla volta), perColore = oggetti di ogni colore, esche = oggetti di altri colori */
+const LIVELLI_SCUOLA = [
+  { nome: 'LA NOSTRA ALA',     tipo: 'scuola', crop: [0, 0, 5, 13],  start: [4, 6],  colori: 2, perColore: 2, esche: 1, tema: 'castello' },
+  { nome: "VERSO L'ATRIO",     tipo: 'scuola', crop: [0, 0, 20, 13], start: [8, 5],  colori: 3, perColore: 2, esche: 2, tema: 'castello' },
+  { nome: 'LE AULE GRANDI',    tipo: 'scuola', crop: [13, 0, 38, 20], start: [16, 5], colori: 3, perColore: 3, esche: 2, tema: 'castello' },
+  { nome: 'TUTTA LA SCUOLA',   tipo: 'scuola', crop: [0, 0, 38, 20], start: [16, 5], colori: 4, perColore: 3, esche: 3, tema: 'castello' },
+].map(d => ({ ...d, w: d.crop[2] - d.crop[0] + 1, h: d.crop[3] - d.crop[1] + 1 }));
+function mappaScuola() {
+  if (mappaScuola.m) return mappaScuola.m;
+  const g = new Int16Array(SCUOLA_W * SCUOLA_H).fill(-1), porte = new Set();
+  STANZE.forEach((s, i) => {
+    for (let y = s.r[1]; y <= s.r[3]; y++) for (let x = s.r[0]; x <= s.r[2]; x++) g[y * SCUOLA_W + x] = i;
+    (s.porte || []).forEach(([x, y, k]) => { const d = DIR[k]; porte.add(`${x},${y},${k}`); porte.add(`${x + d.dx},${y + d.dy},${d.inv}`); });
+  });
+  return (mappaScuola.m = { g, porte });
+}
+const stanzaG = (x, y) => { if (x < 0 || y < 0 || x >= SCUOLA_W || y >= SCUOLA_H) return null; const i = mappaScuola().g[y * SCUOLA_W + x]; return i < 0 ? null : STANZE[i]; };
+/* Due caselle vicine sono collegate se stanno nella stessa stanza, sono entrambe corridoio o c'è una porta */
+function apertoG(x, y, k) {
+  const d = DIR[k], a = stanzaG(x, y), b = stanzaG(x + d.dx, y + d.dy);
+  if (!a || !b || !CAMMINA.has(a.t) || !CAMMINA.has(b.t)) return false;
+  return a === b || (a.t === 'corr' && b.t === 'corr') || mappaScuola().porte.has(`${x},${y},${k}`);
+}
+function generaScuola(d, r) {
+  const [x0, y0] = d.crop, w = d.w, h = d.h, gr = new Griglia(w, h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) for (const k of ['destra', 'giu']) {
+    const dd = DIR[k]; if (x + dd.dx >= w || y + dd.dy >= h) continue;
+    if (apertoG(x + x0, y + y0, k)) gr.apri(x, y, dd);
+  }
+  const start = { x: d.start[0] - x0, y: d.start[1] - y0 }, dist = gr.bfs([start]).dist;
+  const colori = d.coloriFissi || shuffle([0, 1, 2, 3], r).slice(0, d.colori);
+  const altri = shuffle([0, 1, 2, 3, 4, 5].filter(c => !colori.includes(c)), r);
+  const items = new Map(), metti = (x, y, col, forma) => items.set(gr.i(x, y), { tipo: 'oggetto', col, forma, x, y, preso: false });
+  if (d.demoOggetti) d.demoOggetti.forEach(o => metti(o.x - x0, o.y - y0, o.col, o.forma));
+  else {
+    // stanze raggiungibili con le loro caselle libere (non quella della porta)
+    const stanze = new Map();
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const s = stanzaG(x + x0, y + y0);
+      if (!s || !CON_OGGETTI.has(s.t) || dist[gr.i(x, y)] < 0) continue;
+      if ((s.porte || []).some(([px, py]) => px === x + x0 && py === y + y0)) continue;
+      if (!stanze.has(s)) stanze.set(s, []);
+      stanze.get(s).push({ x, y });
+    }
+    const elenco = shuffle([...stanze.values()], r).map(c => shuffle(c, r));
+    const lista = [];
+    colori.forEach(c => { for (let n = 0; n < d.perColore; n++) lista.push(c); });
+    for (let n = 0; n < d.esche; n++) lista.push(altri[n % altri.length]);
+    shuffle(lista, r).forEach((col, i) => {
+      for (let k = 0; k < elenco.length; k++) {   // una stanza dopo l'altra: gli oggetti si spargono per la scuola
+        const celle = elenco[(i + k) % elenco.length], c = celle.find(q => !items.has(gr.i(q.x, q.y)));
+        if (c) { metti(c.x, c.y, col, pick(FORME, r)); break; }
+      }
+    });
+  }
+  return { gr, start, uscita: { ...start }, items, colori, perColore: d.perColore || 1, x0, y0, numeriTot: 0, serveChiave: false, stelleTot: 0, minimo: 0 };
+}
+/* SVG di oggetti e macchie di colore: servono sia all'interfaccia sia al disegno sulla mappa */
+function svgMacchia(i) {
+  const c = COLORI_OGG[i];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path d="M24 6C30 6 31 11 35 11C40 11 43 15 41 20C39 24 44 27 42 32C40 37 34 36 31 40C28 44 21 44 18 40C15 36 8 38 7 32C6 27 10 25 9 20C8 14 13 11 17 11C20 11 19 6 24 6Z" fill="${c.hex}" stroke="${c.scuro}" stroke-width="1.6"/><circle cx="43" cy="8" r="2.6" fill="${c.hex}"/><circle cx="5" cy="41" r="2.2" fill="${c.hex}"/><circle cx="44" cy="42" r="1.7" fill="${c.hex}"/><ellipse cx="18" cy="18" rx="5" ry="3" fill="#fff" opacity=".45" transform="rotate(-30 18 18)"/></svg>`;
+}
+function svgOgg(forma, i) {
+  const { hex, scuro } = COLORI_OGG[i], dentro = {
+    palla: `<circle cx="24" cy="24" r="17" fill="${hex}" stroke="${scuro}" stroke-width="2"/><path d="M9.5 17Q24 27 38.5 17M9.5 31Q24 21 38.5 31" fill="none" stroke="#fff" stroke-width="2.6" opacity=".85"/><ellipse cx="17" cy="15" rx="4" ry="2.4" fill="#fff" opacity=".5" transform="rotate(-30 17 15)"/>`,
+    libro: `<rect x="9" y="7" width="30" height="34" rx="3" fill="${hex}" stroke="${scuro}" stroke-width="2"/><rect x="9" y="7" width="7" height="34" rx="2" fill="${scuro}" opacity=".55"/><path d="M38 10v28" stroke="#FFF8E8" stroke-width="3"/><rect x="20" y="14" width="13" height="6" rx="1.5" fill="#fff" opacity=".85"/>`,
+    zaino: `<path d="M17 15v-4a7 7 0 0 1 14 0v4" fill="none" stroke="${scuro}" stroke-width="3.2" stroke-linecap="round"/><rect x="9" y="13" width="30" height="29" rx="8" fill="${hex}" stroke="${scuro}" stroke-width="2"/><rect x="14.5" y="27" width="19" height="11" rx="4" fill="#fff" opacity=".38"/><path d="M16 27h16" stroke="${scuro}" stroke-width="1.6"/>`,
+    matita: `<g transform="rotate(-38 24 24)"><rect x="5" y="18.5" width="5" height="11" rx="2" fill="#F4A6B8"/><rect x="10" y="18.5" width="3.5" height="11" fill="#C9CED8"/><rect x="13.5" y="18.5" width="21" height="11" fill="${hex}" stroke="${scuro}" stroke-width="1.6"/><path d="M13.5 24h21" stroke="${scuro}" stroke-width="1" opacity=".5"/><path d="M34.5 18.5L44 24L34.5 29.5Z" fill="#F2D3A2" stroke="#B98B5A" stroke-width="1.2" stroke-linejoin="round"/><path d="M40.5 22L44 24L40.5 26Z" fill="#33363F"/></g>`,
+  }[forma];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">${dentro}</svg>`;
+}
+
 /* Il mondo si sceglie dalla home, dal pannello docente o con ?mondo=coding / ?mondo=strade */
-const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' } };
-const ORD_MONDI = ['labirinto', 'strade', 'coding'];
+const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' }, scuola: { livelli: LIVELLI_SCUOLA, partenza: 'lab-partenza-scuola' } };
+const ORD_MONDI = ['labirinto', 'strade', 'coding', 'scuola'];
 function mondoAttivo() {
   const q = new URLSearchParams(location.search).get('mondo');
   if (MONDI[q]) return q;
@@ -1235,9 +1395,9 @@ function iniziaPartita(casa, conDemo) {
 }
 
 function preparaLivello(idx, dDemo) {
-  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S' }[G.mondo] || '|L') + (idx + 1)));
+  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S', scuola: '|K' }[G.mondo] || '|L') + (idx + 1)));
   G.rng = r;
-  const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
+  const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', scuola: d.tipo === 'scuola', buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
   if (L.fuga) { const A = generaArena(d, r); Object.assign(L, { gr: A.gr, start: A.start, arena: A }); }
   else if (L.coding) {
     Object.assign(L, generaCoding(d, r));
@@ -1246,6 +1406,7 @@ function preparaLivello(idx, dDemo) {
     L.maxCarte = d.gruppi ? L.soluzione.length + 1 : Math.max(L.minimo + 2, Math.min(16, L.minimo + 4));   // le caselle vuote mostrano la scarsità
   }
   else if (L.strade) Object.assign(L, generaStrade(d, r));
+  else if (L.scuola) Object.assign(L, generaScuola(d, r));
   else Object.assign(L, generaLabirinto(d, r));
   G.L = L;
   Object.assign(G, {
@@ -1253,6 +1414,7 @@ function preparaLivello(idx, dDemo) {
     vite: CONFIG.VITE_FUGA, prese: 0, puntiLivello: 0, sbloccato: !L.fuga && !L.numeriTot && !L.serveChiave, sbloccoT: -9, rivela: 0, entrata: 0, orme: null,
     pings: [], voli: [], fumetti: [], tGioco: 0, ultimoProgresso: 0, chiamaT: -99,
     prog: [], esec: null, erroreIdx: -1, nuova: -1, tentativi: 0, puntiCorsa: 0,
+    colIdx: 0, presiColore: 0, trovati: 0, sbagli: 0, annuncio: null,
     pauraT: 0, modoT: 0, modo: 'sparsi', invuln: 0, scossa: 0, flash: 0, dondola: new Map(), visti: new Set(), entraT: 0, presoT: 0,
   });
   G.pl = { x: L.start.x, y: L.start.y, tx: L.start.x, ty: L.start.y, t: 0, moving: false, dir: null, tilt: 0, urto: null };
@@ -1287,6 +1449,12 @@ function bloccato() {
 }
 function obiettivoCorrente() {
   const L = G.L;
+  if (L.scuola) {   // l'oggetto più vicino (a piedi) del colore da cercare
+    const p = G.pl, da = p.moving ? { x: p.tx, y: p.ty } : { x: p.x, y: p.y }, dist = L.gr.bfs([da]).dist, cur = L.colori[G.colIdx];
+    let best = null, bd = 1e9;
+    L.items.forEach(it => { if (it.preso || it.col !== cur) return; const q = dist[L.gr.i(it.x, it.y)]; if (q >= 0 && q < bd) { bd = q; best = it; } });
+    return best || L.start;
+  }
   if (L.numeriTot && G.prossimo <= L.numeriTot) return [...L.items.values()].find(i => i.tipo === 'numero' && i.n === G.prossimo);
   if (L.serveChiave && !G.haChiave) return [...L.items.values()].find(i => i.tipo === 'chiave');
   return L.uscita;
@@ -1308,6 +1476,7 @@ function arrivo() {
   G.passi++;
   const L = G.L, p = G.pl, k = L.gr.i(p.x, p.y), c = centro(p.x, p.y);
   segnaVisti();
+  if (L.scuola) { const it = L.items.get(k); if (it && !it.preso) raccogliOggetto(it, k, c); return; }
   if (L.fuga) {
     const A = L.arena;
     if (A.lucine.delete(k)) { aggiungiPunti(PUNTI.lucina); SFX.play('lucina', A.lucine.size); emetti(c.x, c.y, 4, { col: ['#FFE08A', '#FFF6CF'], v: 60, vita: .35, r: 2.5 }); }
@@ -1403,6 +1572,7 @@ function ping(c, n = 3, col = '#9BF0BF', dopo = 0) { for (let k = 0; k < n; k++)
    Nel livello al buio indica solo il castello (la chiave va cercata). */
 function avviaTour() {
   const L = G.L, tappe = [];
+  if (L.scuola) { annunciaColore(); return; }
   if (L.fuga) L.arena.poteri.forEach(k => tappe.push({ x: k % L.w, y: (k / L.w) | 0 }));
   else {
     [...L.items.values()].filter(i => i.tipo === 'numero').sort((a, b) => a.n - b.n).forEach(i => tappe.push(i));
@@ -1747,6 +1917,7 @@ const DEMO = {
   labirinto: { nome: 'GUARDA', tipo: 'labirinto', w: 3, h: 2, tema: 'prato' },
   strade:    { nome: 'GUARDA', tipo: 'strade', w: 3, h: 2, tema: 'prato', svolte: .5, prefill: .5, distrattori: 0, ostacoli: 0, stelle: 0, minCurve: 1, maxLen: 5 },
   coding:    { nome: 'GUARDA', tipo: 'coding', w: 3, h: 2, tema: 'prato', anelli: .5, dist: [3, 3] },
+  scuola:    { nome: 'GUARDA', tipo: 'scuola', crop: [0, 2, 5, 7], w: 6, h: 6, start: [4, 5], tema: 'castello', coloriFissi: [2], perColore: 1, demoOggetti: [{ x: 2, y: 5, col: 2, forma: 'palla' }, { x: 2, y: 7, col: 3, forma: 'libro' }] },
 };
 /* Tempi pensati per 6 anni: la freccia viaggia piano, si ferma, preme, poi si guarda l'effetto */
 const TD = { viaggio: 950, guarda: 1500, effetto: 1700 };
@@ -1764,11 +1935,12 @@ function vuoleDemo() {
   if (m === 'prima') { const k = 'lab-demo-visto-' + G.mondo; if (LS.get(k, false)) return false; LS.set(k, true); }
   return true;
 }
-function scrCella(x, y, dy = 0) { const r = cv.getBoundingClientRect(), c = centro(x, y); return { x: r.left + c.x, y: r.top + c.y + dy * lay.cell }; }
+function scrCella(x, y, dy = 0) { const r = cv.getBoundingClientRect(), c = centro(x, y), s = aSchermo(c.x, c.y + dy * lay.cell); return { x: r.left + s.x, y: r.top + s.y }; }
 /* Zone da illuminare: una casella (con un po' di spazio sopra per il personaggio) o un elemento della pagina */
 function rettCella(x, y) {   // con spazio sopra per il personaggio; nelle strade basta la casella
   const r = cv.getBoundingClientRect(), c = lay.cell, su = G.L && G.L.strade ? .1 : .42;
-  return { x: r.left + lay.ox + (x - .1) * c, y: r.top + lay.oy + (y - su) * c, w: c * 1.2, h: c * (1.1 + su) };
+  const s = aSchermo(lay.ox + (x - .1) * c, lay.oy + (y - su) * c);
+  return { x: r.left + s.x, y: r.top + s.y, w: c * 1.2 * s.z, h: c * (1.1 + su) * s.z };
 }
 function rettDi(dove, pad = 14) {
   if (!(dove instanceof Element)) return dove;
@@ -1886,6 +2058,19 @@ async function demoCoding() {
   faro(null); nascondiFreccia(); avviaEsecuzione();
   await finche(() => G.stato !== 'esegue', 20000);
 }
+async function demoScuola() {   // 1 sei tu · 2 il colore da cercare · 3 eccolo · 4 i tasti · 5 preso!
+  const L = G.L, ob = [...L.items.values()].find(i => i.col === L.colori[0]);
+  await mostra(rettCella(G.pl.x, G.pl.y), scrCella(G.pl.x, G.pl.y, -.25), 1);
+  await mostra($('#obiettivo .ob-macchia'), $('#obiettivo .ob-macchia'), 2, 12);
+  await mostra(rettCella(ob.x, ob.y), scrCella(ob.x, ob.y), 3);
+  const cam = L.gr.percorso({ x: G.pl.x, y: G.pl.y }, ob);
+  for (let i = 1; i < cam.length; i++) {
+    await premiTasto(dirTra(cam[i - 1], cam[i]), d => { tastoFreccia(d); setTimeout(() => { IN.tenuti = IN.tenuti.filter(z => z !== d); }, 110); }, 4);
+    if (i < cam.length - 1) await guarda(rettCella(cam[i].x, cam[i].y), scrCella(cam[i].x, cam[i].y, -.25));
+  }
+  await finche(() => G.stato !== 'gioco', 4000);
+  const ok = $('#obiettivo .ob-macchia'); await mostra(ok, ok, 5, 12);
+}
 function avviaDemo() {
   G.demo = true; D.run++; D.ultimo = null;
   D.variante = G.mondo === 'strade' ? varianteDemoStrade() : 0;
@@ -1898,7 +2083,7 @@ function avviaDemo() {
   const p = $('#puntatore'), st = $('#stage').getBoundingClientRect();
   p.querySelector('.pn').textContent = '';
   p.style.transition = 'none'; p.style.transform = `translate(${Math.round(st.left + st.width / 2)}px,${Math.round(st.top + st.height / 2)}px)`; void p.offsetWidth; p.style.transition = '';
-  const copione = { labirinto: demoLabirinto, strade: demoStrade, coding: demoCoding }[G.mondo];
+  const copione = { labirinto: demoLabirinto, strade: demoStrade, coding: demoCoding, scuola: demoScuola }[G.mondo];
   (async () => { try { await attendi(900); await copione(); } catch (e) { /* dimostrazione interrotta */ } })();
 }
 function nascondiDemo() {
@@ -2122,7 +2307,7 @@ function frame(ts) {
     } else if (G.stato === 'esegue') {
       G.tGioco += dt; G.L.strade ? aggiornaGuida(dt) : aggiornaEsecuzione(dt);
     } else if (G.stato === 'entra') {
-      G.entraT -= dt; if (G.entraT <= 0) { G.stato = 'completo'; G.demo ? fineDemo() : G.L.strade ? completaStrade() : G.L.coding ? completaCoding() : completaLabirinto(); }
+      G.entraT -= dt; if (G.entraT <= 0) { G.stato = 'completo'; G.demo ? fineDemo() : G.L.scuola ? completaScuola() : G.L.strade ? completaStrade() : G.L.coding ? completaCoding() : completaLabirinto(); }
     } else if (G.stato === 'preso') {
       G.presoT -= dt; if (G.presoT <= 0) dopoPreso();
     }
@@ -2149,6 +2334,7 @@ function calcolaLayout() {
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
   const pad = Math.max(30, Math.min(W, H) * .05), riserva = L.coding ? $('#prog').offsetHeight + 16 : 0;   // spazio per la barra del programma
+  if (L.scuola) { impostaLayoutScuola(W, H, dpr); return; }
   if (L.strade) {   // una colonna in più a sinistra (parcheggio) e a destra (castello)
     const ris = $('#tray').offsetHeight + 16, cols = L.w + 2, c = Math.floor(Math.min((W - 2 * pad) / cols, (H - ris - 2 * pad) / L.h, 150));
     lay = { W, H, dpr, cell: c, ox: Math.round((W - c * cols) / 2) + c, oy: Math.round((H - ris - c * L.h) / 2) };
@@ -2237,6 +2423,288 @@ function segmentiMuri(gr) {
   return seg;
 }
 function rrect(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
+
+/* =====================================================================
+   SCUOLA: una macchia di colore dice cosa cercare; si raccolgono gli oggetti di quel colore,
+   poi arriva il colore dopo. Colore sbagliato: l'oggetto dondola e il fumetto rimostra la macchia.
+   ===================================================================== */
+function annunciaColore() {
+  const L = G.L, col = L.colori[G.colIdx];
+  G.annuncio = { col, t0: G.tempo };
+  [...L.items.values()].filter(i => !i.preso && i.col === col).forEach((it, k) => ping(it, 2, COLORI_OGG[col].hex, .6 + k * .3));
+}
+function raccogliOggetto(it, k, c) {
+  const L = G.L, cur = L.colori[G.colIdx];
+  if (it.col !== cur) {
+    G.dondola.set(k, G.tempo); G.sbagli++; SFX.play('nonAncora');
+    fumetto('pl', 'colore', cur, 1.9, COLORI_OGG[cur].hex);
+    return;
+  }
+  it.preso = true; G.presiColore++; G.trovati++; G.ultimoProgresso = G.tGioco;
+  aggiungiPunti(PUNTI.oggetto, it); SFX.play('stella');
+  const hx = COLORI_OGG[cur].hex;
+  emetti(c.x, c.y, 20, { col: [hx, '#FFFFFF', '#FFD24A'], v: 190, vita: .8, r: 4, tipo: 'stellina' });
+  if (G.presiColore >= L.perColore) coloreFinito();
+  aggiornaObiettivo();
+}
+function coloreFinito() {
+  const L = G.L;
+  aggiungiPunti(PUNTI.colore, G.pl, '#9BF0BF');
+  G.colIdx++; G.presiColore = 0;
+  if (G.colIdx >= L.colori.length) {
+    aggiungiPunti(PUNTI.castello, G.pl, '#9BF0BF');
+    G.stato = 'entra'; G.entraT = G.demo ? 3.2 : 1.2;
+    SFX.play('vittoria');
+    const p = centro(G.pl.x, G.pl.y);
+    emetti(p.x, p.y, 36, { col: ['#FFD24A', '#FFFFFF', CASE[G.casa].col], v: 260, vita: 1, r: 5, tipo: 'stellina' });
+  } else { setTimeout(() => SFX.play('apri'), 200); annunciaColore(); }
+}
+function completaScuola() {
+  const L = G.L;
+  G.log.push({ liv: G.livello + 1, nome: L.def.nome, tipo: 'scuola', ok: true, trovati: G.trovati, colori: L.colori, perColore: L.perColore, passi: G.passi, sbagli: G.sbagli, aiuti: G.aiutiUsati, punti: G.puntiLivello });
+  mostraFineLivello();
+}
+/* ---------- SCUOLA: disegno dall'alto ---------- */
+function rettStanza(s) {   // in pixel, ritagliato sulla porzione di scuola del livello
+  const L = G.L, { cell, ox, oy } = lay;
+  const a = Math.max(s.r[0], L.x0), b = Math.max(s.r[1], L.y0), c = Math.min(s.r[2], L.x0 + L.w - 1), d = Math.min(s.r[3], L.y0 + L.h - 1);
+  if (a > c || b > d) return null;
+  return { x: ox + (a - L.x0) * cell, y: oy + (b - L.y0) * cell, w: (c - a + 1) * cell, h: (d - b + 1) * cell };
+}
+function pavimento(x, s, R, r, cell) {
+  const tinte = { corr: '#ECE7DB', aula: '#E7C796', info: '#DCE3EE', insegnanti: '#E9D6B4', ufficio: '#D9E6F2', bagni: '#CFE9F6', scale: '#D5DAE6', palestra: '#E7B06C', cortile: '#C9CBD1', campo: '#3F4A5C', piazzale: '#C9CBD1', privato: '#C7CCD7' };
+  x.fillStyle = tinte[s.t] || '#C9CBD1'; x.fillRect(R.x, R.y, R.w, R.h);
+  x.lineWidth = Math.max(1, cell * .02);
+  if (s.t === 'corr' || s.t === 'cortile' || s.t === 'piazzale' || s.t === 'info') {   // piastrelle
+    x.strokeStyle = s.t === 'corr' ? 'rgba(150,130,90,.18)' : 'rgba(80,90,110,.16)';
+    for (let gx = R.x; gx <= R.x + R.w + .1; gx += cell / 2) { x.beginPath(); x.moveTo(gx, R.y); x.lineTo(gx, R.y + R.h); x.stroke(); }
+    for (let gy = R.y; gy <= R.y + R.h + .1; gy += cell / 2) { x.beginPath(); x.moveTo(R.x, gy); x.lineTo(R.x + R.w, gy); x.stroke(); }
+  } else if (s.t === 'aula' || s.t === 'insegnanti' || s.t === 'palestra') {   // parquet a listoni
+    x.strokeStyle = 'rgba(130,85,35,.2)';
+    const passo = cell * .22;
+    for (let gy = R.y + passo, n = 0; gy < R.y + R.h; gy += passo, n++) {
+      x.beginPath(); x.moveTo(R.x, gy); x.lineTo(R.x + R.w, gy); x.stroke();
+      for (let gx = R.x + ((n * 37) % 100) / 100 * cell * 1.3; gx < R.x + R.w; gx += cell * 1.3) { x.beginPath(); x.moveTo(gx, gy - passo); x.lineTo(gx, gy); x.stroke(); }
+    }
+  } else if (s.t === 'bagni') {
+    x.strokeStyle = 'rgba(255,255,255,.8)';
+    for (let gx = R.x; gx <= R.x + R.w; gx += cell / 3) { x.beginPath(); x.moveTo(gx, R.y); x.lineTo(gx, R.y + R.h); x.stroke(); }
+    for (let gy = R.y; gy <= R.y + R.h; gy += cell / 3) { x.beginPath(); x.moveTo(R.x, gy); x.lineTo(R.x + R.w, gy); x.stroke(); }
+  } else if (s.t === 'ufficio') {
+    for (let k = 0; k < R.w * R.h / (cell * cell) * 30; k++) { x.fillStyle = 'rgba(40,70,110,.08)'; x.fillRect(R.x + r() * R.w, R.y + r() * R.h, 2, 2); }
+  } else if (s.t === 'privato') {
+    x.strokeStyle = 'rgba(255,255,255,.4)'; x.lineWidth = Math.max(1.5, cell * .03);
+    x.save(); x.beginPath(); x.rect(R.x, R.y, R.w, R.h); x.clip();
+    for (let k = -R.h; k < R.w; k += cell * .35) { x.beginPath(); x.moveTo(R.x + k, R.y + R.h); x.lineTo(R.x + k + R.h, R.y); x.stroke(); }
+    x.restore();
+  } else if (s.t === 'scale') {
+    const vert = R.h >= R.w; x.strokeStyle = 'rgba(70,80,100,.45)'; x.lineWidth = Math.max(1.5, cell * .03);
+    for (let k = 1; k < 9; k++) { x.beginPath(); if (vert) { const yy = R.y + R.h * k / 9; x.moveTo(R.x + cell * .12, yy); x.lineTo(R.x + R.w - cell * .12, yy); } else { const xx = R.x + R.w * k / 9; x.moveTo(xx, R.y + cell * .12); x.lineTo(xx, R.y + R.h - cell * .12); } x.stroke(); }
+  }
+}
+function arredi(x, s, R, r, cell) {
+  const porta = (s.porte || [])[0], k = porta ? porta[2] : 'giu';
+  if (s.t === 'palestra') {   // campo da pallavolo/basket sul parquet
+    const m = cell * .35; x.strokeStyle = 'rgba(255,255,255,.85)'; x.lineWidth = Math.max(2, cell * .05);
+    x.strokeRect(R.x + m, R.y + m, R.w - 2 * m, R.h - 2 * m);
+    x.beginPath(); x.moveTo(R.x + R.w / 2, R.y + m); x.lineTo(R.x + R.w / 2, R.y + R.h - m); x.stroke();
+    x.beginPath(); x.arc(R.x + R.w / 2, R.y + R.h / 2, Math.min(R.w, R.h) * .16, 0, 7); x.stroke();
+    return;
+  }
+  if (s.t === 'campo') {   // il campo da basket rosso e blu del cortile est
+    x.fillStyle = '#4C8BC9'; const m = cell * .5; x.fillRect(R.x + m, R.y + m, R.w - 2 * m, R.h * .62);
+    const cx = R.x + m + cell * .6, cy = R.y + m + cell * .4, cw = R.w - 2 * m - cell * 1.2, ch = R.h * .62 - cell * .8;
+    x.fillStyle = '#B5384F'; x.fillRect(cx, cy, cw, ch);
+    x.strokeStyle = '#FFFFFF'; x.lineWidth = Math.max(2, cell * .05);
+    x.strokeRect(cx, cy, cw, ch); x.beginPath(); x.moveTo(cx + cw / 2, cy); x.lineTo(cx + cw / 2, cy + ch); x.stroke();
+    x.beginPath(); x.arc(cx + cw / 2, cy + ch / 2, ch * .16, 0, 7); x.stroke();
+    [[cx, 1], [cx + cw, -1]].forEach(([bx, dir]) => { x.beginPath(); x.arc(bx, cy + ch / 2, ch * .36, -Math.PI / 2, Math.PI / 2, dir < 0); x.stroke(); x.fillStyle = '#4C8BC9'; x.fillRect(dir > 0 ? bx : bx - cw * .12, cy + ch * .38, cw * .12, ch * .24); x.strokeRect(dir > 0 ? bx : bx - cw * .12, cy + ch * .38, cw * .12, ch * .24); });
+    x.fillStyle = '#2E3644'; x.fillRect(R.x + m, R.y + R.h * .62 + m * 1.4, R.w - 2 * m, R.h * .38 - m * 2.4);
+    x.strokeStyle = 'rgba(255,255,255,.55)'; x.strokeRect(R.x + m * 1.6, R.y + R.h * .62 + m * 2, R.w - m * 3.2, R.h * .38 - m * 3.6);
+    return;
+  }
+  if (s.t === 'cortile') {   // il cortile interno con lo scivolo e la panchina lunga
+    const sx = R.x + R.w * .4, sy = R.y + R.h * .42, sc = cell;
+    x.fillStyle = '#E3533F'; rrect(x, sx, sy, sc * .55, sc * 1.6, sc * .2); x.fill();
+    x.fillStyle = '#F3816E'; rrect(x, sx + sc * .12, sy + sc * .1, sc * .31, sc * 1.4, sc * .14); x.fill();
+    x.fillStyle = '#7A4A1E'; x.fillRect(sx + sc * .55, sy + sc * 1.1, sc * .7, sc * .5);
+    x.strokeStyle = '#5A3A1E'; x.lineWidth = Math.max(1.5, cell * .03);
+    for (let k = 1; k < 5; k++) { x.beginPath(); x.moveTo(sx + sc * .55 + k * sc * .14, sy + sc * 1.1); x.lineTo(sx + sc * .55 + k * sc * .14, sy + sc * 1.6); x.stroke(); }
+    x.fillStyle = '#B98B5A'; rrect(x, R.x + R.w * .62, R.y + cell * .35, cell * .42, R.h * .62, cell * .1); x.fill();
+    alberoStrade(x, R.x + R.w * .15, R.y + R.h * .2, cell * 1.1, r); alberoStrade(x, R.x + R.w * .2, R.y + R.h * .78, cell, r);
+    return;
+  }
+  if (s.t === 'piazzale') return;
+  if (s.t === 'aula' || s.t === 'info') {   // lavagna, cattedra e banchi rivolti verso la lavagna
+    const lato = { destra: 'sinistra', sinistra: 'destra', giu: 'su', su: 'giu' }[k], vert = lato === 'sinistra' || lato === 'destra';
+    const sp = cell * .1;
+    x.fillStyle = '#2F5E44'; x.strokeStyle = '#7A5530'; x.lineWidth = Math.max(1.5, cell * .03);
+    const L1 = (vert ? R.h : R.w) * .5;
+    let bx, by, bw, bh;
+    if (vert) { bw = sp; bh = L1; by = R.y + (R.h - bh) / 2; bx = lato === 'sinistra' ? R.x + cell * .12 : R.x + R.w - cell * .12 - bw; }
+    else { bh = sp; bw = L1; bx = R.x + (R.w - bw) / 2; by = lato === 'su' ? R.y + cell * .12 : R.y + R.h - cell * .12 - bh; }
+    x.fillRect(bx, by, bw, bh); x.strokeRect(bx, by, bw, bh);
+    const dx = lato === 'sinistra' ? 1 : lato === 'destra' ? -1 : 0, dy = lato === 'su' ? 1 : lato === 'giu' ? -1 : 0;
+    const fondo = { x: R.x + (dx > 0 ? cell * .75 : cell * .2), y: R.y + (dy > 0 ? cell * .75 : cell * .2), w: R.w - cell * (dx ? .95 : .4), h: R.h - cell * (dy ? .95 : .4) };
+    const cx = vert ? (dx > 0 ? R.x + cell * .42 : R.x + R.w - cell * .42) : R.x + R.w / 2, cy = vert ? R.y + R.h / 2 : (dy > 0 ? R.y + cell * .42 : R.y + R.h - cell * .42);
+    x.fillStyle = '#9C6B3A'; const tw = vert ? cell * .3 : cell * .8, th = vert ? cell * .8 : cell * .3; rrect(x, cx - tw / 2, cy - th / 2, tw, th, cell * .05); x.fill();
+    const sedie = ['#7D879B', '#8C95A8'];   // sedie grigie: nel gioco dei colori non devono sembrare oggetti
+    const passo = cell * .78, nx = Math.max(1, Math.floor(fondo.w / passo)), ny = Math.max(1, Math.floor(fondo.h / passo));
+    for (let a = 0; a < nx; a++) for (let b = 0; b < ny; b++) {
+      const px = fondo.x + (a + .5) * fondo.w / nx, py = fondo.y + (b + .5) * fondo.h / ny;
+      const bw2 = vert ? cell * .26 : cell * .46, bh2 = vert ? cell * .46 : cell * .26;
+      x.fillStyle = '#C99A62'; rrect(x, px - bw2 / 2, py - bh2 / 2, bw2, bh2, cell * .04); x.fill();
+      x.fillStyle = 'rgba(90,60,30,.35)'; x.fillRect(px - bw2 / 2, py + bh2 / 2 - cell * .03, bw2, cell * .03);
+      if (s.t === 'info') { x.fillStyle = '#2E3644'; const mw = vert ? cell * .07 : cell * .22, mh = vert ? cell * .22 : cell * .07; x.fillRect(px - mw / 2 - dx * cell * .07, py - mh / 2 - dy * cell * .07, mw, mh); }
+      x.fillStyle = pick(sedie, r); x.beginPath(); x.arc(px + dx * cell * .26, py + dy * cell * .26, cell * .08, 0, 7); x.fill();
+    }
+    return;
+  }
+  if (s.t === 'insegnanti') {
+    const tw = R.w * .62, th = R.h * .42, tx = R.x + (R.w - tw) / 2, ty = R.y + (R.h - th) / 2;
+    x.fillStyle = '#5E6B7D'; for (let a = 0; a < 4; a++) for (const yy of [ty - cell * .14, ty + th + cell * .14]) { x.beginPath(); x.arc(tx + tw * (a + .5) / 4, yy, cell * .09, 0, 7); x.fill(); }
+    x.fillStyle = '#A9773F'; rrect(x, tx, ty, tw, th, cell * .12); x.fill();
+    x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(tx + tw * .3, ty + th * .5, cell * .07, 0, 7); x.fill(); x.beginPath(); x.arc(tx + tw * .7, ty + th * .45, cell * .07, 0, 7); x.fill();
+    return;
+  }
+  if (s.t === 'ufficio') {
+    x.fillStyle = '#9C6B3A'; rrect(x, R.x + R.w * .2, R.y + R.h * .28, R.w * .5, R.h * .26, cell * .05); x.fill();
+    x.fillStyle = '#2E3644'; x.fillRect(R.x + R.w * .35, R.y + R.h * .3, R.w * .16, R.h * .07);
+    x.fillStyle = '#5E6B7D'; x.beginPath(); x.arc(R.x + R.w * .45, R.y + R.h * .7, cell * .12, 0, 7); x.fill();
+    return;
+  }
+  if (s.t === 'bagni') {
+    const n = Math.max(2, Math.round((R.w > R.h ? R.w : R.h) / cell));
+    for (let a = 0; a < n; a++) {
+      const px = R.w > R.h ? R.x + (a + .5) * R.w / n : R.x + R.w * .75, py = R.w > R.h ? R.y + R.h * .28 : R.y + (a + .5) * R.h / n;
+      x.fillStyle = '#FFFFFF'; x.strokeStyle = '#8FA3B8'; x.lineWidth = Math.max(1, cell * .025);
+      x.beginPath(); x.ellipse(px, py, cell * .13, cell * .17, 0, 0, 7); x.fill(); x.stroke();
+    }
+  }
+}
+/* La scuola si disegna una volta sola in "coordinate mondo" (72 px per casella);
+   una telecamera la mostra ingrandita o rimpicciolita (vedi camScuola). */
+const CAM = { x: 0, y: 0, z: 1, t: null, mosso: -9 };
+function impostaLayoutScuola(W, H, dpr) {
+  const L = G.L, B = 72, M = Math.round(B * .6), mw = L.w * B + 2 * M, mh = L.h * B + 2 * M;
+  lay = { W: mw, H: mh, SW: W, SH: H, dprS: dpr, dpr: Math.min(3, dpr * 1.5), q: Math.min(dpr * 1.4, Math.sqrt(15e6 / (mw * mh))), cell: B, ox: M, oy: M };
+  costruisciSprite(); costruisciStaticoScuola();
+  const fit = Math.min(W / mw, H / mh);
+  if (CAM.t == null || CAM.liv !== L) Object.assign(CAM, { x: mw / 2, y: mh / 2, z: fit, t: null, mosso: -9, liv: L });
+}
+/* Da coordinate mondo a pixel del canvas sullo schermo (serve alla dimostrazione) */
+function aSchermo(wx, wy) {
+  if (!(G.L && G.L.scuola && lay.SW)) return { x: wx, y: wy, z: 1 };
+  return { x: (wx - CAM.x) * CAM.z + lay.SW / 2, y: (wy - CAM.y) * CAM.z + lay.SH / 2, z: CAM.z };
+}
+/* Telecamera: panoramica a inizio livello e a ogni nuovo colore; mentre si cammina nei corridoi
+   si allontana un po'; ferma o dentro un'aula si avvicina. Tutto con movimenti morbidi. */
+function camScuola() {
+  const L = G.L, W = lay.SW, H = lay.SH, dt = Math.min(.05, Math.max(0, G.tempo - (CAM.t ?? G.tempo))); CAM.t = G.tempo;
+  const fit = Math.min(W / lay.W, H / lay.H), zIn = Math.max(fit, 104 / lay.cell), zMid = Math.max(fit, 66 / lay.cell);
+  const p = posOgg(G.pl), px = lay.ox + (p.x + .5) * lay.cell, py = lay.oy + (p.y + .5) * lay.cell;
+  const s = stanzaG(Math.round(p.x) + L.x0, Math.round(p.y) + L.y0), inStanza = !!s && s.t !== 'corr';
+  if (G.pl.moving || IN.tenuti.length) CAM.mosso = G.tempo;
+  const fermo = G.tempo - CAM.mosso > .5;
+  const panoramica = G.stato === 'intro' || G.stato === 'completo' || (G.annuncio && G.tempo - G.annuncio.t0 < 2.1);
+  let zT, tx, ty;
+  if (panoramica) { zT = fit; tx = lay.W / 2; ty = lay.H / 2; }
+  else { zT = inStanza || fermo ? zIn : zMid; tx = px; ty = py; }
+  CAM.z += (zT - CAM.z) * Math.min(1, dt * (panoramica ? 2.6 : 1.8));
+  const hw = W / 2 / CAM.z, hh = H / 2 / CAM.z;
+  tx = lay.W <= 2 * hw ? lay.W / 2 : clamp(tx, hw, lay.W - hw);
+  ty = lay.H <= 2 * hh ? lay.H / 2 : clamp(ty, hh, lay.H - hh);
+  const k = Math.min(1, dt * 4.5); CAM.x += (tx - CAM.x) * k; CAM.y += (ty - CAM.y) * k;
+}
+function costruisciStaticoScuola() {
+  const L = G.L, { cell, ox, oy } = lay, w = L.w * cell, h = L.h * cell, r = mulberry32(L.deco);
+  stat = nuovaTela(lay.W * lay.q, lay.H * lay.q); nebbia = nuovaTela(1, 1);
+  const x = stat.getContext('2d'); x.scale(lay.q, lay.q);
+  const m = cell * .3;
+  x.save(); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30; x.shadowOffsetY = 14;
+  rrect(x, ox - m, oy - m, w + 2 * m, h + 2 * m, cell * .3); x.fillStyle = '#4A5368'; x.fill(); x.restore();
+  x.save(); x.beginPath(); x.rect(ox, oy, w, h); x.clip();
+  x.fillStyle = '#C9CBD1'; x.fillRect(ox, oy, w, h);
+  const visibili = STANZE.map(s => ({ s, R: rettStanza(s) })).filter(o => o.R);
+  visibili.forEach(({ s, R }) => pavimento(x, s, R, r, cell));
+  visibili.forEach(({ s, R }) => arredi(x, s, R, r, cell));
+  // muri: tra stanze diverse (porte escluse) e verso ciò che non si cammina; bordo del ritaglio compreso
+  const cammina = (gx, gy) => { const s = stanzaG(gx, gy); return !!s && CAMMINA.has(s.t); };
+  const P = new Path2D();
+  for (let ly = 0; ly <= L.h; ly++) for (let lx = 0; lx < L.w; lx++) {
+    const gx = lx + L.x0, gy = ly + L.y0, su = ly > 0 && cammina(gx, gy - 1), giu = ly < L.h && cammina(gx, gy);
+    if (!(su || giu)) continue;
+    if (ly > 0 && ly < L.h && apertoG(gx, gy - 1, 'giu')) continue;
+    P.moveTo(ox + lx * cell, oy + ly * cell); P.lineTo(ox + (lx + 1) * cell, oy + ly * cell);
+  }
+  for (let lx = 0; lx <= L.w; lx++) for (let ly = 0; ly < L.h; ly++) {
+    const gx = lx + L.x0, gy = ly + L.y0, sx = lx > 0 && cammina(gx - 1, gy), dx = lx < L.w && cammina(gx, gy);
+    if (!(sx || dx)) continue;
+    if (lx > 0 && lx < L.w && apertoG(gx - 1, gy, 'destra')) continue;
+    P.moveTo(ox + lx * cell, oy + ly * cell); P.lineTo(ox + lx * cell, oy + (ly + 1) * cell);
+  }
+  x.lineCap = 'square';
+  x.save(); x.translate(0, cell * .05); x.strokeStyle = 'rgba(20,25,40,.3)'; x.lineWidth = cell * .2; x.stroke(P); x.restore();
+  x.strokeStyle = '#46506A'; x.lineWidth = cell * .17; x.stroke(P);
+  x.strokeStyle = '#F4EFE4'; x.lineWidth = cell * .07; x.stroke(P);
+  // porte: un'anta e il suo arco, come nella pianta
+  visibili.forEach(({ s }) => (s.porte || []).forEach(([gx, gy, k]) => {
+    const d = DIR[k], lx = gx - L.x0, ly = gy - L.y0;
+    if (lx < 0 || ly < 0 || lx >= L.w || ly >= L.h || lx + d.dx < 0 || ly + d.dy < 0 || lx + d.dx >= L.w || ly + d.dy >= L.h) return;
+    const cx = ox + (lx + .5) * cell, cy = oy + (ly + .5) * cell, ex = cx + d.dx * cell / 2, ey = cy + d.dy * cell / 2;
+    const hx = ex - d.dy * cell * .42, hy = ey + d.dx * cell * .42, len = cell * .8;
+    const lfx = hx - d.dx * len, lfy = hy - d.dy * len, bx = ex + d.dy * cell * .42, by = ey - d.dx * cell * .42;
+    x.strokeStyle = '#9C7A4C'; x.lineWidth = Math.max(1.5, cell * .05); x.lineCap = 'round';
+    x.beginPath(); x.moveTo(hx, hy); x.lineTo(lfx, lfy); x.stroke();
+    x.lineWidth = Math.max(1, cell * .025); x.setLineDash([cell * .06, cell * .05]);
+    const a0 = Math.atan2(lfy - hy, lfx - hx), a1 = Math.atan2(by - hy, bx - hx);
+    let da = a1 - a0; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
+    x.beginPath(); x.arc(hx, hy, len, a0, a0 + da, da < 0); x.stroke(); x.setLineDash([]);
+  }));
+  x.restore();
+}
+function disegnaAnnuncio(x) {   // la macchia del colore da cercare compare grande al centro, poi sparisce (in pixel schermo)
+  if (!G.annuncio) return;
+  const e = G.tempo - G.annuncio.t0;
+  if (e > 2.3) { G.annuncio = null; return; }
+  const sc = e < .45 ? easeOutBack(e / .45) : e > 1.2 ? Math.max(0, 1 - (e - 1.2) / .45) : 1;
+  if (sc <= 0) return;
+  const R = Math.min(lay.SW, lay.SH) * .15, cx = lay.SW / 2, cy = lay.SH / 2;
+  x.save(); x.translate(cx, cy); x.scale(sc, sc);
+  x.fillStyle = 'rgba(255,255,255,.94)'; x.shadowColor = 'rgba(0,0,0,.35)'; x.shadowBlur = 24; x.beginPath(); x.arc(0, 0, R, 0, 7); x.fill(); x.shadowBlur = 0;
+  x.lineWidth = R * .07; x.strokeStyle = COLORI_OGG[G.annuncio.col].hex; x.stroke();
+  const d = R * 1.5; x.drawImage(IMGS.macchia[G.annuncio.col], -d / 2, -d / 2, d, d);
+  x.restore();
+}
+function renderScuola() {
+  const x = ctx, L = G.L, { cell } = lay, t = G.tempo;
+  camScuola();
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height);
+  const d = lay.dprS, z = CAM.z;
+  x.setTransform(d * z, 0, 0, d * z, d * (lay.SW / 2 - CAM.x * z), d * (lay.SH / 2 - CAM.y * z));
+  if (G.scossa > 0) x.translate((Math.random() - .5) * G.scossa * 22, (Math.random() - .5) * G.scossa * 22);
+  const st = centro(L.start.x, L.start.y), riv = G.rivela < 1;
+  if (riv) { x.save(); x.beginPath(); x.arc(st.x, st.y, easeOut(G.rivela) * Math.hypot(lay.W, lay.H), 0, 7); x.clip(); }
+  x.drawImage(stat, 0, 0, lay.W, lay.H);
+  L.items.forEach((it, k) => {   // oggetti su un dischetto bianco, così si vedono anche sopra i banchi
+    if (it.preso) return;
+    const c = centro(it.x, it.y), ph = it.x * 7 + it.y * 3, dd = G.dondola.get(k), b = Math.sin(t * 2.4 + ph) * cell * .035, s = cell * .62;
+    let rot = 0; if (dd != null) { const e = G.tempo - dd; if (e < .7) rot = Math.sin(e * 28) * .4 * (1 - e / .7); }
+    x.fillStyle = 'rgba(0,0,0,.2)'; x.beginPath(); x.ellipse(c.x, c.y + s * .5, s * .42, s * .12, 0, 0, 7); x.fill();
+    x.save(); x.translate(c.x, c.y + b); x.rotate(rot);
+    x.fillStyle = 'rgba(255,255,255,.92)'; x.beginPath(); x.arc(0, 0, s * .6, 0, 7); x.fill();
+    x.drawImage(IMGS.ogg[it.forma + it.col], -s / 2, -s / 2, s, s); x.restore();
+  });
+  disegnaOrme(x);
+  disegnaGiocatore(x, t);
+  disegnaParticelle(x);
+  if (riv) x.restore();
+  disegnaPing(x);
+  disegnaTesti(x);
+  disegnaFumetti(x);
+  x.setTransform(d, 0, 0, d, 0, 0);
+  disegnaAnnuncio(x);
+}
 
 /* ---------- STRADE: disegno ---------- */
 function auto(img, dim) {   // auto di profilo con bordino bianco; c.w / c.h in pixel CSS
@@ -2542,6 +3010,7 @@ function disegnaMoneta(x, c, R, n, ora, t, dondola) {
 
 function render() {
   if (G.L.strade) { renderStrade(); return; }
+  if (G.L.scuola) { renderScuola(); return; }
   const x = ctx, L = G.L, { cell } = lay, t = G.tempo;
   x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height);
   x.setTransform(lay.dpr, 0, 0, lay.dpr, 0, 0);
@@ -2621,7 +3090,7 @@ function disegnaGiocatore(x, t) {
   else sy = 1 + .025 * Math.sin(t * 3.2);
   if (p.urto) { const e = t - p.urto.t0; if (e < .2) { const k = Math.sin(e / .2 * Math.PI) * cell * .1; cx += p.urto.d.dx * k; cy += p.urto.d.dy * k; } else p.urto = null; }
   let caduta = 0; if (G.stato === 'gioco' || G.stato === 'preso') caduta = (1 - rimbalzo(G.entrata)) * cell * 2.2;
-  if (G.stato === 'entra') sc = Math.max(0, G.entraT / .7);
+  if (G.stato === 'entra') { if (G.L.scuola) bob = -Math.abs(Math.sin(t * 9)) * cell * .3; else sc = Math.max(0, G.entraT / .7); }
   if (G.stato === 'preso') sc = Math.max(.15, G.presoT / 1.4);
   const piedi = cy + cell * .34;
   // anello del potere: si svuota quando i rivali stanno per tornare cacciatori
@@ -2678,6 +3147,7 @@ function disegnaFumetti(x) {
       x.save(); x.rotate(ROT[f.val] * Math.PI / 180); x.strokeStyle = '#F59E0B'; x.lineWidth = h * .13; x.lineCap = 'round'; x.lineJoin = 'round';
       x.beginPath(); x.moveTo(0, h * .26); x.lineTo(0, -h * .24); x.moveTo(-h * .2, -h * .04); x.lineTo(0, -h * .26); x.lineTo(h * .2, -h * .04); x.stroke(); x.restore();
     }
+    else if (f.tipo === 'colore') { const d = h * .86; x.drawImage(IMGS.macchia[f.val], -d / 2, -d / 2, d, d); }
     else if (f.tipo === 'buco') {
       x.save(); x.setLineDash([h * .13, h * .09]); x.strokeStyle = '#F59E0B'; x.lineWidth = h * .09;
       rrect(x, -h * .3, -h * .3, h * .6, h * .6, h * .12); x.stroke(); x.restore();
@@ -2830,6 +3300,16 @@ function aggiornaRisorse() {
 function aggiornaObiettivo() {
   const L = G.L, C = CASE[G.casa]; let h = '';
   const stato = v => `<span class="ob-stato">${v}</span>`;
+  if (L.scuola) {   // la macchia del colore da cercare, quanti ne mancano, e la fila dei colori
+    const cur = L.colori[G.colIdx], fatto = G.colIdx >= L.colori.length;
+    if (!fatto) {
+      const hx = COLORI_OGG[cur].hex;
+      h += `<div class="ob-riga"><span class="ob-macchia">${svgMacchia(cur)}</span><div class="slots-col" style="--sc:${hx}">${Array.from({ length: L.perColore }, (_, i) => `<span class="sl ${i < G.presiColore ? 'pieno' : ''}"></span>`).join('')}</div></div>`;
+    } else h += `<div class="ob-riga"><span class="ob-macchia">${ICO.ok}</span></div>`;
+    if (L.colori.length > 1) h += `<div class="ob-riga"><div class="seq">${L.colori.map((c, i) => `<span class="${i < G.colIdx ? 'fatto' : i === G.colIdx ? 'ora' : ''}">${svgMacchia(c)}${i < G.colIdx ? `<i class="ok">${ICO.ok}</i>` : ''}</span>`).join('')}</div></div>`;
+    $('#obiettivo').innerHTML = h;
+    return;
+  }
   if (L.strade) {
     h += `<div class="ob-riga"><span class="ob-auto"><img src="${IMG_DATA[G.casa + '_car']}" alt=""></span>${FR}<span class="ob-ico" style="color:${C.col}">${ICO.castello}</span></div>`;
     if (L.stelleTot) h += `<div class="ob-riga"><div class="stelle-slot">${Array.from({ length: L.stelleTot }, (_, i) => `<span class="${i < G.stellePrese ? '' : 'vuota'}">${ICO.stella}</span>`).join('')}</div></div>`;
@@ -2914,6 +3394,12 @@ const tile = (html, cls = '') => `<div class="rt ${cls}">${html}</div>`;
 const figImg = k => `<img src="${IMG_DATA[k + '_full']}" alt="">`;
 function ricetta(L) {
   const C = CASE[G.casa], me = tile(figImg(G.casa), 'tok' + (L.buio ? ' buio' : ''));
+  if (L.scuola) {   // io → la macchia → gli oggetti di quel colore; poi la fila dei colori
+    const c0 = L.colori[0];
+    let h = `<div class="rr">${me}${FR}${tile(svgMacchia(c0), 'tes')}${FR}${tile(svgOgg('palla', c0), 'tes')}${tile(svgOgg('libro', c0), 'tes')}<span class="piu">×${L.perColore}</span></div>`;
+    if (L.colori.length > 1) h += `<div class="rr piccola">${L.colori.map(c => tile(svgMacchia(c), 'tes')).join(FR)}</div>`;
+    return h;
+  }
   if (L.strade) {   // frecce → riquadro · SPAZIO → la tessera gira · VIA → l'auto arriva al castello
     const car = tile(`<img src="${IMG_DATA[G.casa + '_car']}" alt="">`, 'auto');
     const castello = tile(`<span style="color:${C.col}">${ICO.castello}</span>`, 'meta');
@@ -2964,7 +3450,11 @@ function mostraIntro() {
 function mostraFineLivello() {
   const e = G.log[G.log.length - 1], C = CASE[G.casa], ultimo = G.livello + 1 >= G.livelli.length;
   let tit, corpo;
-  if (e.tipo === 'strade') {
+  if (e.tipo === 'scuola') {
+    tit = 'TUTTO TROVATO!';
+    corpo = `<div class="fila">${e.colori.map(c => `<div class="gr"><span>${svgMacchia(c)}</span>×${e.perColore}</div>`).join('')}</div>
+      <div class="fila"><div class="gr"><span style="color:var(--blu)">${ICO.orme}</span>${e.passi}</div></div>`;
+  } else if (e.tipo === 'strade') {
     tit = 'STRADA COSTRUITA!';
     const max = Math.max(e.tessere, e.minimo, 1);
     corpo = (e.stelleTot ? `<div class="stelline">${Array.from({ length: e.stelleTot }, (_, i) => `<span class="${i < e.stelle ? 'piena' : 'vuota'}" style="animation-delay:${.3 + i * .18}s">${ICO.stella}</span>`).join('')}</div>` : '') +
@@ -3038,6 +3528,11 @@ const DEBRIEF_CODING = [
   { ico: ICO.orme, testo: 'UN PEZZO ALLA VOLTA', risp: 'UN PEZZO ALLA VOLTA VA BENE: PROVI, GUARDI DOVE ARRIVI E AGGIUNGI.' },
   { ico: ICO.riprova, testo: 'PROVO E CORREGGO', risp: 'CORREGGERE UN PROGRAMMA SI CHIAMA DEBUG: LO FANNO TUTTI I PROGRAMMATORI.' },
 ];
+const DEBRIEF_SCUOLA = [
+  { ico: ICO.occhio, testo: 'GUARDO LA MAPPA PRIMA', risp: 'GUARDARE LA MAPPA PRIMA TI FA SCEGLIERE LA STRADA PIÙ CORTA.' },
+  { ico: ICO.orme, testo: 'UNA STANZA ALLA VOLTA', risp: 'UNA STANZA ALLA VOLTA VA BENE: COSÌ NON TI SCAPPA NESSUN OGGETTO.' },
+  { ico: ICO.scuola, testo: 'SEGUO IL CORRIDOIO', risp: 'IL CORRIDOIO COLLEGA TUTTE LE AULE: È IL TUO PUNTO DI RIFERIMENTO.' },
+];
 const DEBRIEF_STRADE = [
   { ico: ICO.occhio, testo: 'GUARDO TUTTA LA STRADA', risp: 'GUARDARE TUTTA LA STRADA PRIMA AIUTA A NON SPRECARE LE TESSERE.' },
   { ico: ICO.orme, testo: 'UNA TESSERA ALLA VOLTA', risp: 'UNA TESSERA ALLA VOLTA VA BENE: OGNI TESSERA DEVE TOCCARE QUELLA DI PRIMA.' },
@@ -3054,15 +3549,17 @@ function finePartita() {
   G.stato = 'off'; G.debrief = null; G.focusDeb = 0; G.focusFine = 0;
   const C = CASE[G.casa];
   const n = G.log.length, mondo = G.mondo;
-  G.domande = { coding: DEBRIEF_CODING, strade: DEBRIEF_STRADE }[mondo] || DEBRIEF;
+  G.domande = { coding: DEBRIEF_CODING, strade: DEBRIEF_STRADE, scuola: DEBRIEF_SCUOLA }[mondo] || DEBRIEF;
   $('#fineTit').textContent = mondo === 'coding' ? `${C.nome} HA PROGRAMMATO ${n} ${n === 1 ? 'PERCORSO' : 'PERCORSI'}`
+    : mondo === 'scuola' ? `${C.nome} HA TROVATO ${G.log.reduce((s, e) => s + (e.trovati || 0), 0)} OGGETTI`
     : mondo === 'strade' ? `${C.nome} HA COSTRUITO ${n} ${n === 1 ? 'STRADA' : 'STRADE'}` : `${C.nome} HA ATTRAVERSATO ${n} ${n === 1 ? 'LABIRINTO' : 'LABIRINTI'}`;
-  $('.debrief .dq').textContent = { coding: 'COME HAI COSTRUITO IL PROGRAMMA?', strade: 'COME HAI COSTRUITO LA STRADA?' }[mondo] || 'COME HAI TROVATO LA STRADA?';
+  $('.debrief .dq').textContent = { coding: 'COME HAI COSTRUITO IL PROGRAMMA?', strade: 'COME HAI COSTRUITO LA STRADA?', scuola: 'COME HAI TROVATO GLI OGGETTI?' }[mondo] || 'COME HAI TROVATO LA STRADA?';
   $('#fineFig').src = IMG_DATA[G.casa + (mondo === 'strade' ? '_car' : '_full')];
   $('#fineTot').innerHTML = `LA TUA PARTITA<b>${G.punti}</b>PUNTI PER ${C.nome}`;
   $('#fineLivelli').innerHTML = G.livelli.map((d, i) => {
     const e = G.log.find(l => l.liv === i + 1);
     if (!e) return `<div class="lv no"><b>${i + 1}</b><span>${d.nome}</span><small>NON GIOCATO</small></div>`;
+    if (e.tipo === 'scuola') return `<div class="lv"><b>${i + 1}</b><span>${e.trovati} OGGETTI</span><small>${e.passi} PASSI</small></div>`;
     if (e.tipo === 'strade') return `<div class="lv"><b>${i + 1}</b><span>${e.tessere} TESSERE</span><small>PIÙ CORTA ${e.minimo}<br>${e.tentativi} ${e.tentativi === 1 ? 'PROVA' : 'PROVE'}</small></div>`;
     if (e.tipo === 'coding') return `<div class="lv"><b>${i + 1}</b><span>${e.carte} CARTE</span><small>MINIMO ${e.minimo}<br>${e.tentativi} ${e.tentativi === 1 ? 'PROVA' : 'PROVE'}</small></div>`;
     return e.tipo === 'labirinto' ? `<div class="lv"><b>${i + 1}</b><span>${e.passi} PASSI</span><small>PIÙ CORTA ${e.minimo}${e.stelleTot ? `<br>${e.stelle}/${e.stelleTot} STELLE` : ''}</small></div>`
@@ -3097,20 +3594,21 @@ function salvaTelemetria(debrief, completa) {
 
 /* ---------- Pannello docente ---------- */
 function apriDocente() {
-  const log = LS.get('lab-partite', []), deb = [0, 0, 0], debC = [0, 0, 0], debS = [0, 0, 0];
-  log.forEach(p => { if (p.debrief != null) ({ coding: debC, strade: debS }[p.mondo] || deb)[p.debrief]++; });
+  const log = LS.get('lab-partite', []), deb = [0, 0, 0], debC = [0, 0, 0], debS = [0, 0, 0], debK = [0, 0, 0];
+  log.forEach(p => { if (p.debrief != null) ({ coding: debC, strade: debS, scuola: debK }[p.mondo] || deb)[p.debrief]++; });
   const mondo = mondoAttivo(), M = MONDI[mondo], part = LS.get(M.partenza, 1), sync = Classifica.stato.sync, daUrl = !!new URLSearchParams(location.search).get('mondo');
   $('#modBody').innerHTML = `<button class="chiudi" id="mChiudi" tabindex="-1">${ICO.x}</button><h2>Pannello docente</h2>
     <h4>CLASSIFICA</h4><p>${sync ? 'Condivisa tra i Mac tramite Apps Script.' : 'Salvata su questo Mac. Per condividerla tra più Mac, inserire l\'URL dell\'Apps Script in <code>CONFIG.URL_CLASSIFICA</code>.'} Il punteggio è <b>a testa</b>: punti della casata diviso i giocatori entrati in gioco.${CONFIG.AZZERA_OGNI_NOTTE ? ' Riparte da zero ogni notte a mezzanotte (ora italiana): ogni partita conta nel giorno in cui è iniziata.' : ''}</p>
     <div class="riga-b" style="margin-top:10px"><button class="mb tieni" id="mAzzera" tabindex="-1"><i></i><span>TIENI PREMUTO 2 SECONDI PER AZZERARE</span></button></div>
-    <h4>MONDO</h4><div class="riga-b"><button class="mb ${mondo === 'labirinto' ? 'on' : ''}" data-m="labirinto" tabindex="-1">LABIRINTI (8 LIVELLI)</button><button class="mb ${mondo === 'strade' ? 'on' : ''}" data-m="strade" tabindex="-1">STRADE (6 LIVELLI)</button><button class="mb ${mondo === 'coding' ? 'on' : ''}" data-m="coding" tabindex="-1">CODING (7 LIVELLI)</button></div>
+    <h4>MONDO</h4><div class="riga-b"><button class="mb ${mondo === 'labirinto' ? 'on' : ''}" data-m="labirinto" tabindex="-1">LABIRINTI (8 LIVELLI)</button><button class="mb ${mondo === 'strade' ? 'on' : ''}" data-m="strade" tabindex="-1">STRADE (6 LIVELLI)</button><button class="mb ${mondo === 'coding' ? 'on' : ''}" data-m="coding" tabindex="-1">CODING (7 LIVELLI)</button><button class="mb ${mondo === 'scuola' ? 'on' : ''}" data-m="scuola" tabindex="-1">SCUOLA (4 LIVELLI)</button></div>
     <p style="margin-top:6px">${daUrl ? 'Il mondo di partenza è indicato nell\'indirizzo (<code>?mondo=</code>); si può cambiare anche dalla home.' : 'Si cambia anche dalla home (pulsanti sotto il titolo); la scelta resta su questo Mac. In alternativa: <code>?mondo=coding</code> nell\'indirizzo.'} Nel coding i bambini scelgono le frecce (diventano carte) e solo dopo premono VIA per eseguire il percorso. Nelle strade posano e girano le tessere (SPAZIO o clic, ⌫ o clic destro per togliere) e poi premono VIA: l'auto percorre la strada costruita.</p>
     <h4>LIVELLO DI PARTENZA</h4><div class="riga-b">${M.livelli.map((d, i) => `<button class="mb ${part === i + 1 ? 'on' : ''}" data-l="${i + 1}" tabindex="-1">${i + 1} · ${d.nome}</button>`).join('')}</div>
     <h4>DIMOSTRAZIONE ALL'INIZIO</h4><div class="riga-b">${[['sempre', 'SEMPRE'], ['prima', 'SOLO LA PRIMA VOLTA SU QUESTO MAC'], ['mai', 'MAI']].map(([v, s]) => `<button class="mb ${LS.get('lab-demo', 'sempre') === v ? 'on' : ''}" data-demo="${v}" tabindex="-1">${s}</button>`).join('')}</div>
     <p style="margin-top:6px">Quando un bambino sceglie la casata, il mondo si gioca da solo su un livello piccolo e una freccia numerata indica i passaggi (circa 15 secondi). Si salta con INVIO o con il pulsante SALTA. Con <code>?demo=0</code> nell'indirizzo non compare.</p>
     <h4>AUDIO</h4><div class="riga-b"><button class="mb ${SFX.on ? 'on' : ''}" id="mSuoni" tabindex="-1">SUONI ${SFX.on ? 'ATTIVI' : 'SPENTI'}</button></div>
     <h4>MODALITÀ LEZIONE</h4><p>Aggiungendo <code>?seed=2A</code> all'indirizzo, tutti i Mac generano gli stessi labirinti: si può discutere insieme la stessa partita. Con <code>?livello=5</code> si parte da un livello preciso.</p>
-    <h4>SU QUESTO MAC</h4><p>${log.length} partite registrate. Labirinti, «come hai trovato la strada?»: guardo prima ${deb[0]} · provo e riprovo ${deb[1]} · lanterne ${deb[2]}. Coding, «come hai costruito il programma?»: tutto prima ${debC[0]} · un pezzo alla volta ${debC[1]} · provo e correggo ${debC[2]}. Strade, «come hai costruito la strada?»: guardo tutta la strada ${debS[0]} · una tessera alla volta ${debS[1]} · provo e aggiusto ${debS[2]}.</p>`;
+    <h4>SU QUESTO MAC</h4><p>${log.length} partite registrate. Labirinti, «come hai trovato la strada?»: guardo prima ${deb[0]} · provo e riprovo ${deb[1]} · lanterne ${deb[2]}. Coding, «come hai costruito il programma?»: tutto prima ${debC[0]} · un pezzo alla volta ${debC[1]} · provo e correggo ${debC[2]}. Strade, «come hai costruito la strada?»: guardo tutta la strada ${debS[0]} · una tessera alla volta ${debS[1]} · provo e aggiusto ${debS[2]}. Scuola, «come hai trovato gli oggetti?»: guardo la mappa ${debK[0]} · una stanza alla volta ${debK[1]} · seguo il corridoio ${debK[2]}.</p>
+    <p style="margin-top:6px">La mappa del mondo SCUOLA è un disegno semplificato del primo piano: senza misure, senza uscite di sicurezza e senza la zona dei padri.</p>`;
   $('#modDocente').classList.add('on');
   $('#mChiudi').onclick = chiudiDocente;
   $('#modBody').querySelectorAll('[data-l]').forEach(b => b.onclick = () => { LS.set(M.partenza, +b.dataset.l); apriDocente(); });
@@ -3141,7 +3639,7 @@ function cambiaMondo(m) {
   if (m !== prima) {
     SFX.play('scegli');
     const b = $(`#mondi .mondo-btn[data-m="${m}"]`), r = b.getBoundingClientRect();
-    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9' }[m] || '#6FA3FF']);
+    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9', scuola: '#A78BFA' }[m] || '#6FA3FF']);
   }
 }
 
@@ -3259,6 +3757,11 @@ async function avvio() {
     IMGS.emblema[k] = await svgImg(EMBLEMI[k]);
   }));
   IMGS.lanterna = await svgImg(ICO.lanterna);
+  IMGS.ogg = {}; IMGS.macchia = [];
+  await Promise.all(COLORI_OGG.map(async (_, i) => {
+    IMGS.macchia[i] = await svgImg(svgMacchia(i));
+    for (const f of FORME) IMGS.ogg[f + i] = await svgImg(svgOgg(f, i));
+  }));
   IMGS.castello = await svgImg(ICO.castello.replace('currentColor', '#2563EB'));
   try { await document.fonts.load('700 40px Fredoka'); } catch (e) {}
   costruisciHome(); costruisciRighe('righeGioco'); costruisciRighe('righeFine');
@@ -3284,7 +3787,7 @@ async function avvio() {
   $('#bVia').onclick = () => avviaEsecuzione();
   $('#slots').addEventListener('click', e => { const c = e.target.closest('.cp.carta'); if (c && G.stato === 'gioco') togliCarta(+c.dataset.i); });
   document.querySelectorAll('#mondi .mondo-btn').forEach(b => {
-    b.innerHTML = { coding: `${ICO.carta}<span>CODING</span>`, strade: `${ICO.auto}<span>STRADE</span>` }[b.dataset.m] || `${ICO.labirinto}<span>LABIRINTI</span>`;
+    b.innerHTML = { coding: `${ICO.carta}<span>CODING</span>`, strade: `${ICO.auto}<span>STRADE</span>`, scuola: `${ICO.scuola}<span>SCUOLA</span>` }[b.dataset.m] || `${ICO.labirinto}<span>LABIRINTI</span>`;
     b.onclick = () => { focusMondi = false; cambiaMondo(b.dataset.m); aggiornaFocus(); };
   });
   aggiornaMondi();
