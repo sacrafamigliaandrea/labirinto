@@ -280,6 +280,40 @@ img{-webkit-user-drag:none;user-select:none}
 .ob-auto img{height:clamp(30px,2.4vw,44px);width:auto;display:block;filter:drop-shadow(0 2px 1px rgba(0,0,0,.2))}
 .fig-salta.auto{height:clamp(90px,12vh,150px)}
 
+/* ---------- Dimostrazione: freccia numerata ---------- */
+#puntatore{position:absolute;left:0;top:0;z-index:70;pointer-events:none;opacity:0;transition:transform .5s cubic-bezier(.45,.05,.25,1),opacity .3s;will-change:transform}
+#puntatore.on{opacity:1}
+#puntatore .pf{position:absolute;left:-8px;top:-5px;width:84px;height:84px;filter:drop-shadow(0 7px 6px rgba(0,0,0,.4));transform-origin:8px 5px;animation:puntaOnda 1.1s ease-in-out infinite}
+#puntatore .pf svg{width:100%;height:100%;transform-origin:8px 5px;transition:transform .3s}
+#puntatore.alto .pf svg{transform:scaleY(-1)}
+#puntatore.alto .pf{animation-name:puntaOndaSu}
+@keyframes puntaOndaSu{50%{transform:translate(7px,-7px)}}
+#puntatore.alto.premi .pf{animation:premiPSu .26s ease}
+@keyframes premiPSu{50%{transform:scale(.8) translate(4px,-4px)}}
+#puntatore.alto .pn{top:-104px}
+@keyframes puntaOnda{50%{transform:translate(7px,7px)}}
+#puntatore.premi .pf{animation:premiP .26s ease}
+@keyframes premiP{50%{transform:scale(.8) translate(4px,4px)}}
+#puntatore .anel{position:absolute;left:-30px;top:-30px;width:60px;height:60px;border-radius:50%;border:6px solid #fff;opacity:0;box-shadow:0 0 18px rgba(255,255,255,.8)}
+#puntatore.premi .anel{animation:ondaP .5s ease-out}
+@keyframes ondaP{0%{transform:scale(.3);opacity:1}100%{transform:scale(1.7);opacity:0}}
+#puntatore .pn{position:absolute;left:52px;top:58px;width:46px;height:46px;border-radius:50%;background:var(--c);color:var(--ct);border:5px solid #fff;display:grid;place-items:center;font:700 26px var(--f);box-shadow:0 5px 0 rgba(0,0,0,.25)}
+#puntatore .pn:empty{display:none}
+#puntatore .pn.nuovo{animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+.demo-bar{position:absolute;z-index:45;top:calc(clamp(62px,8.6vh,96px) + 1.4vh);left:calc((100% - clamp(300px,21.5vw,420px)) / 2);transform:translateX(-50%);display:none;align-items:center;gap:.9vw;padding:.7vh .7vw .7vh 1.2vw;border-radius:999px;background:var(--crema);color:var(--blu);font-size:clamp(17px,1.3vw,25px);font-weight:700;letter-spacing:.05em;white-space:nowrap;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.demo-bar.on{display:flex}
+.demo-bar .db-occhio{width:1.7em;height:1.7em;animation:pulsaPlay 1.4s ease-in-out infinite}
+.demo-bar .db-occhio svg{width:100%;height:100%}
+.demo-bar button{display:inline-flex;align-items:center;gap:.5vw;padding:.6vh .6vw .6vh 1vw;border-radius:999px;background:#EFE5CC;color:var(--blu);font-weight:700;font-size:.8em;letter-spacing:.05em}
+.demo-bar button:hover{background:var(--blu);color:#fff}
+#demoVelo{position:absolute;inset:0;z-index:40;display:none}
+#demoVelo.on{display:block}
+#btnHome{position:relative;z-index:46}
+.tit-occhio{display:inline-block;width:1.2em;height:1.2em;vertical-align:-.2em;color:var(--oro)}
+.tit-occhio svg{width:100%;height:100%}
+.cap.giu,.tasto.giu{transform:translateY(3px);background:var(--c);color:var(--ct);box-shadow:inset 0 -1px 0 rgba(0,0,0,.2)}
+.pbtn.giu,.risorse .ico.giu{transform:scale(.9)}
+
 /* ---------- Overlay sul labirinto ---------- */
 .ov{position:absolute;inset:0;display:none;place-items:center;background:rgba(6,22,56,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:4}
 .ov.on{display:grid;animation:fade .3s ease both}
@@ -432,7 +466,7 @@ img{-webkit-user-drag:none;user-select:none}
   <header class="testata">
     <div class="tit1">IL LABIRINTO</div>
     <div class="tit2">DELLE CASATE</div>
-    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button></div>
+    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button></div>
   </header>
   <div class="carte" id="carte"></div>
   <footer class="piede">
@@ -470,6 +504,9 @@ img{-webkit-user-drag:none;user-select:none}
     <div class="pan classifica"><div class="pan-tit">CLASSIFICA CASATE <span class="live" id="liveGioco"><i></i>LIVE</span></div><div class="righe" id="righeGioco"></div><div class="supera" id="supera"></div></div>
     <div class="pan frecce"><div class="tasti" id="tasti"></div><div class="parola" id="parola">USA LE FRECCE</div></div>
   </aside>
+  <div class="demo-bar" id="demoBar"><span class="db-occhio" id="dbOcchio"></span><span>GUARDA COME SI GIOCA</span><button id="bSalta" tabindex="-1"></button></div>
+  <div id="demoVelo"></div>
+  <div id="puntatore" aria-hidden="true"><span class="anel"></span><span class="pf"><svg viewBox="0 0 64 64"><path d="M6 4L6 50L17.5 39.5L26.5 58.5L36 54L27 35.5L44 35.5Z" fill="#FFFFFF" stroke="#0E1F47" stroke-width="4" stroke-linejoin="round"/></svg></span><span class="pn"></span></div>
 </section>
 
 <!-- ============ FINE PARTITA ============ -->
@@ -1146,7 +1183,7 @@ const LIVELLI_STRADE = [
 ];
 /* Il mondo si sceglie dalla home, dal pannello docente o con ?mondo=coding / ?mondo=strade */
 const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' } };
-const ORD_MONDI = ['labirinto', 'coding', 'strade'];
+const ORD_MONDI = ['labirinto', 'strade', 'coding'];
 function mondoAttivo() {
   const q = new URLSearchParams(location.search).get('mondo');
   if (MONDI[q]) return q;
@@ -1176,7 +1213,7 @@ const PART = [], TESTI = [];
 /* =====================================================================
    PARTITA E LIVELLI
    ===================================================================== */
-function iniziaPartita(casa) {
+function iniziaPartita(casa, conDemo) {
   G.casa = casa; G.punti = 0; G.puntiVis = 0; G.log = []; G.checkin = false;
   G.seed = SEED_LEZIONE ?? `${sid().slice(0, 8)}-${nuovoRun()}`;
   G.mondo = mondoAttivo(); G.livelli = MONDI[G.mondo].livelli;
@@ -1189,11 +1226,11 @@ function iniziaPartita(casa) {
   $('#hudNome').textContent = C.nome;
   $('#seedTag').textContent = 'PARTITA ' + G.seed;
   mostraSchermo('gioco');
-  requestAnimationFrame(() => requestAnimationFrame(() => preparaLivello(G.livello)));
+  requestAnimationFrame(() => requestAnimationFrame(() => (conDemo && vuoleDemo()) ? avviaDemo() : preparaLivello(G.livello)));
 }
 
-function preparaLivello(idx) {
-  const d = G.livelli[idx], r = mulberry32(cyrb53(G.seed + ({ coding: '|C', strade: '|S' }[G.mondo] || '|L') + (idx + 1)));
+function preparaLivello(idx, dDemo) {
+  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo : G.seed + ({ coding: '|C', strade: '|S' }[G.mondo] || '|L') + (idx + 1)));
   G.rng = r;
   const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
   if (L.fuga) { const A = generaArena(d, r); Object.assign(L, { gr: A.gr, start: A.start, arena: A }); }
@@ -1226,7 +1263,7 @@ function preparaLivello(idx) {
   aggiornaTray();
   calcolaLayout();
   aggiornaHUD();
-  mostraIntro();
+  if (!dDemo) mostraIntro();
 }
 
 function iniziaGioco() {
@@ -1694,6 +1731,148 @@ function completaCoding() {
   mostraFineLivello();
 }
 
+/* =====================================================================
+   DIMOSTRAZIONE: all'inizio di ogni mondo il gioco si gioca da solo su un livello piccolo
+   e una grande freccia numerata indica i passaggi: 1 sei tu · 2 arriva qui · 3, 4, 5 i tasti
+   e il VIA. Nessuna voce, nessun testo da leggere. INVIO o SALTA per passare oltre.
+   ===================================================================== */
+const DEMO = {
+  labirinto: { nome: 'GUARDA', tipo: 'labirinto', w: 5, h: 3, tema: 'prato', stelle: 1 },
+  strade:    { nome: 'GUARDA', tipo: 'strade', w: 5, h: 3, tema: 'prato', svolte: .45, prefill: .5, distrattori: 0, ostacoli: .2, stelle: 1, minCurve: 2, maxLen: 8 },
+  coding:    { nome: 'GUARDA', tipo: 'coding', w: 4, h: 3, tema: 'prato', anelli: .5, dist: [4, 5] },
+};
+const D = { run: 0, ultimo: null };
+const attendi = ms => new Promise((ok, ko) => { const id = D.run; setTimeout(() => (id === D.run && G.demo ? ok() : ko('stop')), ms); });
+const finche = (cond, max = 9000) => new Promise((ok, ko) => {
+  const id = D.run, t0 = performance.now();
+  (function giro() { if (id !== D.run || !G.demo) return ko('stop'); if (cond() || performance.now() - t0 > max) return ok(); setTimeout(giro, 40); })();
+});
+const dirTra = (a, b) => b.x > a.x ? 'destra' : b.x < a.x ? 'sinistra' : b.y > a.y ? 'giu' : 'su';
+function vuoleDemo() {
+  if (QS.get('demo') === '0') return false;
+  const m = LS.get('lab-demo', 'sempre');
+  if (m === 'mai') return false;
+  if (m === 'prima') { const k = 'lab-demo-visto-' + G.mondo; if (LS.get(k, false)) return false; LS.set(k, true); }
+  return true;
+}
+function scrCella(x, y, dy = 0) { const r = cv.getBoundingClientRect(), c = centro(x, y); return { x: r.left + c.x, y: r.top + c.y + dy * lay.cell }; }
+/* La freccia va su un elemento della pagina o su un punto; n = numero del passaggio */
+function punta(dove, n) {
+  const p = $('#puntatore'); let x, y;
+  if (dove instanceof Element) { const r = dove.getBoundingClientRect(); x = r.left + r.width / 2; y = r.top + r.height / 2; } else ({ x, y } = dove);
+  p.style.transform = `translate(${Math.round(x)}px,${Math.round(y)}px)`; p.classList.add('on');
+  p.classList.toggle('alto', y > innerHeight - 170);   // vicino al bordo basso la freccia arriva dall'alto
+  if (n != null) { const b = p.querySelector('.pn'); if (b.textContent !== String(n)) { b.textContent = n; b.classList.remove('nuovo'); void b.offsetWidth; b.classList.add('nuovo'); } }
+  D.ultimo = dove;
+}
+async function premi(el) {
+  const p = $('#puntatore'); p.classList.remove('premi'); void p.offsetWidth; p.classList.add('premi');
+  if (el) { el.classList.add('giu'); setTimeout(() => el.classList.remove('giu'), 220); }
+  await attendi(240);
+}
+const tastoSchermo = k => $(`#tasti .tasto[data-d="${k}"]`);
+async function premiFreccia(k, azione, n) {   // la freccia va sul tasto a schermo, lo preme e il gioco reagisce
+  const el = tastoSchermo(k), stesso = D.ultimo === el;
+  punta(el, n); await attendi(stesso ? 120 : 480);
+  evidenziaTasto(k, true); premi(); azione(k);
+  await attendi(170); evidenziaTasto(k, false);
+}
+async function presentazione(io, meta) {   // 1 · questo sei tu   2 · devi arrivare qui
+  punta(io, 1); await attendi(1600);
+  punta(meta, 2); await attendi(1600);
+}
+async function demoLabirinto() {
+  const L = G.L;
+  await presentazione(scrCella(G.pl.x, G.pl.y, -.3), scrCella(L.uscita.x, L.uscita.y, -.1));
+  const stella = [...L.items.values()].find(i => i.tipo === 'stella');
+  const tappe = stella ? [stella, L.uscita] : [L.uscita];
+  for (let t = 0; t < tappe.length; t++) {
+    if (t === 1) {   // 4 · la lanterna mostra le impronte
+      const lan = $('#risorse .ico'); punta(lan, 4); await attendi(1000); await premi(lan); usaAiuto(); await attendi(2300);
+    }
+    const cam = L.gr.percorso({ x: G.pl.x, y: G.pl.y }, tappe[t]);
+    for (let i = 1; i < cam.length; i++) {
+      await premiFreccia(dirTra(cam[i - 1], cam[i]), d => { tastoFreccia(d); setTimeout(() => { IN.tenuti = IN.tenuti.filter(z => z !== d); }, 110); }, 3);
+      await finche(() => !G.pl.moving);
+    }
+  }
+  punta(scrCella(L.uscita.x, L.uscita.y, -.1));
+}
+function preparaDemoStrade(L) {   // una tessera da girare e due buchi: il resto è già giusto
+  let ruota = null; const buchi = [];
+  L.soluzione.forEach(q => {
+    const k = q.y * L.w + q.x, tl = L.tiles[k];
+    if (tl) { if (!ruota) ruota = q; else { tl.giri = q.rot; tl.daGiri = q.rot; } }
+    else if (buchi.length < 2) buchi.push(q);
+    else L.tiles[k] = { tipo: q.tipo, giri: q.rot, daGiri: q.rot, fonte: 'girabile', t0: -9, pop: -9 };
+  });
+  G.dispo = { dritto: 0, curva: 0, ponte: 0 }; buchi.forEach(q => G.dispo[q.tipo]++);
+  L.vasca = { ...G.dispo };
+}
+async function demoStrade() {
+  const L = G.L, giusta = q => apertureDi(L.tiles[q.y * L.w + q.x]) === APERTURE[q.tipo][q.rot];
+  await presentazione(scrCella(-1, L.r0, -.1), scrCella(L.uscita.x, L.uscita.y, -.1));
+  for (const q of L.soluzione) {
+    if (giusta(q)) continue;
+    while (G.cur.x !== q.x || G.cur.y !== q.y) await premiFreccia(G.cur.x !== q.x ? (G.cur.x < q.x ? 'destra' : 'sinistra') : (G.cur.y < q.y ? 'giu' : 'su'), muoviCursore, 3);
+    punta($('.tv-tasti .cap'), 4); await attendi(520);
+    for (let n = 0; n < 8 && !giusta(q); n++) { await premi($('.tv-tasti .cap')); cicla(); await attendi(380); }
+    await attendi(250);
+  }
+  punta($('#bViaS'), 5); await attendi(900); await premi($('#bViaS')); avviaGuida();
+  await finche(() => G.stato !== 'esegue', 20000);
+}
+async function demoCoding() {
+  const L = G.L;
+  await presentazione(scrCella(G.pl.x, G.pl.y, -.3), scrCella(L.uscita.x, L.uscita.y, -.1));
+  for (const k of direzioniDa(L.percorsoMin)) await premiFreccia(k, aggiungiCarta, 3);
+  punta($('#slots .cp.carta'), 4); await attendi(1300);   // 4 · ecco il programma
+  punta($('#bVia'), 5); await attendi(900); await premi($('#bVia')); avviaEsecuzione();
+  await finche(() => G.stato !== 'esegue', 20000);
+}
+function avviaDemo() {
+  G.demo = true; D.run++; D.ultimo = null;
+  preparaLivello(G.livello, DEMO[G.mondo]);
+  if (G.L.strade) preparaDemoStrade(G.L);
+  nascondiOverlay(true);
+  G.stato = 'gioco'; G.entrata = 0; G.bloccoInput = 0;
+  aggiornaProg(); aggiornaTray(); aggiornaHUD();
+  avviaTour();
+  ['#demoBar', '#demoVelo'].forEach(s => $(s).classList.add('on'));
+  const p = $('#puntatore'), st = $('#stage').getBoundingClientRect();
+  p.querySelector('.pn').textContent = '';
+  p.style.transition = 'none'; p.style.transform = `translate(${Math.round(st.left + st.width / 2)}px,${Math.round(st.bottom - 60)}px)`; void p.offsetWidth; p.style.transition = '';
+  p.classList.add('on');
+  const copione = { labirinto: demoLabirinto, strade: demoStrade, coding: demoCoding }[G.mondo];
+  (async () => { try { await attendi(700); await copione(); } catch (e) { /* dimostrazione interrotta */ } })();
+}
+function nascondiDemo() {
+  ['#puntatore', '#demoBar', '#demoVelo'].forEach(s => $(s).classList.remove('on'));
+  document.querySelectorAll('.tasto.on').forEach(x => x.classList.remove('on'));
+}
+function pulisciDemo() {
+  D.run++; G.demo = false; nascondiDemo();
+  G.punti = 0; G.puntiVis = 0; G._pv = 0; $('#hudPuntiN').textContent = '0';
+  G.log = []; G.guida = null; G.esec = null; IN.tenuti = []; G.orme = null;
+}
+/* Fine della dimostrazione: TOCCA A TE! e poi il livello vero */
+function fineDemo() {
+  if (!G.demo) return;
+  pulisciDemo();
+  G.stato = 'tocca';
+  const C = CASE[G.casa], strade = G.mondo === 'strade';
+  apriOverlay(`<div class="cov tocca" style="margin-top:8vh"><img class="fig-salta ${strade ? 'auto' : ''}" src="${IMG_DATA[G.casa + (strade ? '_car' : '_full')]}" alt=""><h2>TOCCA A TE!</h2><div class="via">${MINI_TASTI}</div></div>`);
+  FX.coriandoli(70, [C.col, '#FFD24A', '#FFFFFF']);
+  SFX.play('vittoria');
+  clearTimeout(G.tAvanti); G.tAvanti = setTimeout(() => preparaLivello(G.livello), 2600);
+}
+function saltaDemo() {
+  if (!G.demo) return;
+  pulisciDemo();
+  clearTimeout(G.tAvanti);
+  preparaLivello(G.livello);
+}
+
 /* ---------- Fine livello ---------- */
 function completaLabirinto() {
   const L = G.L;
@@ -1885,7 +2064,7 @@ function frame(ts) {
     } else if (G.stato === 'esegue') {
       G.tGioco += dt; G.L.strade ? aggiornaGuida(dt) : aggiornaEsecuzione(dt);
     } else if (G.stato === 'entra') {
-      G.entraT -= dt; if (G.entraT <= 0) { G.stato = 'completo'; G.L.strade ? completaStrade() : G.L.coding ? completaCoding() : completaLabirinto(); }
+      G.entraT -= dt; if (G.entraT <= 0) { G.stato = 'completo'; G.demo ? fineDemo() : G.L.strade ? completaStrade() : G.L.coding ? completaCoding() : completaLabirinto(); }
     } else if (G.stato === 'preso') {
       G.presoT -= dt; if (G.presoT <= 0) dopoPreso();
     }
@@ -2202,6 +2381,8 @@ function costruisciStatico() {
       x.strokeStyle = '#7FB84E'; x.lineWidth = Math.max(1.5, cell * .02); x.lineCap = 'round';
       for (let k = 0; k < 2; k++) { const gx = px + cell * (.25 + r() * .5), gy = py + cell * (.3 + r() * .45); x.beginPath(); x.moveTo(gx - cell * .04, gy); x.lineTo(gx - cell * .06, gy - cell * .07); x.moveTo(gx, gy); x.lineTo(gx, gy - cell * .09); x.moveTo(gx + cell * .04, gy); x.lineTo(gx + cell * .06, gy - cell * .07); x.stroke(); }
       if (r() < .22) { const fx = px + cell * (.25 + r() * .5), fy = py + cell * (.25 + r() * .5), fc = pick(['#FFFFFF', '#FFE066', '#FFB3C7', '#C9B6FF'], r); for (let k = 0; k < 5; k++) { const a = k * 1.2566; x.beginPath(); x.arc(fx + Math.cos(a) * cell * .028, fy + Math.sin(a) * cell * .028, cell * .022, 0, 7); x.fillStyle = fc; x.fill(); } x.beginPath(); x.arc(fx, fy, cell * .018, 0, 7); x.fillStyle = '#F6B70E'; x.fill(); }
+    } else if (L.coding) {
+      x.fillStyle = T.pav; x.fillRect(px, py, cell, cell);
     } else if (L.def.tema === 'arena') {
       x.fillStyle = 'rgba(120,160,255,.06)'; x.fillRect(px + cell * .47, py + cell * .47, cell * .06, cell * .06);
       if (r() < .15) { x.fillStyle = 'rgba(255,255,255,.25)'; x.fillRect(px + r() * cell, py + r() * cell, 1.5, 1.5); }
@@ -2211,6 +2392,18 @@ function costruisciStatico() {
       x.strokeStyle = L.def.tema === 'notte' ? 'rgba(0,0,0,.18)' : 'rgba(150,120,70,.22)'; x.lineWidth = Math.max(1, cell * .015);
       x.strokeRect(px + .5, py + .5, t2, t2); x.strokeRect(px + t2, py + t2, t2, t2);
     }
+  }
+  // CODING: reticolo ben marcato, come un foglio a quadretti: ogni casella è un passo, cioè una carta
+  if (L.coding) {
+    const scuro = L.def.tema === 'prato' ? 'rgba(35,85,20,.62)' : 'rgba(95,72,38,.68)';
+    for (let yy = 0; yy < L.h; yy++) for (let xx = 0; xx < L.w; xx++) if ((xx + yy) % 2) { x.fillStyle = L.def.tema === 'prato' ? 'rgba(255,255,255,.16)' : 'rgba(150,115,60,.16)'; x.fillRect(ox + xx * cell, oy + yy * cell, cell, cell); }
+    x.strokeStyle = scuro; x.lineWidth = Math.max(2, cell * .032); x.lineCap = 'butt';
+    x.beginPath();
+    for (let k = 1; k < L.w; k++) { x.moveTo(ox + k * cell, oy); x.lineTo(ox + k * cell, oy + h); }
+    for (let k = 1; k < L.h; k++) { x.moveTo(ox, oy + k * cell); x.lineTo(ox + w, oy + k * cell); }
+    x.stroke();
+    x.fillStyle = scuro;
+    for (let a = 1; a < L.w; a++) for (let b = 1; b < L.h; b++) { x.beginPath(); x.arc(ox + a * cell, oy + b * cell, Math.max(3, cell * .045), 0, 7); x.fill(); }
   }
   // muri
   const seg = segmentiMuri(L.gr);
@@ -2560,13 +2753,13 @@ function scegliCasa(i) {
   card.classList.add('scelta');
   SFX.play('scegli');
   const r = card.getBoundingClientRect(); FX.fuoco(r.left + r.width / 2, r.top + r.height * .3, [CASE[k].col, '#FFFFFF', '#FFD24A']);
-  setTimeout(() => { card.classList.remove('scelta'); scegliendo = false; iniziaPartita(k); }, 750);
+  setTimeout(() => { card.classList.remove('scelta'); scegliendo = false; iniziaPartita(k, true); }, 750);
 }
 
 /* ---------- HUD ---------- */
 function aggiornaHUD() {
   const L = G.L, n = G.livello + 1;
-  $('#hudTit').innerHTML = `<b>${n}</b> · ${L.def.nome}`;
+  $('#hudTit').innerHTML = G.demo ? `<span class="tit-occhio">${ICO.occhio}</span> GUARDA` : `<b>${n}</b> · ${L.def.nome}`;
   $('#pallini').innerHTML = G.livelli.map((_, i) => `<i class="${i < G.livello ? 'ok' : (i === G.livello ? 'ora' : '')}"></i>`).join('');
   aggiornaRisorse(); aggiornaObiettivo(); aggiornaClassifica();
 }
@@ -2772,6 +2965,7 @@ function confermaPausa(a) {
 }
 function abbandona() {
   clearTimeout(G.tAvanti);
+  if (G.demo) { D.run++; G.demo = false; nascondiDemo(); }
   G.esec = null; G.guida = null; G.voli = []; G.fumetti = [];
   IN.tenuti = []; document.querySelectorAll('.tasto.on').forEach(x => x.classList.remove('on'));
   if (G.checkin) salvaTelemetria(null, false);
@@ -2851,9 +3045,11 @@ function apriDocente() {
   $('#modBody').innerHTML = `<button class="chiudi" id="mChiudi" tabindex="-1">${ICO.x}</button><h2>Pannello docente</h2>
     <h4>CLASSIFICA</h4><p>${sync ? 'Condivisa tra i Mac tramite Apps Script.' : 'Salvata su questo Mac. Per condividerla tra più Mac, inserire l\'URL dell\'Apps Script in <code>CONFIG.URL_CLASSIFICA</code>.'} Il punteggio è <b>a testa</b>: punti della casata diviso i giocatori entrati in gioco.${CONFIG.AZZERA_OGNI_NOTTE ? ' Riparte da zero ogni notte a mezzanotte (ora italiana): ogni partita conta nel giorno in cui è iniziata.' : ''}</p>
     <div class="riga-b" style="margin-top:10px"><button class="mb tieni" id="mAzzera" tabindex="-1"><i></i><span>TIENI PREMUTO 2 SECONDI PER AZZERARE</span></button></div>
-    <h4>MONDO</h4><div class="riga-b"><button class="mb ${mondo === 'labirinto' ? 'on' : ''}" data-m="labirinto" tabindex="-1">LABIRINTI (8 LIVELLI)</button><button class="mb ${mondo === 'coding' ? 'on' : ''}" data-m="coding" tabindex="-1">CODING (7 LIVELLI)</button><button class="mb ${mondo === 'strade' ? 'on' : ''}" data-m="strade" tabindex="-1">STRADE (6 LIVELLI)</button></div>
+    <h4>MONDO</h4><div class="riga-b"><button class="mb ${mondo === 'labirinto' ? 'on' : ''}" data-m="labirinto" tabindex="-1">LABIRINTI (8 LIVELLI)</button><button class="mb ${mondo === 'strade' ? 'on' : ''}" data-m="strade" tabindex="-1">STRADE (6 LIVELLI)</button><button class="mb ${mondo === 'coding' ? 'on' : ''}" data-m="coding" tabindex="-1">CODING (7 LIVELLI)</button></div>
     <p style="margin-top:6px">${daUrl ? 'Il mondo di partenza è indicato nell\'indirizzo (<code>?mondo=</code>); si può cambiare anche dalla home.' : 'Si cambia anche dalla home (pulsanti sotto il titolo); la scelta resta su questo Mac. In alternativa: <code>?mondo=coding</code> nell\'indirizzo.'} Nel coding i bambini scelgono le frecce (diventano carte) e solo dopo premono VIA per eseguire il percorso. Nelle strade posano e girano le tessere (SPAZIO o clic, ⌫ o clic destro per togliere) e poi premono VIA: l'auto percorre la strada costruita.</p>
     <h4>LIVELLO DI PARTENZA</h4><div class="riga-b">${M.livelli.map((d, i) => `<button class="mb ${part === i + 1 ? 'on' : ''}" data-l="${i + 1}" tabindex="-1">${i + 1} · ${d.nome}</button>`).join('')}</div>
+    <h4>DIMOSTRAZIONE ALL'INIZIO</h4><div class="riga-b">${[['sempre', 'SEMPRE'], ['prima', 'SOLO LA PRIMA VOLTA SU QUESTO MAC'], ['mai', 'MAI']].map(([v, s]) => `<button class="mb ${LS.get('lab-demo', 'sempre') === v ? 'on' : ''}" data-demo="${v}" tabindex="-1">${s}</button>`).join('')}</div>
+    <p style="margin-top:6px">Quando un bambino sceglie la casata, il mondo si gioca da solo su un livello piccolo e una freccia numerata indica i passaggi (circa 15 secondi). Si salta con INVIO o con il pulsante SALTA. Con <code>?demo=0</code> nell'indirizzo non compare.</p>
     <h4>AUDIO</h4><div class="riga-b"><button class="mb ${SFX.on ? 'on' : ''}" id="mSuoni" tabindex="-1">SUONI ${SFX.on ? 'ATTIVI' : 'SPENTI'}</button></div>
     <h4>MODALITÀ LEZIONE</h4><p>Aggiungendo <code>?seed=2A</code> all'indirizzo, tutti i Mac generano gli stessi labirinti: si può discutere insieme la stessa partita. Con <code>?livello=5</code> si parte da un livello preciso.</p>
     <h4>SU QUESTO MAC</h4><p>${log.length} partite registrate. Labirinti, «come hai trovato la strada?»: guardo prima ${deb[0]} · provo e riprovo ${deb[1]} · lanterne ${deb[2]}. Coding, «come hai costruito il programma?»: tutto prima ${debC[0]} · un pezzo alla volta ${debC[1]} · provo e correggo ${debC[2]}. Strade, «come hai costruito la strada?»: guardo tutta la strada ${debS[0]} · una tessera alla volta ${debS[1]} · provo e aggiusto ${debS[2]}.</p>`;
@@ -2861,6 +3057,7 @@ function apriDocente() {
   $('#mChiudi').onclick = chiudiDocente;
   $('#modBody').querySelectorAll('[data-l]').forEach(b => b.onclick = () => { LS.set(M.partenza, +b.dataset.l); apriDocente(); });
   $('#modBody').querySelectorAll('[data-m]').forEach(b => b.onclick = () => { cambiaMondo(b.dataset.m); apriDocente(); });
+  $('#modBody').querySelectorAll('[data-demo]').forEach(b => b.onclick = () => { LS.set('lab-demo', b.dataset.demo); ORD_MONDI.forEach(m => LS.set('lab-demo-visto-' + m, false)); apriDocente(); });
   $('#mSuoni').onclick = () => { SFX.on = !SFX.on; aggiornaBottoni(); apriDocente(); };
   const az = $('#mAzzera'); let tz = 0, t0 = 0;
   const giu = () => { t0 = performance.now(); const tick = () => { const k = (performance.now() - t0) / 2000; az.querySelector('i').style.width = Math.min(100, k * 100) + '%'; if (k >= 1) { Classifica.azzera(); az.querySelector('span').textContent = 'CLASSIFICA AZZERATA'; tz = 0; return; } tz = requestAnimationFrame(tick); }; tz = requestAnimationFrame(tick); };
@@ -2927,6 +3124,8 @@ document.addEventListener('keydown', e => {
   }
 
   if (G.schermo === 'gioco') {
+    if (G.demo) { if (!e.repeat && (invio || esc)) saltaDemo(); return; }   // durante la dimostrazione i tasti non giocano
+    if (G.stato === 'tocca') { if (!e.repeat && (k || invio || spazio)) { clearTimeout(G.tAvanti); preparaLivello(G.livello); } return; }
     if (k) evidenziaTasto(k, true);
     if (e.repeat) return;
     if (G.stato === 'pausa') {
@@ -2969,7 +3168,7 @@ document.addEventListener('keyup', e => {
   evidenziaTasto(k, false);
 });
 addEventListener('blur', () => { IN.tenuti = []; document.querySelectorAll('.tasto.on').forEach(t => t.classList.remove('on')); });
-document.addEventListener('visibilitychange', () => { if (document.hidden && G.schermo === 'gioco' && G.stato === 'gioco') mostraPausa(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && G.schermo === 'gioco' && G.stato === 'gioco' && !G.demo) mostraPausa(); });
 document.addEventListener('pointerdown', () => SFX.ctx());
 
 /* =====================================================================
@@ -3032,6 +3231,9 @@ async function avvio() {
   });
   aggiornaMondi();
   $('#btnHome').innerHTML = ICO.casa;
+  $('#dbOcchio').innerHTML = ICO.occhio;
+  $('#bSalta').innerHTML = `SALTA<span class="cap">INVIO</span>`;
+  $('#bSalta').onclick = saltaDemo;
   $('#btnHome').onclick = () => { if (G.schermo === 'gioco') abbandona(); };
   $('#ov').addEventListener('click', e => {
     if (e.target.closest('.bsc')) return;
