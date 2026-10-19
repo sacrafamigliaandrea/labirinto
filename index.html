@@ -56,7 +56,16 @@ img{-webkit-user-drag:none;user-select:none}
   -webkit-background-clip:text;background-clip:text;color:transparent;animation:luccica 5s linear infinite;
   filter:drop-shadow(0 6px 0 #0A2560) drop-shadow(0 16px 22px rgba(0,0,0,.4))}
 @keyframes luccica{from{background-position:130% 0}to{background-position:-130% 0}}
-.sotto{margin-top:1vh;font-size:clamp(18px,1.55vw,30px);font-weight:500;color:#fff;opacity:.92;letter-spacing:.04em}
+/* selettore del mondo: due pulsanti grandi sotto il titolo */
+.mondi{display:flex;width:max-content;gap:6px;margin:1.3vh auto 0;padding:6px;border-radius:999px;background:rgba(255,255,255,.12);box-shadow:inset 0 2px 6px rgba(0,0,0,.25);transition:box-shadow .2s}
+.mondi.focus{box-shadow:0 0 0 4px #fff,0 0 0 9px rgba(255,255,255,.25)}
+.mondo-btn{display:inline-flex;align-items:center;gap:.6vw;padding:.9vh 1.8vw;border-radius:999px;font-size:clamp(17px,1.4vw,27px);font-weight:700;letter-spacing:.05em;color:#DCE6FA;transition:background .25s,color .25s,transform .3s cubic-bezier(.3,1.6,.5,1)}
+.mondo-btn svg{width:1.35em;height:1.35em;flex:none}
+.mondo-btn:hover{background:rgba(255,255,255,.12)}
+.mondo-btn.on{background:#fff;color:var(--blu);box-shadow:0 4px 0 rgba(0,0,0,.2);transform:scale(1.04)}
+.mondo-btn[data-m=coding].on{color:#13703D}
+.mondo-btn[data-m=coding] svg{color:#2BD67B}
+.mondo-btn[data-m=coding].on svg{color:#1E9E57}
 .carte{display:grid;grid-template-columns:repeat(4,1fr);gap:2.1vw;align-items:end;min-height:0;padding:0 .6vw}
 .carta{position:relative;height:min(56vh,640px);border-radius:34px;color:var(--ct);outline:none;
   background:radial-gradient(120% 60% at 50% 0%,rgba(255,255,255,.3),transparent 62%),linear-gradient(180deg,var(--c) 0%,var(--cs) 100%);
@@ -246,8 +255,8 @@ img{-webkit-user-drag:none;user-select:none}
 .cov.intro .rt.tasti .mini{grid-template-columns:repeat(3,18px);grid-template-rows:repeat(2,18px);gap:2px}
 .cov.intro .rt.tasti .mini i{border-radius:4px}
 .uguale{font-size:clamp(28px,2.4vw,44px);font-weight:700;color:var(--blu);margin:0 .3vw}
-.mondo-pill{display:inline-flex;align-items:center;gap:.4em;padding:.1em .7em;border-radius:999px;background:var(--verde);color:#fff;font-weight:700}
-.mondo-pill svg{width:1.1em;height:1.1em;color:#FFE27A}
+.ibtn.casa{background:rgba(255,255,255,.18)}
+.ibtn.casa:hover{background:#fff;color:var(--blu)}
 
 /* ---------- Overlay sul labirinto ---------- */
 .ov{position:absolute;inset:0;display:none;place-items:center;background:rgba(6,22,56,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:4}
@@ -401,12 +410,13 @@ img{-webkit-user-drag:none;user-select:none}
   <header class="testata">
     <div class="tit1">IL LABIRINTO</div>
     <div class="tit2">DELLE CASATE</div>
-    <div class="sotto">SCEGLI LA TUA CASATA E PARTI SUBITO</div>
+    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button></div>
   </header>
   <div class="carte" id="carte"></div>
   <footer class="piede">
     <div class="gr"><span class="cap" data-ico="sinistra"></span><span class="cap" data-ico="destra"></span> SCEGLI</div>
     <div class="gr"><span class="cap">INVIO</span> GIOCA</div>
+    <div class="gr"><span class="cap" data-ico="su"></span> MONDO</div>
     <div class="gr">OPPURE CLICCA SUL PERSONAGGIO</div>
     <span class="live" id="liveHome"><i></i>CLASSIFICA LIVE</span>
   </footer>
@@ -423,6 +433,7 @@ img{-webkit-user-drag:none;user-select:none}
       <div class="punti" id="hudPunti"><span data-ico="stella"></span><b id="hudPuntiN">0</b></div>
       <button class="ibtn" id="btnSuono" tabindex="-1" aria-label="Suoni"></button>
       <button class="ibtn" id="btnPausa" tabindex="-1" aria-label="Pausa"></button>
+      <button class="ibtn casa" id="btnHome" tabindex="-1" aria-label="Torna all'inizio"></button>
     </div>
   </header>
   <main class="stage" id="stage">
@@ -544,6 +555,7 @@ const ICO = {
   pausa: S24('<path d="M8.5 5v14M15.5 5v14"/>', 'stroke-width="3.4"'),
   regola: S24('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/>'),
   x: S24('<path d="M6 6l12 12M18 6L6 18"/>'),
+  labirinto: S24('<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9.2h6.3M14.2 3.5v5.7h3M9.2 14.3h8M9.2 9.2v8.2M14.2 14.3v6.2"/>'),
   gomma: S24('<path d="M9.5 5.5H20v13H9.5L3.5 12z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/>'),
   carta: `<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3.5" fill="currentColor"/><path d="M12 16.5V8M8.5 11.5L12 8l3.5 3.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   lucina: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#FFE08A" opacity=".35"/><circle cx="12" cy="12" r="5" fill="#FFD24A" stroke="#C98A00" stroke-width="1.4"/></svg>`,
@@ -1008,7 +1020,7 @@ const LIVELLI_CODING = [
 /* Il docente sceglie il mondo dal pannello (resta su quel Mac) o con ?mondo=coding nell'indirizzo */
 const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' } };
 function mondoAttivo() {
-  const q = QS.get('mondo');
+  const q = new URLSearchParams(location.search).get('mondo');
   if (q === 'coding' || q === 'labirinto') return q;
   return LS.get('lab-mondo', 'labirinto') === 'coding' ? 'coding' : 'labirinto';
 }
@@ -2061,13 +2073,13 @@ function costruisciHome() {
     b.className = 'carta'; b.tabIndex = -1; b.dataset.casa = k;
     b.style.cssText = `--c:${C.col};--cs:${C.scuro};--ct:${C.testo};--ritardo:${i * .35}s`;
     b.innerHTML = `<div class="emb">${EMBLEMI[k]}</div><div class="rank">–</div><div class="fig"><img src="${IMG_DATA[k + '_full']}" alt="${C.parlato}"></div><div class="play">${ICO.play}</div><div class="nome">${C.nome}</div><div class="stat"><div class="n">0<small>A TESTA</small></div><div class="g">0 GIOCATORI</div></div>`;
-    b.addEventListener('mouseenter', () => { if (!scegliendo) { focusCasa = i; aggiornaFocus(); } });
+    b.addEventListener('mouseenter', () => { if (!scegliendo) { focusMondi = false; focusCasa = i; aggiornaFocus(); } });
     b.addEventListener('click', () => scegliCasa(i));
     box.appendChild(b); carteEl[k] = b;
   });
   aggiornaFocus();
 }
-function aggiornaFocus() { ORDINE.forEach((k, i) => carteEl[k].classList.toggle('focus', i === focusCasa)); }
+function aggiornaFocus() { ORDINE.forEach((k, i) => carteEl[k].classList.toggle('focus', !focusMondi && i === focusCasa)); aggiornaMondi(); }
 function scegliCasa(i) {
   if (scegliendo) return;
   scegliendo = true; focusCasa = i; aggiornaFocus();
@@ -2264,6 +2276,8 @@ function confermaPausa(a) {
 }
 function abbandona() {
   clearTimeout(G.tAvanti);
+  G.esec = null; G.voli = []; G.fumetti = [];
+  IN.tenuti = []; document.querySelectorAll('.tasto.on').forEach(x => x.classList.remove('on'));
   if (G.checkin) salvaTelemetria(null, false);
   Classifica.chiudi();
   G.stato = 'off'; G.L = null; nascondiOverlay(true);
@@ -2330,12 +2344,12 @@ function salvaTelemetria(debrief, completa) {
 function apriDocente() {
   const log = LS.get('lab-partite', []), deb = [0, 0, 0], debC = [0, 0, 0];
   log.forEach(p => { if (p.debrief != null) (p.mondo === 'coding' ? debC : deb)[p.debrief]++; });
-  const mondo = mondoAttivo(), M = MONDI[mondo], part = LS.get(M.partenza, 1), sync = Classifica.stato.sync, daUrl = !!QS.get('mondo');
+  const mondo = mondoAttivo(), M = MONDI[mondo], part = LS.get(M.partenza, 1), sync = Classifica.stato.sync, daUrl = !!new URLSearchParams(location.search).get('mondo');
   $('#modBody').innerHTML = `<button class="chiudi" id="mChiudi" tabindex="-1">${ICO.x}</button><h2>Pannello docente</h2>
     <h4>CLASSIFICA</h4><p>${sync ? 'Condivisa tra i Mac tramite Apps Script.' : 'Salvata su questo Mac. Per condividerla tra più Mac, inserire l\'URL dell\'Apps Script in <code>CONFIG.URL_CLASSIFICA</code>.'} Il punteggio è <b>a testa</b>: punti della casata diviso i giocatori entrati in gioco.${CONFIG.AZZERA_OGNI_NOTTE ? ' Riparte da zero ogni notte a mezzanotte (ora italiana): ogni partita conta nel giorno in cui è iniziata.' : ''}</p>
     <div class="riga-b" style="margin-top:10px"><button class="mb tieni" id="mAzzera" tabindex="-1"><i></i><span>TIENI PREMUTO 2 SECONDI PER AZZERARE</span></button></div>
     <h4>MONDO</h4><div class="riga-b"><button class="mb ${mondo === 'labirinto' ? 'on' : ''}" data-m="labirinto" tabindex="-1">LABIRINTI (8 LIVELLI)</button><button class="mb ${mondo === 'coding' ? 'on' : ''}" data-m="coding" tabindex="-1">CODING (7 LIVELLI)</button></div>
-    <p style="margin-top:6px">${daUrl ? 'Il mondo è fissato dall\'indirizzo (<code>?mondo=</code>).' : 'La scelta resta su questo Mac. In alternativa: <code>?mondo=coding</code> nell\'indirizzo.'} Nel coding i bambini scelgono le frecce (diventano carte) e solo dopo premono VIA per eseguire il percorso.</p>
+    <p style="margin-top:6px">${daUrl ? 'Il mondo di partenza è indicato nell\'indirizzo (<code>?mondo=</code>); si può cambiare anche dalla home.' : 'Si cambia anche dalla home (pulsanti sotto il titolo); la scelta resta su questo Mac. In alternativa: <code>?mondo=coding</code> nell\'indirizzo.'} Nel coding i bambini scelgono le frecce (diventano carte) e solo dopo premono VIA per eseguire il percorso.</p>
     <h4>LIVELLO DI PARTENZA</h4><div class="riga-b">${M.livelli.map((d, i) => `<button class="mb ${part === i + 1 ? 'on' : ''}" data-l="${i + 1}" tabindex="-1">${i + 1} · ${d.nome}</button>`).join('')}</div>
     <h4>AUDIO</h4><div class="riga-b"><button class="mb ${SFX.on ? 'on' : ''}" id="mSuoni" tabindex="-1">SUONI ${SFX.on ? 'ATTIVI' : 'SPENTI'}</button></div>
     <h4>MODALITÀ LEZIONE</h4><p>Aggiungendo <code>?seed=2A</code> all'indirizzo, tutti i Mac generano gli stessi labirinti: si può discutere insieme la stessa partita. Con <code>?livello=5</code> si parte da un livello preciso.</p>
@@ -2343,7 +2357,7 @@ function apriDocente() {
   $('#modDocente').classList.add('on');
   $('#mChiudi').onclick = chiudiDocente;
   $('#modBody').querySelectorAll('[data-l]').forEach(b => b.onclick = () => { LS.set(M.partenza, +b.dataset.l); apriDocente(); });
-  $('#modBody').querySelectorAll('[data-m]').forEach(b => b.onclick = () => { LS.set('lab-mondo', b.dataset.m); aggiornaSottotitolo(); apriDocente(); });
+  $('#modBody').querySelectorAll('[data-m]').forEach(b => b.onclick = () => { cambiaMondo(b.dataset.m); apriDocente(); });
   $('#mSuoni').onclick = () => { SFX.on = !SFX.on; aggiornaBottoni(); apriDocente(); };
   const az = $('#mAzzera'); let tz = 0, t0 = 0;
   const giu = () => { t0 = performance.now(); const tick = () => { const k = (performance.now() - t0) / 2000; az.querySelector('i').style.width = Math.min(100, k * 100) + '%'; if (k >= 1) { Classifica.azzera(); az.querySelector('span').textContent = 'CLASSIFICA AZZERATA'; tz = 0; return; } tz = requestAnimationFrame(tick); }; tz = requestAnimationFrame(tick); };
@@ -2351,8 +2365,26 @@ function apriDocente() {
   az.onmousedown = giu; az.onmouseup = su; az.onmouseleave = su;
 }
 function chiudiDocente() { $('#modDocente').classList.remove('on'); }
-function aggiornaSottotitolo() {
-  $('.sotto').innerHTML = mondoAttivo() === 'coding' ? `SCEGLI LA TUA CASATA · <span class="mondo-pill">${ICO.carta}MONDO CODING</span>` : 'SCEGLI LA TUA CASATA E PARTI SUBITO';
+/* Selettore del mondo nella home: clic, oppure ↑ per raggiungerlo e ← → per cambiare */
+let focusMondi = false;
+function aggiornaMondi() {
+  const m = mondoAttivo();
+  document.querySelectorAll('#mondi .mondo-btn').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  $('#mondi').classList.toggle('focus', focusMondi);
+  document.body.dataset.mondo = m;
+}
+function cambiaMondo(m) {
+  if (m !== 'labirinto' && m !== 'coding') return;
+  const prima = mondoAttivo();
+  LS.set('lab-mondo', m);
+  const u = new URL(location.href);
+  if (u.searchParams.has('mondo')) { u.searchParams.set('mondo', m); history.replaceState(null, '', u); }
+  aggiornaMondi();
+  if (m !== prima) {
+    SFX.play('scegli');
+    const b = $(`#mondi .mondo-btn[data-m="${m}"]`), r = b.getBoundingClientRect();
+    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', m === 'coding' ? '#2BD67B' : '#6FA3FF']);
+  }
 }
 
 function aggiornaBottoni() {
@@ -2379,8 +2411,15 @@ document.addEventListener('keydown', e => {
 
   if (G.schermo === 'home') {
     if (scegliendo) return;
-    if (k === 'destra' || k === 'giu') { focusCasa = (focusCasa + 1) % 4; aggiornaFocus(); SFX.play('tick'); }
-    else if (k === 'sinistra' || k === 'su') { focusCasa = (focusCasa + 3) % 4; aggiornaFocus(); SFX.play('tick'); }
+    if (focusMondi) {
+      if (k === 'sinistra') cambiaMondo('labirinto');
+      else if (k === 'destra') cambiaMondo('coding');
+      else if (k === 'giu' || invio || spazio || esc) { focusMondi = false; aggiornaFocus(); SFX.play('tick'); }
+      return;
+    }
+    if (k === 'su') { focusMondi = true; aggiornaFocus(); SFX.play('tick'); }
+    else if (k === 'destra' || k === 'giu') { focusCasa = (focusCasa + 1) % 4; aggiornaFocus(); SFX.play('tick'); }
+    else if (k === 'sinistra') { focusCasa = (focusCasa + 3) % 4; aggiornaFocus(); SFX.play('tick'); }
     else if (invio || spazio) scegliCasa(focusCasa);
     return;
   }
@@ -2473,7 +2512,13 @@ async function avvio() {
   $('#bGomma').onclick = () => togliCarta();
   $('#bVia').onclick = () => avviaEsecuzione();
   $('#slots').addEventListener('click', e => { const c = e.target.closest('.cp.carta'); if (c && G.stato === 'gioco') togliCarta(+c.dataset.i); });
-  aggiornaSottotitolo();
+  document.querySelectorAll('#mondi .mondo-btn').forEach(b => {
+    b.innerHTML = b.dataset.m === 'coding' ? `${ICO.carta}<span>CODING</span>` : `${ICO.labirinto}<span>LABIRINTI</span>`;
+    b.onclick = () => { focusMondi = false; cambiaMondo(b.dataset.m); aggiornaFocus(); };
+  });
+  aggiornaMondi();
+  $('#btnHome').innerHTML = ICO.casa;
+  $('#btnHome').onclick = () => { if (G.schermo === 'gioco') abbandona(); };
   $('#ov').addEventListener('click', e => {
     if (e.target.closest('.bsc')) return;
     if (G.stato === 'intro') iniziaGioco();
