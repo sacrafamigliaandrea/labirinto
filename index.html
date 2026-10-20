@@ -72,6 +72,9 @@ img{-webkit-user-drag:none;user-select:none}
 .mondo-btn[data-m=scuola] svg{color:#A78BFA}
 .mondo-btn[data-m=scuola].on{color:#5B33C2}
 .mondo-btn[data-m=scuola].on svg{color:#7C4DEB}
+.mondo-btn[data-m=laboratorio] svg{color:#F5A15C}
+.mondo-btn[data-m=laboratorio].on{color:#B4520C}
+.mondo-btn[data-m=laboratorio].on svg{color:#E8762A}
 .carte{display:grid;grid-template-columns:repeat(4,1fr);gap:2.1vw;align-items:end;min-height:0;padding:0 .6vw}
 .carta{position:relative;height:min(56vh,640px);border-radius:34px;color:var(--ct);outline:none;
   background:radial-gradient(120% 60% at 50% 0%,rgba(255,255,255,.3),transparent 62%),linear-gradient(180deg,var(--c) 0%,var(--cs) 100%);
@@ -334,6 +337,25 @@ img{-webkit-user-drag:none;user-select:none}
 .seq svg{width:100%;height:100%}
 .seq .ok{position:absolute;right:-7px;bottom:-7px;width:62%;height:62%}
 
+/* ---------- Sequenza dei mondi ---------- */
+.tit-mondo{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.18em;margin-right:.45em;color:#CFE0FF}
+.tit-mondo svg{width:100%;height:100%}
+.percorso-mondi{display:flex;align-items:center;gap:.8vw}
+.percorso-mondi .pm{position:relative;width:clamp(44px,3.2vw,60px);aspect-ratio:1;border-radius:16px;background:rgba(255,255,255,.12);color:#DCE6FA;display:grid;place-items:center;opacity:.55}
+.percorso-mondi .pm>svg{width:62%;height:62%}
+.percorso-mondi .pm.fatto{opacity:1;background:var(--crema);color:var(--blu)}
+.percorso-mondi .pm.dopo{opacity:1;background:var(--oro);color:#4A3300;animation:pulsaPlay 1.3s ease-in-out infinite}
+.percorso-mondi .pm i{position:absolute;right:-7px;bottom:-7px;width:44%;height:44%}
+.percorso-mondi .pm i svg{width:100%;height:100%}
+.percorso-mondi .pf{width:clamp(20px,1.5vw,28px);color:rgba(255,255,255,.55)}
+.percorso-mondi .pf svg{width:100%;height:auto}
+.bsc .bm{display:inline-block;width:1.25em;height:1.25em}
+.bsc .bm svg{width:100%;height:100%}
+.fine-btn .bsc.prossimo{background:var(--oro);color:#4A3300}
+.fine-btn .bsc.premio{animation:pulsaPlay 1.2s ease-in-out infinite;box-shadow:0 0 0 5px #fff,0 0 30px 8px rgba(255,214,90,.7)}
+.percorso-mondi .pm:last-child{color:#F6B70E}
+.percorso-mondi .pm.fatto:last-child,.percorso-mondi .pm.dopo:last-child{color:#B57A00}
+
 /* ---------- Overlay sul labirinto ---------- */
 .ov{position:absolute;inset:0;display:none;place-items:center;background:rgba(6,22,56,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:4}
 .ov.on{display:grid;animation:fade .3s ease both}
@@ -422,7 +444,7 @@ img{-webkit-user-drag:none;user-select:none}
 .bsc .cap{font-size:.7em;margin-left:.3vw}
 
 /* ---------- Fine partita ---------- */
-#fine{grid-template-rows:auto auto auto auto;align-content:center;padding:2.4vh 3vw 2.4vh;gap:2.2vh;justify-items:center}
+#fine{grid-template-rows:auto auto auto auto auto;align-content:center;padding:2.4vh 3vw 2.4vh;gap:2.2vh;justify-items:center}
 .fine-banner{width:min(1180px,74vw);height:clamp(120px,19vh,230px);border-radius:30px;overflow:hidden;position:relative;box-shadow:0 18px 40px rgba(0,0,0,.4)}
 .fine-banner img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
 .fine-banner .ban-tit{position:absolute;left:0;right:0;bottom:0;padding:1.6vh 2vw;background:linear-gradient(0deg,rgba(6,22,56,.85),transparent);font-size:clamp(26px,2.4vw,46px);font-weight:700;text-align:center;letter-spacing:.03em;text-shadow:0 3px 0 rgba(0,0,0,.3)}
@@ -486,7 +508,7 @@ img{-webkit-user-drag:none;user-select:none}
   <header class="testata">
     <div class="tit1">IL LABIRINTO</div>
     <div class="tit2">DELLE CASATE</div>
-    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button><button class="mondo-btn" data-m="scuola" tabindex="-1"></button></div>
+    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="scuola" tabindex="-1"></button><button class="mondo-btn" data-m="laboratorio" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button></div>
   </header>
   <div class="carte" id="carte"></div>
   <footer class="piede">
@@ -538,6 +560,7 @@ img{-webkit-user-drag:none;user-select:none}
     <div class="pan fine-class"><div class="pan-tit">CLASSIFICA CASATE <span class="live"><i></i>LIVE</span></div><div class="righe" id="righeFine"></div></div>
   </div>
   <div class="pan debrief"><div class="dq">COME HAI TROVATO LA STRADA?</div><div class="dopz" id="dopz"></div><div class="drisp" id="drisp"></div></div>
+  <div class="percorso-mondi" id="percorsoMondi"></div>
   <div class="fine-btn"><button class="bsc focus" id="bAncora" tabindex="-1">INVIO · GIOCA ANCORA</button><button class="bsc" id="bCambia" tabindex="-1">ESC · CAMBIA CASATA</button></div>
 </section>
 
@@ -637,6 +660,7 @@ const ICO = {
   regola: S24('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/>'),
   x: S24('<path d="M6 6l12 12M18 6L6 18"/>'),
   auto: S24('<path d="M2.5 15.5v-2.4c0-.9.6-1.6 1.4-1.8l2.6-.6 2.4-3.1c.4-.5 1-.8 1.6-.8h4.2c.6 0 1.2.3 1.6.8l2.5 3.1 1.9.5c.8.2 1.3.9 1.3 1.7v2.6"/><path d="M2.5 15.5h2.3M9.6 15.5h4.8M19.3 15.5h2.2M10 7.3v3.8M3.8 11.2h16.6"/><circle cx="7.2" cy="15.7" r="2.3"/><circle cx="16.8" cy="15.7" r="2.3"/>'),
+  lab: S24('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16v4"/><path d="M7 8.5h4M7 11.5h7"/>'),
   scuola: S24('<path d="M3 21h18M5 21V10.5L12 6l7 4.5V21"/><path d="M10 21v-5h4v5M8.5 12h1M14.5 12h1"/><path d="M12 6V2.5l3.2 1.3L12 5"/>'),
   labirinto: S24('<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9.2h6.3M14.2 3.5v5.7h3M9.2 14.3h8M9.2 9.2v8.2M14.2 14.3v6.2"/>'),
   gomma: S24('<path d="M9.5 5.5H20v13H9.5L3.5 12z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/>'),
@@ -1176,9 +1200,12 @@ const LIVELLI = [
   { nome: 'IL BOSCO',            tipo: 'labirinto', w: 8,  h: 5, tema: 'prato',    stelle: 3, anelli: .15 },
   { nome: 'I NUMERI',            tipo: 'labirinto', w: 9,  h: 6, tema: 'castello', stelle: 2, numeri: 3 },
   { nome: 'LA CHIAVE',           tipo: 'labirinto', w: 10, h: 6, tema: 'castello', stelle: 3, chiave: true, anelli: .1 },
-  { nome: 'ACCHIAPPARELLA',      tipo: 'fuga',      w: 13, h: 9, tema: 'arena', inseguitori: 2, vel: 3.1, paura: 7 },
   { nome: 'AL BUIO',             tipo: 'labirinto', w: 11, h: 7, tema: 'notte',    stelle: 3, chiave: true, buio: true },
   { nome: 'IL GRANDE LABIRINTO', tipo: 'labirinto', w: 14, h: 8, tema: 'castello', stelle: 4, numeri: 5, anelli: .2 },
+];
+/* Premio finale, dopo il Coding: le fughe in stile Pac-Man (non compare tra i pulsanti della home) */
+const LIVELLI_FUGA = [
+  { nome: 'ACCHIAPPARELLA',      tipo: 'fuga',      w: 13, h: 9, tema: 'arena', inseguitori: 2, vel: 3.1, paura: 7 },
   { nome: 'LA GRANDE FUGA',      tipo: 'fuga',      w: 15, h: 9, tema: 'arena', inseguitori: 3, vel: 3.7, paura: 6 },
 ];
 /* Mondo CODING: prima si sceglie la sequenza di frecce (le carte), poi si preme VIA e il
@@ -1265,8 +1292,29 @@ const STANZE = [
   { t: 'aula', r: [15, 19, 17, 20], porte: [[16, 19, 'su']] },
   { t: 'piazzale', r: [6, 19, 14, 20] },
 ];
-const CAMMINA = new Set(['corr', 'aula', 'info', 'insegnanti', 'ufficio', 'bagni']);
-const CON_OGGETTI = new Set(['aula', 'info', 'insegnanti', 'ufficio']);
+/* LABORATORIO di informatica: misure dalla scansione RoomPlan usata dal minigolf (Skill_Case,
+   Laboratorio/room.usdz) e dalla pianta Lab_info_3D/lab_info_plan.png. Una casella = 0,4 m;
+   colonna = (6,89 − x) / 0,4, riga = (3 − z) / 0,4: finestre in alto, porte e corridoio in basso,
+   angolo arrotondato della vetrata in alto a sinistra, come nella pianta. Le stanze definite dopo
+   si sovrappongono al pavimento (tavoli, bancone, omino LEGO). */
+const STANZE_LAB = [
+  { t: 'lab', r: [0, 0, 34, 14] },
+  { t: 'muro', r: [0, 0, 0, 0] },                                   // spigolo arrotondato vetrata-finestre
+  { t: 'tavolo', r: [0, 5, 13, 8], lato: 'est' },                   // tavolone est: 14 iMac
+  { t: 'tavolo', r: [21, 5, 34, 8], lato: 'ovest' },                // tavolone ovest: 14 iMac + docente
+  { t: 'bancone', r: [4, 13, 16, 14] },                             // bancone con la stampante 3D
+  { t: 'bussola', r: [0, 13, 3, 14], porte: [[2, 13, 'su'], [1, 14, 'giu']] },
+  { t: 'bussola', r: [17, 13, 20, 14], porte: [[18, 13, 'su'], [19, 14, 'giu']] },
+  { t: 'lego', r: [33, 1, 34, 2] },                                 // l'omino LEGO con la mela
+  { t: 'corr', r: [0, 15, 34, 16] },
+];
+const MAPPE = { scuola: { W: 39, H: 21, stanze: STANZE }, laboratorio: { W: 35, H: 17, stanze: STANZE_LAB } };
+let MAPPA_ATTIVA = MAPPE.scuola;   // la mappa del livello in corso
+const usaMappa = k => { MAPPA_ATTIVA = MAPPE[k || 'scuola']; };
+const CAMMINA = new Set(['corr', 'aula', 'info', 'insegnanti', 'ufficio', 'bagni', 'lab', 'bussola']);
+const CON_OGGETTI = new Set(['aula', 'info', 'insegnanti', 'ufficio', 'lab']);
+const ARREDO = new Set(['tavolo', 'bancone', 'lego']);   // bloccano il passaggio ma non sono muri
+const FORME_LAB = ['mouse', 'cuffie', 'chiavetta', 'tablet'];
 /* Colori degli oggetti: i quattro delle casate, poi arancione e viola */
 const COLORI_OGG = [
   { k: 'rosso', hex: '#E03A3E', scuro: '#9E1B22' }, { k: 'blu', hex: '#2563EB', scuro: '#163E99' },
@@ -1282,15 +1330,15 @@ const LIVELLI_SCUOLA = [
   { nome: 'TUTTA LA SCUOLA',   tipo: 'scuola', crop: [0, 0, 38, 20], start: [16, 5], colori: 4, perColore: 3, esche: 3, tema: 'castello' },
 ].map(d => ({ ...d, w: d.crop[2] - d.crop[0] + 1, h: d.crop[3] - d.crop[1] + 1 }));
 function mappaScuola() {
-  if (mappaScuola.m) return mappaScuola.m;
-  const g = new Int16Array(SCUOLA_W * SCUOLA_H).fill(-1), porte = new Set();
-  STANZE.forEach((s, i) => {
-    for (let y = s.r[1]; y <= s.r[3]; y++) for (let x = s.r[0]; x <= s.r[2]; x++) g[y * SCUOLA_W + x] = i;
+  if (MAPPA_ATTIVA.cache) return MAPPA_ATTIVA.cache;
+  const W = MAPPA_ATTIVA.W, g = new Int16Array(W * MAPPA_ATTIVA.H).fill(-1), porte = new Set();
+  MAPPA_ATTIVA.stanze.forEach((s, i) => {
+    for (let y = s.r[1]; y <= s.r[3]; y++) for (let x = s.r[0]; x <= s.r[2]; x++) g[y * W + x] = i;
     (s.porte || []).forEach(([x, y, k]) => { const d = DIR[k]; porte.add(`${x},${y},${k}`); porte.add(`${x + d.dx},${y + d.dy},${d.inv}`); });
   });
-  return (mappaScuola.m = { g, porte });
+  return (MAPPA_ATTIVA.cache = { g, porte });
 }
-const stanzaG = (x, y) => { if (x < 0 || y < 0 || x >= SCUOLA_W || y >= SCUOLA_H) return null; const i = mappaScuola().g[y * SCUOLA_W + x]; return i < 0 ? null : STANZE[i]; };
+const stanzaG = (x, y) => { if (x < 0 || y < 0 || x >= MAPPA_ATTIVA.W || y >= MAPPA_ATTIVA.H) return null; const i = mappaScuola().g[y * MAPPA_ATTIVA.W + x]; return i < 0 ? null : MAPPA_ATTIVA.stanze[i]; };
 /* Due caselle vicine sono collegate se stanno nella stessa stanza, sono entrambe corridoio o c'è una porta */
 function apertoG(x, y, k) {
   const d = DIR[k], a = stanzaG(x, y), b = stanzaG(x + d.dx, y + d.dy);
@@ -1298,6 +1346,8 @@ function apertoG(x, y, k) {
   return a === b || (a.t === 'corr' && b.t === 'corr') || mappaScuola().porte.has(`${x},${y},${k}`);
 }
 function generaScuola(d, r) {
+  usaMappa(d.mappa);
+  const forme = d.forme || FORME;
   const [x0, y0] = d.crop, w = d.w, h = d.h, gr = new Griglia(w, h);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) for (const k of ['destra', 'giu']) {
     const dd = DIR[k]; if (x + dd.dx >= w || y + dd.dy >= h) continue;
@@ -1305,7 +1355,7 @@ function generaScuola(d, r) {
   }
   const start = { x: d.start[0] - x0, y: d.start[1] - y0 }, dist = gr.bfs([start]).dist;
   const colori = d.coloriFissi || shuffle([0, 1, 2, 3], r).slice(0, d.colori);
-  const altri = shuffle([0, 1, 2, 3, 4, 5].filter(c => !colori.includes(c)), r);
+  const altri = shuffle([0, 1, 2, 3, 4, 5].filter(c => !colori.includes(c) && !(d.senza || []).includes(c)), r);
   const items = new Map(), metti = (x, y, col, forma) => items.set(gr.i(x, y), { tipo: 'oggetto', col, forma, x, y, preso: false });
   if (d.demoOggetti) d.demoOggetti.forEach(o => metti(o.x - x0, o.y - y0, o.col, o.forma));
   else {
@@ -1324,8 +1374,9 @@ function generaScuola(d, r) {
     for (let n = 0; n < d.esche; n++) lista.push(altri[n % altri.length]);
     shuffle(lista, r).forEach((col, i) => {
       for (let k = 0; k < elenco.length; k++) {   // una stanza dopo l'altra: gli oggetti si spargono per la scuola
-        const celle = elenco[(i + k) % elenco.length], c = celle.find(q => !items.has(gr.i(q.x, q.y)));
-        if (c) { metti(c.x, c.y, col, pick(FORME, r)); break; }
+        const celle = elenco[(i + k) % elenco.length], lontano = q => [...items.values()].every(o => Math.abs(o.x - q.x) + Math.abs(o.y - q.y) >= 4);
+        const c = celle.find(q => !items.has(gr.i(q.x, q.y)) && lontano(q)) || celle.find(q => !items.has(gr.i(q.x, q.y)));   // in una stanza grande gli oggetti non si ammucchiano
+        if (c) { metti(c.x, c.y, col, pick(forme, r)); break; }
       }
     });
   }
@@ -1342,13 +1393,30 @@ function svgOgg(forma, i) {
     libro: `<rect x="9" y="7" width="30" height="34" rx="3" fill="${hex}" stroke="${scuro}" stroke-width="2"/><rect x="9" y="7" width="7" height="34" rx="2" fill="${scuro}" opacity=".55"/><path d="M38 10v28" stroke="#FFF8E8" stroke-width="3"/><rect x="20" y="14" width="13" height="6" rx="1.5" fill="#fff" opacity=".85"/>`,
     zaino: `<path d="M17 15v-4a7 7 0 0 1 14 0v4" fill="none" stroke="${scuro}" stroke-width="3.2" stroke-linecap="round"/><rect x="9" y="13" width="30" height="29" rx="8" fill="${hex}" stroke="${scuro}" stroke-width="2"/><rect x="14.5" y="27" width="19" height="11" rx="4" fill="#fff" opacity=".38"/><path d="M16 27h16" stroke="${scuro}" stroke-width="1.6"/>`,
     matita: `<g transform="rotate(-38 24 24)"><rect x="5" y="18.5" width="5" height="11" rx="2" fill="#F4A6B8"/><rect x="10" y="18.5" width="3.5" height="11" fill="#C9CED8"/><rect x="13.5" y="18.5" width="21" height="11" fill="${hex}" stroke="${scuro}" stroke-width="1.6"/><path d="M13.5 24h21" stroke="${scuro}" stroke-width="1" opacity=".5"/><path d="M34.5 18.5L44 24L34.5 29.5Z" fill="#F2D3A2" stroke="#B98B5A" stroke-width="1.2" stroke-linejoin="round"/><path d="M40.5 22L44 24L40.5 26Z" fill="#33363F"/></g>`,
+    mouse: `<path d="M24 5c-7 0-12 6-12 14v9c0 8 5 15 12 15s12-7 12-15v-9C36 11 31 5 24 5Z" fill="${hex}" stroke="${scuro}" stroke-width="2"/><path d="M24 5v13M12.4 18h23.2" stroke="${scuro}" stroke-width="1.6" opacity=".55"/><rect x="22.5" y="9" width="3" height="6" rx="1.5" fill="#fff" opacity=".85"/><ellipse cx="18" cy="27" rx="2.4" ry="5" fill="#fff" opacity=".35"/>`,
+    cuffie: `<path d="M10 29v-6a14 14 0 0 1 28 0v6" fill="none" stroke="${scuro}" stroke-width="4" stroke-linecap="round"/><rect x="5" y="24" width="10" height="15" rx="4.5" fill="${hex}" stroke="${scuro}" stroke-width="2"/><rect x="33" y="24" width="10" height="15" rx="4.5" fill="${hex}" stroke="${scuro}" stroke-width="2"/><rect x="8" y="27" width="3" height="9" rx="1.5" fill="#fff" opacity=".45"/>`,
+    chiavetta: `<g transform="rotate(-32 24 24)"><rect x="7" y="16.5" width="25" height="15" rx="3.5" fill="${hex}" stroke="${scuro}" stroke-width="2"/><rect x="32" y="19" width="9" height="10" rx="1" fill="#C9CED8" stroke="#8F98A8" stroke-width="1.4"/><rect x="34.5" y="21.5" width="2.4" height="2.2" fill="#5E6B7D"/><rect x="34.5" y="24.6" width="2.4" height="2.2" fill="#5E6B7D"/><circle cx="12.5" cy="24" r="2.2" fill="#fff" opacity=".75"/></g>`,
+    tablet: `<rect x="10" y="5" width="28" height="38" rx="5" fill="${hex}" stroke="${scuro}" stroke-width="2"/><rect x="13.5" y="9" width="21" height="27" rx="1.8" fill="#DCE6FA"/><path d="M16 14h16M16 19h11M16 24h14" stroke="${hex}" stroke-width="2.2" stroke-linecap="round" opacity=".6"/><circle cx="24" cy="39.5" r="1.8" fill="#fff"/>`,
   }[forma];
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">${dentro}</svg>`;
 }
 
+/* Mondo LABORATORIO: stessa meccanica della Scuola, nel laboratorio di informatica.
+   Le sedie del laboratorio sono arancioni (come quelle vere): l'arancione non si usa tra i colori. */
+const LIVELLI_LAB = [
+  { nome: 'IL LABORATORIO', tipo: 'scuola', mappa: 'laboratorio', crop: [0, 0, 34, 16], start: [19, 16], colori: 2, perColore: 2, esche: 1, senza: [4], forme: FORME_LAB, tema: 'castello' },
+  { nome: 'TRA I TAVOLI',   tipo: 'scuola', mappa: 'laboratorio', crop: [0, 0, 34, 16], start: [19, 16], colori: 3, perColore: 2, esche: 2, senza: [4], forme: FORME_LAB, tema: 'castello' },
+  { nome: 'TUTTO IL LAB',   tipo: 'scuola', mappa: 'laboratorio', crop: [0, 0, 34, 16], start: [1, 16],  colori: 3, perColore: 3, esche: 3, senza: [4], forme: FORME_LAB, tema: 'castello' },
+].map(d => ({ ...d, w: d.crop[2] - d.crop[0] + 1, h: d.crop[3] - d.crop[1] + 1 }));
+
 /* Il mondo si sceglie dalla home, dal pannello docente o con ?mondo=coding / ?mondo=strade */
-const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' }, scuola: { livelli: LIVELLI_SCUOLA, partenza: 'lab-partenza-scuola' } };
-const ORD_MONDI = ['labirinto', 'strade', 'coding', 'scuola'];
+const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' }, scuola: { livelli: LIVELLI_SCUOLA, partenza: 'lab-partenza-scuola' }, fuga: { livelli: LIVELLI_FUGA, partenza: 'lab-partenza-fuga' }, laboratorio: { livelli: LIVELLI_LAB, partenza: 'lab-partenza-laboratorio' } };
+/* Ordine dei mondi: si gioca in sequenza, finito un mondo si passa al successivo */
+const ORD_MONDI = ['labirinto', 'scuola', 'laboratorio', 'strade', 'coding', 'fuga'];
+const MONDI_HOME = ['labirinto', 'scuola', 'laboratorio', 'strade', 'coding'];   // il premio finale non si sceglie dalla home
+const NOME_MONDO = { labirinto: 'LABIRINTI', scuola: 'SCUOLA', strade: 'STRADE', coding: 'CODING', fuga: 'ACCHIAPPARELLA', laboratorio: 'LABORATORIO' };
+const mondoDopo = m => ORD_MONDI[ORD_MONDI.indexOf(m) + 1] || null;
+const iconaMondo = m => ({ labirinto: ICO.labirinto, scuola: ICO.scuola, laboratorio: ICO.lab, strade: ICO.auto, coding: ICO.carta, fuga: ICO.stella })[m];
 function mondoAttivo() {
   const q = new URLSearchParams(location.search).get('mondo');
   if (MONDI[q]) return q;
@@ -1395,7 +1463,7 @@ function iniziaPartita(casa, conDemo) {
 }
 
 function preparaLivello(idx, dDemo) {
-  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S', scuola: '|K' }[G.mondo] || '|L') + (idx + 1)));
+  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S', scuola: '|K', fuga: '|F', laboratorio: '|B' }[G.mondo] || '|L') + (idx + 1)));
   G.rng = r;
   const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', scuola: d.tipo === 'scuola', buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
   if (L.fuga) { const A = generaArena(d, r); Object.assign(L, { gr: A.gr, start: A.start, arena: A }); }
@@ -1917,6 +1985,7 @@ const DEMO = {
   labirinto: { nome: 'GUARDA', tipo: 'labirinto', w: 3, h: 2, tema: 'prato' },
   strade:    { nome: 'GUARDA', tipo: 'strade', w: 3, h: 2, tema: 'prato', svolte: .5, prefill: .5, distrattori: 0, ostacoli: 0, stelle: 0, minCurve: 1, maxLen: 5 },
   coding:    { nome: 'GUARDA', tipo: 'coding', w: 3, h: 2, tema: 'prato', anelli: .5, dist: [3, 3] },
+  laboratorio: { nome: 'GUARDA', tipo: 'scuola', mappa: 'laboratorio', crop: [14, 8, 20, 12], w: 7, h: 5, start: [17, 12], tema: 'castello', coloriFissi: [1], perColore: 1, forme: FORME_LAB, demoOggetti: [{ x: 17, y: 10, col: 1, forma: 'mouse' }, { x: 15, y: 9, col: 0, forma: 'cuffie' }] },
   scuola:    { nome: 'GUARDA', tipo: 'scuola', crop: [0, 2, 5, 7], w: 6, h: 6, start: [4, 5], tema: 'castello', coloriFissi: [2], perColore: 1, demoOggetti: [{ x: 2, y: 5, col: 2, forma: 'palla' }, { x: 2, y: 7, col: 3, forma: 'libro' }] },
 };
 /* Tempi pensati per 6 anni: la freccia viaggia piano, si ferma, preme, poi si guarda l'effetto */
@@ -1929,6 +1998,7 @@ const finche = (cond, max = 9000) => new Promise((ok, ko) => {
 });
 const dirTra = (a, b) => b.x > a.x ? 'destra' : b.x < a.x ? 'sinistra' : b.y > a.y ? 'giu' : 'su';
 function vuoleDemo() {
+  if (!DEMO[G.mondo]) return false;   // il premio finale non ha dimostrazione: basta la scheda a figure
   if (QS.get('demo') === '0') return false;
   const m = LS.get('lab-demo', 'sempre');
   if (m === 'mai') return false;
@@ -2083,7 +2153,7 @@ function avviaDemo() {
   const p = $('#puntatore'), st = $('#stage').getBoundingClientRect();
   p.querySelector('.pn').textContent = '';
   p.style.transition = 'none'; p.style.transform = `translate(${Math.round(st.left + st.width / 2)}px,${Math.round(st.top + st.height / 2)}px)`; void p.offsetWidth; p.style.transition = '';
-  const copione = { labirinto: demoLabirinto, strade: demoStrade, coding: demoCoding, scuola: demoScuola }[G.mondo];
+  const copione = { labirinto: demoLabirinto, strade: demoStrade, coding: demoCoding, scuola: demoScuola, laboratorio: demoScuola }[G.mondo];
   (async () => { try { await attendi(900); await copione(); } catch (e) { /* dimostrazione interrotta */ } })();
 }
 function nascondiDemo() {
@@ -2472,6 +2542,15 @@ function rettStanza(s) {   // in pixel, ritagliato sulla porzione di scuola del 
   return { x: ox + (a - L.x0) * cell, y: oy + (b - L.y0) * cell, w: (c - a + 1) * cell, h: (d - b + 1) * cell };
 }
 function pavimento(x, s, R, r, cell) {
+  if (s.t === 'lab' || s.t === 'bussola' || s.t === 'lego') {   // piastrelle a scacchi color cotto, come nella foto
+    const tl = cell / 2;
+    x.fillStyle = '#EBDDC4'; x.fillRect(R.x, R.y, R.w, R.h);
+    x.fillStyle = '#C99378';
+    for (let a = 0; a * tl < R.w; a++) for (let b = 0; b * tl < R.h; b++) if ((a + b) % 2) x.fillRect(R.x + a * tl, R.y + b * tl, tl, tl);
+    return;
+  }
+  if (s.t === 'muro') { x.fillStyle = '#46506A'; x.fillRect(R.x, R.y, R.w, R.h); return; }
+  if (s.t === 'tavolo' || s.t === 'bancone') return;   // disegnati negli arredi
   const tinte = { corr: '#ECE7DB', aula: '#E7C796', info: '#DCE3EE', insegnanti: '#E9D6B4', ufficio: '#D9E6F2', bagni: '#CFE9F6', scale: '#D5DAE6', palestra: '#E7B06C', cortile: '#C9CBD1', campo: '#3F4A5C', piazzale: '#C9CBD1', privato: '#C7CCD7' };
   x.fillStyle = tinte[s.t] || '#C9CBD1'; x.fillRect(R.x, R.y, R.w, R.h);
   x.lineWidth = Math.max(1, cell * .02);
@@ -2535,6 +2614,32 @@ function arredi(x, s, R, r, cell) {
     return;
   }
   if (s.t === 'piazzale') return;
+  if (s.t === 'tavolo') { tavoloLab(x, s, R, cell); return; }
+  if (s.t === 'bancone') {
+    x.fillStyle = 'rgba(0,0,0,.18)'; rrect(x, R.x + cell * .05, R.y + cell * .12, R.w - cell * .1, R.h - cell * .1, cell * .1); x.fill();
+    x.fillStyle = '#F2E4C4'; rrect(x, R.x + cell * .05, R.y + cell * .05, R.w - cell * .1, R.h - cell * .15, cell * .1); x.fill();
+    x.strokeStyle = 'rgba(130,95,45,.35)'; x.lineWidth = Math.max(1, cell * .025); x.stroke();
+    const sx = R.x + R.w * .78, sy = R.y + R.h * .45;   // stampante 3D a portale
+    x.fillStyle = '#2B2F38'; rrect(x, sx - cell * .45, sy - cell * .45, cell * .9, cell * .9, cell * .08); x.fill();
+    x.fillStyle = '#5E6B7D'; x.fillRect(sx - cell * .3, sy - cell * .05, cell * .6, cell * .1);
+    x.fillStyle = '#F97316'; x.beginPath(); x.arc(sx, sy + cell * .2, cell * .1, 0, 7); x.fill();
+    return;
+  }
+  if (s.t === 'bussola') {   // la bussola d'ingresso ha le pareti di vetro
+    x.strokeStyle = 'rgba(120,170,220,.9)'; x.lineWidth = Math.max(2, cell * .06);
+    x.strokeRect(R.x + cell * .06, R.y + cell * .06, R.w - cell * .12, R.h - cell * .12);
+    return;
+  }
+  if (s.t === 'lego') {   // l'omino LEGO: gambe verdi, corpo rosso con la mela, testa gialla
+    const cx = R.x + R.w / 2, cy = R.y + R.h / 2, u = Math.min(R.w, R.h);
+    x.fillStyle = 'rgba(0,0,0,.2)'; x.beginPath(); x.ellipse(cx, cy + u * .32, u * .36, u * .1, 0, 0, 7); x.fill();
+    x.fillStyle = '#2E9B44'; x.fillRect(cx - u * .3, cy + u * .05, u * .6, u * .28);
+    x.fillStyle = '#E03A3E'; rrect(x, cx - u * .34, cy - u * .22, u * .68, u * .34, u * .06); x.fill();
+    x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(cx, cy - u * .05, u * .07, 0, 7); x.fill();
+    x.fillStyle = '#F5C211'; x.beginPath(); x.arc(cx, cy - u * .3, u * .2, 0, 7); x.fill();
+    x.fillStyle = '#D9A90A'; x.beginPath(); x.arc(cx, cy - u * .3, u * .08, 0, 7); x.fill();
+    return;
+  }
   if (s.t === 'aula' || s.t === 'info') {   // lavagna, cattedra e banchi rivolti verso la lavagna
     const lato = { destra: 'sinistra', sinistra: 'destra', giu: 'su', su: 'giu' }[k], vert = lato === 'sinistra' || lato === 'destra';
     const sp = cell * .1;
@@ -2616,6 +2721,65 @@ function camScuola() {
   ty = lay.H <= 2 * hh ? lay.H / 2 : clamp(ty, hh, lay.H - hh);
   const k = Math.min(1, dt * 4.5); CAM.x += (tx - CAM.x) * k; CAM.y += (ty - CAM.y) * k;
 }
+/* Laboratorio: coordinate in metri della scansione → pixel della mappa */
+const labX = x => lay.ox + ((6.89 - x) / .4 - G.L.x0) * lay.cell;
+const labY = z => lay.oy + ((3 - z) / .4 - G.L.y0) * lay.cell;
+/* Tavolone color miele: canalina al centro, 7 iMac per lato schiena contro schiena, sedie arancioni.
+   Posizioni degli iMac come nel minigolf: tavolo ovest xL = 1,84 − 0,68·i, est xL = −2,34 + 0,7·i. */
+function tavoloLab(x, s, R, cell) {
+  // ingombro vero del piano (5,6 × 1,4 m): z −0,55…+0,85; x 1,29…6,89 (est) o −7,14…−1,54 (ovest)
+  const ov = s.lato === 'ovest', xa = labX(ov ? -1.54 : 6.89), xb = labX(ov ? -7.14 : 1.29), ya = labY(.85), yb = labY(-.55);
+  const T = { x: Math.max(R.x, Math.min(xa, xb)), y: ya, w: Math.min(R.x + R.w, Math.max(xa, xb)) - Math.max(R.x, Math.min(xa, xb)), h: yb - ya };
+  x.fillStyle = 'rgba(0,0,0,.22)'; rrect(x, T.x, T.y + cell * .12, T.w, T.h, cell * .12); x.fill();
+  x.fillStyle = '#DBA866'; rrect(x, T.x, T.y, T.w, T.h, cell * .12); x.fill();
+  x.strokeStyle = 'rgba(120,75,25,.35)'; x.lineWidth = Math.max(1, cell * .03); x.stroke();
+  const zc = .15, cy = labY(zc);
+  x.fillStyle = '#3A3430'; x.fillRect(T.x + cell * .4, cy - cell * .04, T.w - cell * .8, cell * .08);   // canalina
+  const ovest = s.lato === 'ovest', cx0 = ovest ? -4.34 : 4.09, f = ovest ? i => 1.84 - i * .68 : i => -2.34 + i * .7, dx = ovest ? -.35 : .36;
+  const sedia = (px, py) => { x.fillStyle = 'rgba(0,0,0,.18)'; x.beginPath(); x.arc(px, py + cell * .05, cell * .2, 0, 7); x.fill(); x.fillStyle = '#F08A3C'; rrect(x, px - cell * .2, py - cell * .2, cell * .4, cell * .36, cell * .1); x.fill(); x.fillStyle = '#D9722A'; x.fillRect(px - cell * .2, py - cell * .2, cell * .4, cell * .08); };
+  const imac = (px, py, su) => {   // vista dall'alto: schermo sottile argento, tastiera bianca davanti
+    const sgn = su ? -1 : 1;
+    x.fillStyle = '#C9CED8'; rrect(x, px - cell * .3, py - cell * .05, cell * .6, cell * .1, cell * .03); x.fill();
+    x.fillStyle = '#5B63B8'; x.fillRect(px - cell * .26, py + sgn * cell * .04 - cell * .015, cell * .52, cell * .03);
+    x.fillStyle = '#FFFFFF'; rrect(x, px - cell * .2, py + sgn * cell * .22 - cell * .05, cell * .4, cell * .1, cell * .02); x.fill();
+  };
+  for (let i = 0; i < 7; i++) {
+    const xf = labX(cx0 + f(i)), xr = labX(cx0 + f(i) + dx);
+    imac(xf, labY(.34), true); imac(xr, labY(-.04), false);
+    sedia(xf, labY(1.32)); sedia(xr, labY(-.82));
+  }
+  if (ovest) {   // postazione del docente (iMac grande) e sedia girevole nel passaggio
+    const px = labX(-1.85), py = cy;
+    x.fillStyle = '#C9CED8'; rrect(x, px - cell * .07, py - cell * .4, cell * .14, cell * .8, cell * .04); x.fill();
+    x.fillStyle = '#2FA86B'; x.fillRect(px - cell * .1, py - cell * .34, cell * .03, cell * .68);
+    const sx = labX(-1.05);
+    x.strokeStyle = '#2E3644'; x.lineWidth = Math.max(1.5, cell * .05);
+    for (let k = 0; k < 5; k++) { const a = k * 1.2566; x.beginPath(); x.moveTo(sx, py); x.lineTo(sx + Math.cos(a) * cell * .3, py + Math.sin(a) * cell * .3); x.stroke(); }
+    x.fillStyle = '#F08A3C'; x.beginPath(); x.arc(sx, py, cell * .22, 0, 7); x.fill();
+  }
+}
+/* Pareti del laboratorio: finestre con i termosifoni, lavagna e canestro, maxischermo sulla parete arancione */
+function decoriLab(x, cell) {
+  const L = G.L, top = labY(3), bot = labY(-3), sx = Math.min(labX(-7.14), lay.ox + (MAPPA_ATTIVA.W - L.x0) * cell), dxw = labX(6.89);
+  for (const [a, b] of [[3.60, 5.29], [0.48, 2.23], [-1.97, -0.22], [-6.79, -4.21]]) {
+    const x1 = labX(b), x2 = labX(a);
+    x.fillStyle = '#BFE3F7'; x.fillRect(x1, top - cell * .1, x2 - x1, cell * .2);
+    x.strokeStyle = '#3A4256'; x.lineWidth = Math.max(1.5, cell * .04); x.strokeRect(x1, top - cell * .1, x2 - x1, cell * .2);
+    x.fillStyle = '#E4E7EE'; x.fillRect(x1 + cell * .3, top + cell * .14, x2 - x1 - cell * .6, cell * .16);   // termosifone
+    x.strokeStyle = 'rgba(90,100,120,.45)'; x.lineWidth = Math.max(1, cell * .02);
+    for (let k = x1 + cell * .4; k < x2 - cell * .3; k += cell * .12) { x.beginPath(); x.moveTo(k, top + cell * .14); x.lineTo(k, top + cell * .3); x.stroke(); }
+  }
+  x.fillStyle = '#FFFFFF'; x.fillRect(labX(-2.38), bot - cell * .16, labX(-4.82) - labX(-2.38), cell * .12);   // lavagna
+  x.strokeStyle = '#8F98A8'; x.lineWidth = Math.max(1, cell * .03); x.strokeRect(labX(-2.38), bot - cell * .16, labX(-4.82) - labX(-2.38), cell * .12);
+  x.strokeStyle = '#E8641E'; x.lineWidth = Math.max(2, cell * .05); x.beginPath(); x.arc(labX(-5.1), bot - cell * .5, cell * .2, 0, 7); x.stroke();   // canestro
+  x.fillStyle = '#2563EB'; x.fillRect(labX(-1.55), bot - cell * .12, labX(-2.35) - labX(-1.55), cell * .08);   // poster dell'aquila
+  if (sx <= lay.ox + L.w * cell + 1) {
+    x.fillStyle = '#F07F2A'; x.fillRect(sx - cell * .12, top, cell * .12, bot - top);   // parete arancione
+    x.fillStyle = '#1F2633'; x.fillRect(sx - cell * .22, labY(.86), cell * .14, labY(-.80) - labY(.86));   // maxischermo
+    x.fillStyle = '#7FB069'; x.fillRect(sx - cell * .2, labY(.6), cell * .08, labY(-.55) - labY(.6));
+  }
+  if (dxw >= lay.ox - 1) { x.fillStyle = '#2A1E16'; x.fillRect(dxw, labY(1.65), cell * .12, labY(-.85) - labY(1.65)); }   // vetrata a mele
+}
 function costruisciStaticoScuola() {
   const L = G.L, { cell, ox, oy } = lay, w = L.w * cell, h = L.h * cell, r = mulberry32(L.deco);
   stat = nuovaTela(lay.W * lay.q, lay.H * lay.q); nebbia = nuovaTela(1, 1);
@@ -2625,7 +2789,7 @@ function costruisciStaticoScuola() {
   rrect(x, ox - m, oy - m, w + 2 * m, h + 2 * m, cell * .3); x.fillStyle = '#4A5368'; x.fill(); x.restore();
   x.save(); x.beginPath(); x.rect(ox, oy, w, h); x.clip();
   x.fillStyle = '#C9CBD1'; x.fillRect(ox, oy, w, h);
-  const visibili = STANZE.map(s => ({ s, R: rettStanza(s) })).filter(o => o.R);
+  const visibili = MAPPA_ATTIVA.stanze.map(s => ({ s, R: rettStanza(s) })).filter(o => o.R);
   visibili.forEach(({ s, R }) => pavimento(x, s, R, r, cell));
   visibili.forEach(({ s, R }) => arredi(x, s, R, r, cell));
   // muri: tra stanze diverse (porte escluse) e verso ciò che non si cammina; bordo del ritaglio compreso
@@ -2634,12 +2798,14 @@ function costruisciStaticoScuola() {
   for (let ly = 0; ly <= L.h; ly++) for (let lx = 0; lx < L.w; lx++) {
     const gx = lx + L.x0, gy = ly + L.y0, su = ly > 0 && cammina(gx, gy - 1), giu = ly < L.h && cammina(gx, gy);
     if (!(su || giu)) continue;
+    if (ly > 0 && ly < L.h && (su ? ARREDO.has((stanzaG(gx, gy) || {}).t) : ARREDO.has((stanzaG(gx, gy - 1) || {}).t))) continue;   // accanto a un tavolo: niente muro
     if (ly > 0 && ly < L.h && apertoG(gx, gy - 1, 'giu')) continue;
     P.moveTo(ox + lx * cell, oy + ly * cell); P.lineTo(ox + (lx + 1) * cell, oy + ly * cell);
   }
   for (let lx = 0; lx <= L.w; lx++) for (let ly = 0; ly < L.h; ly++) {
     const gx = lx + L.x0, gy = ly + L.y0, sx = lx > 0 && cammina(gx - 1, gy), dx = lx < L.w && cammina(gx, gy);
     if (!(sx || dx)) continue;
+    if (lx > 0 && lx < L.w && (sx ? ARREDO.has((stanzaG(gx, gy) || {}).t) : ARREDO.has((stanzaG(gx - 1, gy) || {}).t))) continue;
     if (lx > 0 && lx < L.w && apertoG(gx - 1, gy, 'destra')) continue;
     P.moveTo(ox + lx * cell, oy + ly * cell); P.lineTo(ox + lx * cell, oy + (ly + 1) * cell);
   }
@@ -2661,6 +2827,7 @@ function costruisciStaticoScuola() {
     let da = a1 - a0; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
     x.beginPath(); x.arc(hx, hy, len, a0, a0 + da, da < 0); x.stroke(); x.setLineDash([]);
   }));
+  if (MAPPA_ATTIVA === MAPPE.laboratorio) decoriLab(x, cell);
   x.restore();
 }
 function disegnaAnnuncio(x) {   // la macchia del colore da cercare compare grande al centro, poi sparisce (in pixel schermo)
@@ -3287,7 +3454,7 @@ function scegliCasa(i) {
 /* ---------- HUD ---------- */
 function aggiornaHUD() {
   const L = G.L, n = G.livello + 1;
-  $('#hudTit').innerHTML = G.demo ? `<span class="tit-occhio">${ICO.occhio}</span> GUARDA` : `<b>${n}</b> · ${L.def.nome}`;
+  $('#hudTit').innerHTML = G.demo ? `<span class="tit-occhio">${ICO.occhio}</span> GUARDA` : `<span class="tit-mondo">${iconaMondo(G.mondo)}</span><b>${n}</b> · ${L.def.nome}`;
   $('#pallini').innerHTML = G.livelli.map((_, i) => `<i class="${i < G.livello ? 'ok' : (i === G.livello ? 'ora' : '')}"></i>`).join('');
   aggiornaRisorse(); aggiornaObiettivo(); aggiornaClassifica();
 }
@@ -3528,8 +3695,18 @@ const DEBRIEF_CODING = [
   { ico: ICO.orme, testo: 'UN PEZZO ALLA VOLTA', risp: 'UN PEZZO ALLA VOLTA VA BENE: PROVI, GUARDI DOVE ARRIVI E AGGIUNGI.' },
   { ico: ICO.riprova, testo: 'PROVO E CORREGGO', risp: 'CORREGGERE UN PROGRAMMA SI CHIAMA DEBUG: LO FANNO TUTTI I PROGRAMMATORI.' },
 ];
+const DEBRIEF_FUGA = [
+  { ico: ICO.occhio, testo: 'GUARDO DOVE VANNO', risp: 'GUARDARE DOVE VANNO GLI ALTRI TI FA SCEGLIERE LA STRADA LIBERA.' },
+  { ico: ICO.stella, testo: 'PRENDO I SIMBOLI', risp: 'I SIMBOLI NEGLI ANGOLI TI DANNO TEMPO PER SCAPPARE E ACCHIAPPARE.' },
+  { ico: ICO.lucina, testo: 'PRENDO LE LUCINE VICINE', risp: 'PRENDERE PRIMA LE LUCINE VICINE TI FA FARE MENO STRADA.' },
+];
+const DEBRIEF_LAB = [
+  { ico: ICO.occhio, testo: 'GUARDO LA MAPPA_ATTIVA PRIMA', risp: 'GUARDARE LA MAPPA_ATTIVA PRIMA TI FA SCEGLIERE LA STRADA PIÙ CORTA.' },
+  { ico: ICO.orme, testo: 'UN TAVOLO ALLA VOLTA', risp: 'GIRARE INTORNO AI TAVOLI UNO ALLA VOLTA TI FA VEDERE TUTTO IL LABORATORIO.' },
+  { ico: ICO.lab, testo: 'PASSO IN MEZZO', risp: 'IL PASSAGGIO IN MEZZO AI DUE TAVOLI È LA SCORCIATOIA DEL LABORATORIO.' },
+];
 const DEBRIEF_SCUOLA = [
-  { ico: ICO.occhio, testo: 'GUARDO LA MAPPA PRIMA', risp: 'GUARDARE LA MAPPA PRIMA TI FA SCEGLIERE LA STRADA PIÙ CORTA.' },
+  { ico: ICO.occhio, testo: 'GUARDO LA MAPPA_ATTIVA PRIMA', risp: 'GUARDARE LA MAPPA_ATTIVA PRIMA TI FA SCEGLIERE LA STRADA PIÙ CORTA.' },
   { ico: ICO.orme, testo: 'UNA STANZA ALLA VOLTA', risp: 'UNA STANZA ALLA VOLTA VA BENE: COSÌ NON TI SCAPPA NESSUN OGGETTO.' },
   { ico: ICO.scuola, testo: 'SEGUO IL CORRIDOIO', risp: 'IL CORRIDOIO COLLEGA TUTTE LE AULE: È IL TUO PUNTO DI RIFERIMENTO.' },
 ];
@@ -3545,15 +3722,22 @@ const DEBRIEF = [
 ];
 function finePartita() {
   nascondiOverlay(true); clearTimeout(G.tAvanti);
-  Classifica.chiudi();
+  G.prossimoMondo = mondoDopo(G.mondo);
+  if (!G.prossimoMondo) Classifica.chiudi();   // con un mondo dopo la partita continua: il bambino conta una volta sola
+  const bA = $('#bAncora');
+  bA.innerHTML = G.prossimoMondo ? `${ICO.play}<span class="bm">${iconaMondo(G.prossimoMondo)}</span>${NOME_MONDO[G.prossimoMondo]}<span class="cap">INVIO</span>` : `${ICO.riprova}GIOCA ANCORA<span class="cap">INVIO</span>`;
+  bA.classList.toggle('prossimo', !!G.prossimoMondo);
+  bA.classList.toggle('premio', G.prossimoMondo === 'fuga');
+  $('#percorsoMondi').innerHTML = ORD_MONDI.map((m, i) => `<span class="pm ${m === G.mondo ? 'ora' : ''} ${i < ORD_MONDI.indexOf(G.mondo) || m === G.mondo ? 'fatto' : ''} ${m === G.prossimoMondo ? 'dopo' : ''}">${iconaMondo(m)}${i < ORD_MONDI.indexOf(G.mondo) || m === G.mondo ? `<i>${ICO.ok}</i>` : ''}</span>`).join(`<b class="pf">${S24('<path d="M4.5 12h14M13 6l6 6-6 6"/>', 'stroke-width="3"')}</b>`);
   G.stato = 'off'; G.debrief = null; G.focusDeb = 0; G.focusFine = 0;
   const C = CASE[G.casa];
   const n = G.log.length, mondo = G.mondo;
-  G.domande = { coding: DEBRIEF_CODING, strade: DEBRIEF_STRADE, scuola: DEBRIEF_SCUOLA }[mondo] || DEBRIEF;
+  G.domande = { coding: DEBRIEF_CODING, strade: DEBRIEF_STRADE, scuola: DEBRIEF_SCUOLA, laboratorio: DEBRIEF_LAB, fuga: DEBRIEF_FUGA }[mondo] || DEBRIEF;
   $('#fineTit').textContent = mondo === 'coding' ? `${C.nome} HA PROGRAMMATO ${n} ${n === 1 ? 'PERCORSO' : 'PERCORSI'}`
-    : mondo === 'scuola' ? `${C.nome} HA TROVATO ${G.log.reduce((s, e) => s + (e.trovati || 0), 0)} OGGETTI`
+    : mondo === 'fuga' ? `${C.nome} HA RACCOLTO ${G.log.reduce((s, e) => s + (e.lucine || 0), 0)} LUCINE`
+    : mondo === 'scuola' || mondo === 'laboratorio' ? `${C.nome} HA TROVATO ${G.log.reduce((s, e) => s + (e.trovati || 0), 0)} OGGETTI`
     : mondo === 'strade' ? `${C.nome} HA COSTRUITO ${n} ${n === 1 ? 'STRADA' : 'STRADE'}` : `${C.nome} HA ATTRAVERSATO ${n} ${n === 1 ? 'LABIRINTO' : 'LABIRINTI'}`;
-  $('.debrief .dq').textContent = { coding: 'COME HAI COSTRUITO IL PROGRAMMA?', strade: 'COME HAI COSTRUITO LA STRADA?', scuola: 'COME HAI TROVATO GLI OGGETTI?' }[mondo] || 'COME HAI TROVATO LA STRADA?';
+  $('.debrief .dq').textContent = { coding: 'COME HAI COSTRUITO IL PROGRAMMA?', strade: 'COME HAI COSTRUITO LA STRADA?', scuola: 'COME HAI TROVATO GLI OGGETTI?', laboratorio: 'COME HAI TROVATO GLI OGGETTI?', fuga: 'COME HAI FATTO A SCAPPARE?' }[mondo] || 'COME HAI TROVATO LA STRADA?';
   $('#fineFig').src = IMG_DATA[G.casa + (mondo === 'strade' ? '_car' : '_full')];
   $('#fineTot').innerHTML = `LA TUA PARTITA<b>${G.punti}</b>PUNTI PER ${C.nome}`;
   $('#fineLivelli').innerHTML = G.livelli.map((d, i) => {
@@ -3584,30 +3768,45 @@ function aggiornaFocusFine() {
   $('#bCambia').classList.toggle('focus', G.debrief != null && G.focusFine === 1);
 }
 /* Telemetria formativa: resta su questo Mac (localStorage), consultabile dal pannello docente */
+/* Dopo la schermata finale: il mondo successivo (stessa partita) oppure, finiti tutti, una partita nuova */
+function ancoraOProssimo() {
+  if (!G.prossimoMondo) { iniziaPartita(G.casa); return; }
+  const m = G.prossimoMondo;
+  G.prossimoMondo = null;
+  G.mondo = m; G.livelli = MONDI[m].livelli; G.livello = 0; G.log = []; G.debrief = null;
+  mostraSchermo('gioco');
+  requestAnimationFrame(() => requestAnimationFrame(() => vuoleDemo() ? avviaDemo() : preparaLivello(0)));
+}
+function tornaHome() {
+  if (Classifica.partita) Classifica.chiudi();
+  G.prossimoMondo = null;
+  mostraSchermo('home'); aggiornaClassifica();
+}
 function salvaTelemetria(debrief, completa) {
   const log = LS.get('lab-partite', []);
   const voce = { seed: G.seed, mondo: G.mondo, casa: G.casa, punti: G.punti, completa, livelli: G.log, debrief, t: Date.now() };
-  const i = log.findIndex(p => p.seed === G.seed && p.casa === G.casa);
+  const i = log.findIndex(p => p.seed === G.seed && p.casa === G.casa && p.mondo === G.mondo);
   if (i >= 0) log[i] = voce; else log.push(voce);
   LS.set('lab-partite', log.slice(-200));
 }
 
 /* ---------- Pannello docente ---------- */
 function apriDocente() {
-  const log = LS.get('lab-partite', []), deb = [0, 0, 0], debC = [0, 0, 0], debS = [0, 0, 0], debK = [0, 0, 0];
-  log.forEach(p => { if (p.debrief != null) ({ coding: debC, strade: debS, scuola: debK }[p.mondo] || deb)[p.debrief]++; });
+  const log = LS.get('lab-partite', []), deb = [0, 0, 0], debC = [0, 0, 0], debS = [0, 0, 0], debK = [0, 0, 0], debF = [0, 0, 0], debB = [0, 0, 0];
+  log.forEach(p => { if (p.debrief != null) ({ coding: debC, strade: debS, scuola: debK, fuga: debF, laboratorio: debB }[p.mondo] || deb)[p.debrief]++; });
   const mondo = mondoAttivo(), M = MONDI[mondo], part = LS.get(M.partenza, 1), sync = Classifica.stato.sync, daUrl = !!new URLSearchParams(location.search).get('mondo');
   $('#modBody').innerHTML = `<button class="chiudi" id="mChiudi" tabindex="-1">${ICO.x}</button><h2>Pannello docente</h2>
     <h4>CLASSIFICA</h4><p>${sync ? 'Condivisa tra i Mac tramite Apps Script.' : 'Salvata su questo Mac. Per condividerla tra più Mac, inserire l\'URL dell\'Apps Script in <code>CONFIG.URL_CLASSIFICA</code>.'} Il punteggio è <b>a testa</b>: punti della casata diviso i giocatori entrati in gioco.${CONFIG.AZZERA_OGNI_NOTTE ? ' Riparte da zero ogni notte a mezzanotte (ora italiana): ogni partita conta nel giorno in cui è iniziata.' : ''}</p>
     <div class="riga-b" style="margin-top:10px"><button class="mb tieni" id="mAzzera" tabindex="-1"><i></i><span>TIENI PREMUTO 2 SECONDI PER AZZERARE</span></button></div>
-    <h4>MONDO</h4><div class="riga-b"><button class="mb ${mondo === 'labirinto' ? 'on' : ''}" data-m="labirinto" tabindex="-1">LABIRINTI (8 LIVELLI)</button><button class="mb ${mondo === 'strade' ? 'on' : ''}" data-m="strade" tabindex="-1">STRADE (6 LIVELLI)</button><button class="mb ${mondo === 'coding' ? 'on' : ''}" data-m="coding" tabindex="-1">CODING (7 LIVELLI)</button><button class="mb ${mondo === 'scuola' ? 'on' : ''}" data-m="scuola" tabindex="-1">SCUOLA (4 LIVELLI)</button></div>
+    <h4>MONDO</h4><div class="riga-b">${ORD_MONDI.map(m => `<button class="mb ${mondo === m ? 'on' : ''}" data-m="${m}" tabindex="-1">${NOME_MONDO[m]} (${MONDI[m].livelli.length} LIVELLI)</button>`).join('')}</div>
+    <p style="margin-top:6px">I mondi si giocano in sequenza: finito l'ultimo livello di un mondo, la schermata finale propone il mondo successivo (stessa partita, i punti si sommano). Il mondo scelto qui o nella home è quello da cui si parte.</p>
     <p style="margin-top:6px">${daUrl ? 'Il mondo di partenza è indicato nell\'indirizzo (<code>?mondo=</code>); si può cambiare anche dalla home.' : 'Si cambia anche dalla home (pulsanti sotto il titolo); la scelta resta su questo Mac. In alternativa: <code>?mondo=coding</code> nell\'indirizzo.'} Nel coding i bambini scelgono le frecce (diventano carte) e solo dopo premono VIA per eseguire il percorso. Nelle strade posano e girano le tessere (SPAZIO o clic, ⌫ o clic destro per togliere) e poi premono VIA: l'auto percorre la strada costruita.</p>
     <h4>LIVELLO DI PARTENZA</h4><div class="riga-b">${M.livelli.map((d, i) => `<button class="mb ${part === i + 1 ? 'on' : ''}" data-l="${i + 1}" tabindex="-1">${i + 1} · ${d.nome}</button>`).join('')}</div>
     <h4>DIMOSTRAZIONE ALL'INIZIO</h4><div class="riga-b">${[['sempre', 'SEMPRE'], ['prima', 'SOLO LA PRIMA VOLTA SU QUESTO MAC'], ['mai', 'MAI']].map(([v, s]) => `<button class="mb ${LS.get('lab-demo', 'sempre') === v ? 'on' : ''}" data-demo="${v}" tabindex="-1">${s}</button>`).join('')}</div>
     <p style="margin-top:6px">Quando un bambino sceglie la casata, il mondo si gioca da solo su un livello piccolo e una freccia numerata indica i passaggi (circa 15 secondi). Si salta con INVIO o con il pulsante SALTA. Con <code>?demo=0</code> nell'indirizzo non compare.</p>
     <h4>AUDIO</h4><div class="riga-b"><button class="mb ${SFX.on ? 'on' : ''}" id="mSuoni" tabindex="-1">SUONI ${SFX.on ? 'ATTIVI' : 'SPENTI'}</button></div>
     <h4>MODALITÀ LEZIONE</h4><p>Aggiungendo <code>?seed=2A</code> all'indirizzo, tutti i Mac generano gli stessi labirinti: si può discutere insieme la stessa partita. Con <code>?livello=5</code> si parte da un livello preciso.</p>
-    <h4>SU QUESTO MAC</h4><p>${log.length} partite registrate. Labirinti, «come hai trovato la strada?»: guardo prima ${deb[0]} · provo e riprovo ${deb[1]} · lanterne ${deb[2]}. Coding, «come hai costruito il programma?»: tutto prima ${debC[0]} · un pezzo alla volta ${debC[1]} · provo e correggo ${debC[2]}. Strade, «come hai costruito la strada?»: guardo tutta la strada ${debS[0]} · una tessera alla volta ${debS[1]} · provo e aggiusto ${debS[2]}. Scuola, «come hai trovato gli oggetti?»: guardo la mappa ${debK[0]} · una stanza alla volta ${debK[1]} · seguo il corridoio ${debK[2]}.</p>
+    <h4>SU QUESTO MAC</h4><p>${log.length} partite registrate. Labirinti, «come hai trovato la strada?»: guardo prima ${deb[0]} · provo e riprovo ${deb[1]} · lanterne ${deb[2]}. Coding, «come hai costruito il programma?»: tutto prima ${debC[0]} · un pezzo alla volta ${debC[1]} · provo e correggo ${debC[2]}. Strade, «come hai costruito la strada?»: guardo tutta la strada ${debS[0]} · una tessera alla volta ${debS[1]} · provo e aggiusto ${debS[2]}. Scuola, «come hai trovato gli oggetti?»: guardo la mappa ${debK[0]} · una stanza alla volta ${debK[1]} · seguo il corridoio ${debK[2]}. Laboratorio: guardo la mappa ${debB[0]} · un tavolo alla volta ${debB[1]} · passo in mezzo ${debB[2]}. Acchiapparella, «come hai fatto a scappare?»: guardo dove vanno ${debF[0]} · prendo i simboli ${debF[1]} · lucine vicine ${debF[2]}.</p>
     <p style="margin-top:6px">La mappa del mondo SCUOLA è un disegno semplificato del primo piano: senza misure, senza uscite di sicurezza e senza la zona dei padri.</p>`;
   $('#modDocente').classList.add('on');
   $('#mChiudi').onclick = chiudiDocente;
@@ -3639,7 +3838,7 @@ function cambiaMondo(m) {
   if (m !== prima) {
     SFX.play('scegli');
     const b = $(`#mondi .mondo-btn[data-m="${m}"]`), r = b.getBoundingClientRect();
-    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9', scuola: '#A78BFA' }[m] || '#6FA3FF']);
+    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9', scuola: '#A78BFA', laboratorio: '#F08A3C' }[m] || '#6FA3FF']);
   }
 }
 
@@ -3668,7 +3867,7 @@ document.addEventListener('keydown', e => {
   if (G.schermo === 'home') {
     if (scegliendo) return;
     if (focusMondi) {
-      if (k === 'sinistra' || k === 'destra') { const i = ORD_MONDI.indexOf(mondoAttivo()); cambiaMondo(ORD_MONDI[clamp(i + (k === 'destra' ? 1 : -1), 0, ORD_MONDI.length - 1)]); }
+      if (k === 'sinistra' || k === 'destra') { const i = Math.max(0, MONDI_HOME.indexOf(mondoAttivo())); cambiaMondo(MONDI_HOME[clamp(i + (k === 'destra' ? 1 : -1), 0, MONDI_HOME.length - 1)]); }
       else if (k === 'giu' || invio || spazio || esc) { focusMondi = false; aggiornaFocus(); SFX.play('tick'); }
       return;
     }
@@ -3710,11 +3909,11 @@ document.addEventListener('keydown', e => {
       if (k === 'destra' || k === 'giu') { G.focusDeb = (G.focusDeb + 1) % 3; aggiornaFocusFine(); SFX.play('tick'); }
       else if (k === 'sinistra' || k === 'su') { G.focusDeb = (G.focusDeb + 2) % 3; aggiornaFocusFine(); SFX.play('tick'); }
       else if (invio || spazio) rispondiDebrief(G.focusDeb);
-      else if (esc) { mostraSchermo('home'); aggiornaClassifica(); }
+      else if (esc) tornaHome();
     } else {
       if (k) { G.focusFine = 1 - G.focusFine; aggiornaFocusFine(); SFX.play('tick'); }
-      else if (invio || spazio) G.focusFine === 0 ? iniziaPartita(G.casa) : (mostraSchermo('home'), aggiornaClassifica());
-      else if (esc) { mostraSchermo('home'); aggiornaClassifica(); }
+      else if (invio || spazio) G.focusFine === 0 ? ancoraOProssimo() : tornaHome();
+      else if (esc) tornaHome();
     }
   }
 });
@@ -3760,7 +3959,7 @@ async function avvio() {
   IMGS.ogg = {}; IMGS.macchia = [];
   await Promise.all(COLORI_OGG.map(async (_, i) => {
     IMGS.macchia[i] = await svgImg(svgMacchia(i));
-    for (const f of FORME) IMGS.ogg[f + i] = await svgImg(svgOgg(f, i));
+    for (const f of FORME.concat(FORME_LAB)) IMGS.ogg[f + i] = await svgImg(svgOgg(f, i));
   }));
   IMGS.castello = await svgImg(ICO.castello.replace('currentColor', '#2563EB'));
   try { await document.fonts.load('700 40px Fredoka'); } catch (e) {}
@@ -3787,7 +3986,7 @@ async function avvio() {
   $('#bVia').onclick = () => avviaEsecuzione();
   $('#slots').addEventListener('click', e => { const c = e.target.closest('.cp.carta'); if (c && G.stato === 'gioco') togliCarta(+c.dataset.i); });
   document.querySelectorAll('#mondi .mondo-btn').forEach(b => {
-    b.innerHTML = { coding: `${ICO.carta}<span>CODING</span>`, strade: `${ICO.auto}<span>STRADE</span>`, scuola: `${ICO.scuola}<span>SCUOLA</span>` }[b.dataset.m] || `${ICO.labirinto}<span>LABIRINTI</span>`;
+    b.innerHTML = { coding: `${ICO.carta}<span>CODING</span>`, strade: `${ICO.auto}<span>STRADE</span>`, scuola: `${ICO.scuola}<span>SCUOLA</span>`, laboratorio: `${ICO.lab}<span>LABORATORIO</span>` }[b.dataset.m] || `${ICO.labirinto}<span>LABIRINTI</span>`;
     b.onclick = () => { focusMondi = false; cambiaMondo(b.dataset.m); aggiornaFocus(); };
   });
   aggiornaMondi();
@@ -3803,8 +4002,8 @@ async function avvio() {
   });
   $('#bAncora').innerHTML = `${ICO.riprova}GIOCA ANCORA<span class="cap">INVIO</span>`;
   $('#bCambia').innerHTML = `${ICO.casa}CAMBIA CASATA<span class="cap">ESC</span>`;
-  $('#bAncora').onclick = () => iniziaPartita(G.casa);
-  $('#bCambia').onclick = () => { mostraSchermo('home'); aggiornaClassifica(); };
+  $('#bAncora').onclick = () => ancoraOProssimo();
+  $('#bCambia').onclick = () => tornaHome();
   $('#modDocente').addEventListener('click', e => { if (e.target.id === 'modDocente') chiudiDocente(); });
   let tr = 0; addEventListener('resize', () => { clearTimeout(tr); tr = setTimeout(() => { FX.resize(); if (G.schermo === 'gioco' && G.L) { aggiornaProg(); aggiornaTray(); calcolaLayout(); } }, 120); });
   mostraSchermo('home');
