@@ -75,6 +75,15 @@ img{-webkit-user-drag:none;user-select:none}
 .mondo-btn[data-m=laboratorio] svg{color:#F5A15C}
 .mondo-btn[data-m=laboratorio].on{color:#B4520C}
 .mondo-btn[data-m=laboratorio].on svg{color:#E8762A}
+.mondo-btn[data-m=tastiera] svg{color:#C9CED8}
+.mondo-btn[data-m=tastiera].on{color:#2E3644}
+.mondo-btn[data-m=tastiera].on svg{color:#5E6B7D}
+.rt.tasto-t{background:#FBFBFC;box-shadow:inset 0 -6px 0 #C3C8D2,0 2px 0 #9EA5B3}
+.rt.tasto-t span{font-size:clamp(26px,2.2vw,42px);font-weight:700;color:#1F2633}
+.rt.tasto-t.ok{background:#1E9E57;box-shadow:inset 0 -6px 0 #13703D}
+.rt.tasto-t.ok span{color:#fff}
+.parola-fine{flex-direction:column;font-size:clamp(28px,2.4vw,44px)!important;letter-spacing:.08em}
+.parola-fine>span{width:clamp(56px,4.4vw,80px)!important;height:clamp(56px,4.4vw,80px)!important}
 .carte{display:grid;grid-template-columns:repeat(4,1fr);gap:2.1vw;align-items:end;min-height:0;padding:0 .6vw}
 .carta{position:relative;height:min(56vh,640px);border-radius:34px;color:var(--ct);outline:none;
   background:radial-gradient(120% 60% at 50% 0%,rgba(255,255,255,.3),transparent 62%),linear-gradient(180deg,var(--c) 0%,var(--cs) 100%);
@@ -172,6 +181,7 @@ img{-webkit-user-drag:none;user-select:none}
 .chips{display:flex;gap:.35vw;flex-wrap:wrap}
 .chip{width:clamp(30px,2.1vw,40px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:clamp(16px,1.1vw,21px);background:#FFF1C9;color:#7A4A0C;border:3px solid #E9A43A}
 .chip.fatto{background:var(--verde);border-color:var(--verde);color:#fff}
+.chip.preso{background:#2563EB;border-color:#2563EB;color:#fff}
 .chip.ora{box-shadow:0 0 0 4px var(--c);animation:pop 1.2s infinite}
 .barra{flex:1;height:14px;border-radius:999px;background:#E9DDBF;overflow:hidden}
 .barra i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#FFD95A,#F6B70E);transition:width .3s}
@@ -327,6 +337,7 @@ img{-webkit-user-drag:none;user-select:none}
 /* ---------- Scuola: colore da cercare ---------- */
 .ob-macchia{width:clamp(50px,3.8vw,70px);height:clamp(50px,3.8vw,70px);flex:none;animation:pulsaPlay 1.6s ease-in-out infinite}
 .ob-macchia svg{width:100%;height:100%}
+.ob-nome{font-size:clamp(15px,1.1vw,21px);font-weight:700;color:var(--blu);letter-spacing:.04em;white-space:nowrap}
 .slots-col{display:flex;gap:.5vw;margin-left:auto}
 .slots-col .sl{width:clamp(26px,1.9vw,36px);aspect-ratio:1;border-radius:50%;border:4px dashed var(--sc);transition:background .3s,transform .3s}
 .slots-col .sl.pieno{background:var(--sc);border-style:solid;transform:scale(1.1)}
@@ -508,7 +519,7 @@ img{-webkit-user-drag:none;user-select:none}
   <header class="testata">
     <div class="tit1">IL LABIRINTO</div>
     <div class="tit2">DELLE CASATE</div>
-    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="scuola" tabindex="-1"></button><button class="mondo-btn" data-m="laboratorio" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button></div>
+    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="scuola" tabindex="-1"></button><button class="mondo-btn" data-m="laboratorio" tabindex="-1"></button><button class="mondo-btn" data-m="tastiera" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button></div>
   </header>
   <div class="carte" id="carte"></div>
   <footer class="piede">
@@ -589,7 +600,7 @@ const CONFIG = {
   POLL_MS: 6000,
   AZZERA_OGNI_NOTTE: true,          // la classifica riparte da zero a mezzanotte (ora italiana); deve coincidere con l'Apps Script
 };
-const PUNTI = { oggetto: 10, colore: 10, stella: 10, numero: 15, chiave: 15, castello: 50, lucina: 2, simbolo: 10, acchiappa: 30, vita: 20 };
+const PUNTI = { lettera: 10, parola: 20, scritta: 5, oggetto: 10, colore: 10, stella: 10, numero: 15, chiave: 15, castello: 50, lucina: 2, simbolo: 10, acchiappa: 30, vita: 20 };
 
 /* ---------- PRNG deterministico ---------- */
 function cyrb53(s, seed = 0) {
@@ -660,6 +671,7 @@ const ICO = {
   regola: S24('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/>'),
   x: S24('<path d="M6 6l12 12M18 6L6 18"/>'),
   auto: S24('<path d="M2.5 15.5v-2.4c0-.9.6-1.6 1.4-1.8l2.6-.6 2.4-3.1c.4-.5 1-.8 1.6-.8h4.2c.6 0 1.2.3 1.6.8l2.5 3.1 1.9.5c.8.2 1.3.9 1.3 1.7v2.6"/><path d="M2.5 15.5h2.3M9.6 15.5h4.8M19.3 15.5h2.2M10 7.3v3.8M3.8 11.2h16.6"/><circle cx="7.2" cy="15.7" r="2.3"/><circle cx="16.8" cy="15.7" r="2.3"/>'),
+  tastiera: S24('<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 9.5h1M9.5 9.5h1M13 9.5h1M16.5 9.5h1M6 12.5h1M9.5 12.5h1M13 12.5h1M16.5 12.5h1M8 15.5h8"/>'),
   lab: S24('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16v4"/><path d="M7 8.5h4M7 11.5h7"/>'),
   scuola: S24('<path d="M3 21h18M5 21V10.5L12 6l7 4.5V21"/><path d="M10 21v-5h4v5M8.5 12h1M14.5 12h1"/><path d="M12 6V2.5l3.2 1.3L12 5"/>'),
   labirinto: S24('<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9.2h6.3M14.2 3.5v5.7h3M9.2 14.3h8M9.2 9.2v8.2M14.2 14.3v6.2"/>'),
@@ -1315,6 +1327,25 @@ const CAMMINA = new Set(['corr', 'aula', 'info', 'insegnanti', 'ufficio', 'bagni
 const CON_OGGETTI = new Set(['aula', 'info', 'insegnanti', 'ufficio', 'lab']);
 const ARREDO = new Set(['tavolo', 'bancone', 'lego']);   // bloccano il passaggio ma non sono muri
 const FORME_LAB = ['mouse', 'cuffie', 'chiavetta', 'tablet'];
+/* Laboratorio: si riconoscono gli oggetti dalla forma (colori veri, tutti diversi tra loro) */
+const NOMI_OGG = { mouse: 'MOUSE', tastiera: 'TASTIERA', cuffie: 'CUFFIE', ipad: 'IPAD', stampante: 'STAMPANTE 3D', macbook: 'MACBOOK' };
+const FORME_REALI = Object.keys(NOMI_OGG);
+const SVG_REALI = {
+  mouse: '<ellipse cx="24" cy="24" rx="12.5" ry="18" fill="#EEF1F6" stroke="#6E788C" stroke-width="2.4"/><path d="M24 6.5v10" stroke="#C3C9D4" stroke-width="1.6"/><ellipse cx="19" cy="17" rx="3" ry="6" fill="#fff"/><path d="M15 33q9 6 18 0" fill="none" stroke="#DCE0E8" stroke-width="2"/>',
+  tastiera: '<rect x="2.5" y="13" width="43" height="22" rx="3.5" fill="#EEF0F4" stroke="#8F98A8" stroke-width="2"/><rect x="5.00" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="8.55" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="12.10" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="15.65" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="19.20" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="22.75" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="26.30" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="29.85" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="33.40" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="36.95" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="40.50" y="16" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="6.20" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="9.75" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="13.30" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="16.85" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="20.40" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="23.95" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="27.50" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="31.05" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="34.60" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="38.15" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="41.70" y="20.5" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="7.40" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="10.95" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="14.50" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="18.05" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="21.60" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="25.15" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="28.70" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="32.25" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="35.80" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="39.35" y="25" width="3.1" height="3.1" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/><rect x="13" y="29.5" width="22" height="3" rx=".7" fill="#fff" stroke="#C9CED8" stroke-width=".6"/>',
+  cuffie: '<path d="M10 30v-7a14 14 0 0 1 28 0v7" fill="none" stroke="#3A3F4B" stroke-width="4" stroke-linecap="round"/><rect x="4.5" y="24" width="11" height="16" rx="5" fill="#4A505E" stroke="#22252C" stroke-width="2"/><rect x="32.5" y="24" width="11" height="16" rx="5" fill="#4A505E" stroke="#22252C" stroke-width="2"/><rect x="7.5" y="27.5" width="3" height="9" rx="1.5" fill="#8A93A6"/>',
+  ipad: '<rect x="9" y="3.5" width="30" height="41" rx="5" fill="#2E323B"/><rect x="11.5" y="7" width="25" height="34" rx="2" fill="#7DB4F5"/><rect x="14.0" y="10" width="5" height="5" rx="1.4" fill="#34C759"/><rect x="21.5" y="10" width="5" height="5" rx="1.4" fill="#FFCC00"/><rect x="29.0" y="10" width="5" height="5" rx="1.4" fill="#FF9500"/><rect x="14.0" y="17" width="5" height="5" rx="1.4" fill="#FFFFFF"/><rect x="21.5" y="17" width="5" height="5" rx="1.4" fill="#5856D6"/><rect x="29.0" y="17" width="5" height="5" rx="1.4" fill="#2FA8E0"/><rect x="14.0" y="24" width="5" height="5" rx="1.4" fill="#FFFFFF"/><rect x="21.5" y="24" width="5" height="5" rx="1.4" fill="#34C759"/><rect x="29.0" y="24" width="5" height="5" rx="1.4" fill="#FF9500"/><rect x="14.0" y="31" width="5" height="5" rx="1.4" fill="#5856D6"/><rect x="21.5" y="31" width="5" height="5" rx="1.4" fill="#FFCC00"/><rect x="29.0" y="31" width="5" height="5" rx="1.4" fill="#2FA8E0"/>',
+  stampante: '<rect x="6" y="5" width="36" height="38" rx="3" fill="#E9ECF2" stroke="#2B2F38" stroke-width="2.5"/><path d="M6 13h36" stroke="#2B2F38" stroke-width="2.5"/><rect x="21" y="13" width="6" height="7" fill="#2B2F38"/><path d="M24 22.5l-1.8-2.5h3.6z" fill="#2B2F38"/><path d="M16 35l8-11 8 11z" fill="#F97316" stroke="#B4520C" stroke-width="1.2" stroke-linejoin="round"/><rect x="10" y="35" width="28" height="4" rx="1" fill="#5E6B7D"/><circle cx="37.5" cy="9" r="1.6" fill="#2FA86B"/>',
+  macbook: '<path d="M10 7h28a2.5 2.5 0 0 1 2.5 2.5V31h-33V9.5A2.5 2.5 0 0 1 10 7Z" fill="#3A3F4B"/><rect x="10.5" y="10" width="27" height="18" rx="1" fill="#9CC3F5"/><path d="M14 15h14M14 19h10M14 23h12" stroke="#fff" stroke-width="1.8" stroke-linecap="round" opacity=".7"/><path d="M2.5 31h43l-2.5 5.5h-38Z" fill="#D5DAE3" stroke="#8F98A8" stroke-width="1.6" stroke-linejoin="round"/><path d="M20 31h8l-1 1.6h-6Z" fill="#B7BECB"/>',
+};
+const svgReale = f => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">${SVG_REALI[f]}</svg>`;
+/* L'obiettivo di turno è un colore (Scuola) o un tipo di oggetto (Laboratorio) */
+const perForma = () => !!(G.L && G.L.perForma);
+const vale = (it, tg) => perForma() ? it.forma === tg : it.col === tg;
+const svgTarget = (tg, pf = perForma()) => pf ? svgReale(tg) : svgMacchia(tg);
+const imgTarget = tg => perForma() ? IMGS.reale[tg] : IMGS.macchia[tg];
+const hexTarget = tg => perForma() ? '#2563EB' : COLORI_OGG[tg].hex;
+const imgOggetto = it => perForma() ? IMGS.reale[it.forma] : IMGS.ogg[it.forma + it.col];
 /* Colori degli oggetti: i quattro delle casate, poi arancione e viola */
 const COLORI_OGG = [
   { k: 'rosso', hex: '#E03A3E', scuro: '#9E1B22' }, { k: 'blu', hex: '#2563EB', scuro: '#163E99' },
@@ -1354,10 +1385,10 @@ function generaScuola(d, r) {
     if (apertoG(x + x0, y + y0, k)) gr.apri(x, y, dd);
   }
   const start = { x: d.start[0] - x0, y: d.start[1] - y0 }, dist = gr.bfs([start]).dist;
-  const colori = d.coloriFissi || shuffle([0, 1, 2, 3], r).slice(0, d.colori);
-  const altri = shuffle([0, 1, 2, 3, 4, 5].filter(c => !colori.includes(c) && !(d.senza || []).includes(c)), r);
+  const colori = d.coloriFissi || (d.perForma ? shuffle(FORME_REALI, r) : shuffle([0, 1, 2, 3], r)).slice(0, d.colori);
+  const altri = d.perForma ? shuffle(FORME_REALI.filter(f => !colori.includes(f)), r) : shuffle([0, 1, 2, 3, 4, 5].filter(c => !colori.includes(c) && !(d.senza || []).includes(c)), r);
   const items = new Map(), metti = (x, y, col, forma) => items.set(gr.i(x, y), { tipo: 'oggetto', col, forma, x, y, preso: false });
-  if (d.demoOggetti) d.demoOggetti.forEach(o => metti(o.x - x0, o.y - y0, o.col, o.forma));
+  if (d.demoOggetti) d.demoOggetti.forEach(o => metti(o.x - x0, o.y - y0, o.col ?? 0, o.forma));
   else {
     // stanze raggiungibili con le loro caselle libere (non quella della porta)
     const stanze = new Map();
@@ -1376,11 +1407,11 @@ function generaScuola(d, r) {
       for (let k = 0; k < elenco.length; k++) {   // una stanza dopo l'altra: gli oggetti si spargono per la scuola
         const celle = elenco[(i + k) % elenco.length], lontano = q => [...items.values()].every(o => Math.abs(o.x - q.x) + Math.abs(o.y - q.y) >= 4);
         const c = celle.find(q => !items.has(gr.i(q.x, q.y)) && lontano(q)) || celle.find(q => !items.has(gr.i(q.x, q.y)));   // in una stanza grande gli oggetti non si ammucchiano
-        if (c) { metti(c.x, c.y, col, pick(forme, r)); break; }
+        if (c) { if (d.perForma) metti(c.x, c.y, 0, col); else metti(c.x, c.y, col, pick(forme, r)); break; }
       }
     });
   }
-  return { gr, start, uscita: { ...start }, items, colori, perColore: d.perColore || 1, x0, y0, numeriTot: 0, serveChiave: false, stelleTot: 0, minimo: 0 };
+  return { gr, start, uscita: { ...start }, items, colori, perForma: !!d.perForma, perColore: d.perColore || 1, x0, y0, numeriTot: 0, serveChiave: false, stelleTot: 0, minimo: 0 };
 }
 /* SVG di oggetti e macchie di colore: servono sia all'interfaccia sia al disegno sulla mappa */
 function svgMacchia(i) {
@@ -1401,22 +1432,130 @@ function svgOgg(forma, i) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">${dentro}</svg>`;
 }
 
-/* Mondo LABORATORIO: stessa meccanica della Scuola, nel laboratorio di informatica.
-   Le sedie del laboratorio sono arancioni (come quelle vere): l'arancione non si usa tra i colori. */
+/* =====================================================================
+   TASTIERA: il pavimento è una grande tastiera Mac italiana (ISO). Si salta di tasto in tasto con le
+   frecce (← → sulla stessa fila, ↑ ↓ al tasto sopra/sotto) e si compone la parola atterrando sulle sue
+   lettere in ordine; poi la si scrive sulla tastiera vera, con il tasto giusto che si accende.
+   Larghezze dei tasti in unità (1 = un tasto lettera); ogni fila misura 14,5 unità.
+   ===================================================================== */
+const RIGHE_TASTIERA = [
+  [['\\', 1], ...'1234567890'.split('').map(c => [c, 1]), ["'", 1], ['Ì', 1], ['delete', 1.5]],
+  [['tab', 1.5], ...'QWERTYUIOP'.split('').map(c => [c, 1]), ['È', 1], ['+', 1], ['return', 1]],
+  [['caps lock', 1.75], ...'ASDFGHJKL'.split('').map(c => [c, 1]), ['Ò', 1], ['À', 1], ['Ù', 1], ['return2', .75]],
+  [['shift', 1.25], ['<', 1], ...'ZXCVBNM'.split('').map(c => [c, 1]), [',', 1], ['.', 1], ['-', 1], ['shift ', 2.25]],
+  [['fn', 1], ['control', 1], ['option', 1], ['command', 1.25], ['spazio', 5], ['command ', 1.25], ['option ', 1], ['sx', 1], ['sugiu', 1], ['dx', 1]],
+];
+const TASTI = [];
+RIGHE_TASTIERA.forEach((riga, r) => { let x0 = 0; riga.forEach(([lab, w]) => { TASTI.push({ i: TASTI.length, lab, w, r, x0, cx: x0 + w / 2, lettera: /^[A-Z]$/.test(lab) }); x0 += w; }); });
+const tastoDi = lab => TASTI.find(k => k.lab === lab);
+function vicinoTasto(k, d) {
+  if (d === 'sinistra' || d === 'destra') { const n = TASTI[k.i + (d === 'destra' ? 1 : -1)]; return n && n.r === k.r ? n : k; }
+  const r = k.r + (d === 'giu' ? 1 : -1);
+  if (r < 0 || r >= RIGHE_TASTIERA.length) return k;
+  const riga = TASTI.filter(q => q.r === r);
+  return riga.find(q => k.cx >= q.x0 && k.cx < q.x0 + q.w) || riga.reduce((a, b) => Math.abs(b.cx - k.cx) < Math.abs(a.cx - k.cx) ? b : a);
+}
+const dirTasto = (a, b) => b.r < a.r ? 'su' : b.r > a.r ? 'giu' : b.i > a.i ? 'destra' : 'sinistra';
+function percorsoTasti(a, b) {   // la sequenza di salti più corta (le stesse regole delle frecce)
+  const prev = new Map([[a.i, null]]), q = [a];
+  for (let h = 0; h < q.length; h++) {
+    const k = q[h]; if (k === b) break;
+    for (const d of ['sinistra', 'destra', 'su', 'giu']) { const n = vicinoTasto(k, d); if (!prev.has(n.i)) { prev.set(n.i, k); q.push(n); } }
+  }
+  const out = []; for (let k = b; k; k = prev.get(k.i)) out.unshift(k);
+  return out[0] === a ? out : [a];
+}
+/* Bacino delle parole (357): comuni, senza accenti e senza J K W X Y; una per livello, estratta a caso
+   con il seme della partita. Per aggiungerne basta scriverle nella lista della loro lunghezza. */
+const PAROLE_TASTIERA = {
+  3: [
+    'AGO', 'ALA', 'ALI', 'AMO', 'APE', 'API', 'BAR', 'BLU', 'BOA', 'BUE', 'BUS', 'DUE', 'ECO', 'EST', 'GAS', 'GRU',
+    'LEI', 'LUI', 'MAI', 'MIO', 'NOI', 'OCA', 'ORA', 'ORE', 'ORO', 'SCI', 'SEI', 'SUD', 'SUO', 'TIR', 'TRE', 'TUO',
+    'UFO', 'UNO', 'UVA', 'VIA', 'VOI', 'ZIA', 'ZIO', 'ZOO'
+  ],
+  4: [
+    'ALBA', 'ALCE', 'ALGA', 'ANNO', 'ARIA', 'ARPA', 'AUTO', 'BICI', 'BUIO', 'CANE', 'CASA', 'CAVO', 'CECE', 'CERO',
+    'CORO', 'CUBO', 'DADO', 'DITO', 'DONO', 'DUNA', 'ELFO', 'ERBA', 'FARO', 'FATA', 'FAVA', 'FICO', 'FILO', 'FOCA',
+    'FOTO', 'FUMO', 'GARA', 'GECO', 'GELO', 'GUFO', 'IENA', 'IERI', 'LAGO', 'LAMA', 'LANA', 'LAVA', 'LUCE', 'LUME',
+    'LUNA', 'LUPO', 'MAGO', 'MAIS', 'MANO', 'MARE', 'MELA', 'MESE', 'MOLO', 'MORA', 'MOTO', 'MULO', 'MURO', 'NASO',
+    'NAVE', 'NERO', 'NEVE', 'NIDO', 'NOCE', 'NORD', 'NOVE', 'OGGI', 'OLIO', 'ONDA', 'ORCA', 'ORCO', 'ORSO', 'ORTO',
+    'OTTO', 'PALA', 'PALO', 'PANE', 'PERA', 'PINO', 'PUMA', 'RAMO', 'RANA', 'RAPA', 'REMO', 'RETE', 'RISO', 'ROSA',
+    'SALE', 'SEME', 'SERA', 'SETA', 'SOLE', 'SUGO', 'TELA', 'TOPO', 'TORO', 'TRAM', 'TUBA', 'UOVO', 'VASO', 'VELA',
+    'VITE', 'ZERO'
+  ],
+  5: [
+    'ABETE', 'ACQUA', 'AEREO', 'AGLIO', 'AMICO', 'ASINO', 'BAGNO', 'BALLO', 'BANCO', 'BARCA', 'BIMBO', 'BOCCA',
+    'BORSA', 'BOSCO', 'BRUCO', 'BURRO', 'BUSTA', 'CAMPO', 'CAPRA', 'CARRO', 'CARTA', 'CENTO', 'CERVO', 'CESTO',
+    'CIELO', 'CIGNO', 'COBRA', 'COLLA', 'COLLO', 'CORSA', 'CORVO', 'CREMA', 'CUORE', 'DENTE', 'DIECI', 'DOLCE',
+    'DRAGO', 'ELICA', 'FALCO', 'FESTA', 'FIORE', 'FIUME', 'FORNO', 'FUNGO', 'FUOCO', 'GALLO', 'GAMBA', 'GATTO',
+    'GESSO', 'GIOCO', 'GNOMO', 'GOMMA', 'GRANO', 'ISOLA', 'LAMPO', 'LATTE', 'LEONE', 'LEPRE', 'LETTO', 'LIBRO',
+    'LINCE', 'MAMMA', 'MAPPA', 'MERLO', 'MIELE', 'MILLE', 'MONTE', 'MOSCA', 'MOUSE', 'MUCCA', 'NONNA', 'NONNO',
+    'NOTTE', 'OLIVA', 'OVEST', 'PACCO', 'PALLA', 'PANDA', 'PASTA', 'PENNA', 'PERLA', 'PESCA', 'PESCE', 'PIANO',
+    'PIEDE', 'PIZZA', 'POLLO', 'POLPO', 'PONTE', 'PORTA', 'PORTO', 'POZZO', 'PRATO', 'RADIO', 'RAGNO', 'RAZZO',
+    'RENNA', 'ROBOT', 'ROSSO', 'RUOTA', 'SACCO', 'SALTO', 'SASSO', 'SCALA', 'SCOPA', 'SCUDO', 'SEDIA', 'SETTE',
+    'SPADA', 'SPIGA', 'SUCCO', 'TALPA', 'TASSO', 'TAZZA', 'TERRA', 'TESTA', 'TETTO', 'TIGRE', 'TONNO', 'TORRE',
+    'TORTA', 'TRENO', 'TROTA', 'TUONO', 'VALLE', 'VENTO', 'VERDE', 'VESPA', 'VIOLA', 'VOLPE', 'ZAINO', 'ZEBRA',
+    'ZUCCA', 'ZUPPA'
+  ],
+  6: [
+    'AIRONE', 'ALBERO', 'ANATRA', 'AQUILA', 'BALENA', 'BANANA', 'BIANCO', 'BUDINO', 'CALCIO', 'CAMERA', 'CAMION',
+    'CAROTA', 'CAVOLO', 'CHIAVE', 'CHIODO', 'CICALA', 'CINQUE', 'CLASSE', 'COLORE', 'CORONA', 'CUCINA', 'DIVANO',
+    'DOCCIA', 'ESTATE', 'FARINA', 'FAVOLA', 'FLAUTO', 'FOGLIA', 'FOGLIO', 'FRONTE', 'FRUTTA', 'GELATO', 'GIALLO',
+    'GIORNO', 'GOMITO', 'GRIGIO', 'GRILLO', 'GROTTA', 'LIMONE', 'LINGUA', 'LUMACA', 'MAIALE', 'MATITA', 'MELONE',
+    'MUSICA', 'NATALE', 'NUVOLA', 'OCCHIO', 'OCEANO', 'PAGINA', 'PANCIA', 'PANINO', 'PAPERA', 'PASQUA', 'PATATA',
+    'PAVONE', 'PECORA', 'PETALO', 'PIATTO', 'PIETRA', 'PIRATA', 'QUADRO', 'RADICE', 'REGALO', 'REGINA', 'RICCIO',
+    'RISATA', 'ROCCIA', 'SABBIA', 'SAPONE', 'SCUOLA', 'SPALLA', 'SQUALO', 'STELLA', 'STRADA', 'TABLET', 'TAVOLO',
+    'TENNIS', 'TESORO', 'TROMBA', 'TRONCO', 'UNGHIA', 'VIPERA'
+  ],
+};
+/* Disegni per le parole che ne hanno uno (le altre mostrano solo le lettere) */
+const SVG_PAROLE = {
+  RE: '<path d="M8 34L6 14l10 9 8-13 8 13 10-9-2 20Z" fill="#F6B70E" stroke="#B57A00" stroke-width="2" stroke-linejoin="round"/><rect x="8" y="34" width="32" height="6" rx="1.5" fill="#E9A43A" stroke="#B57A00" stroke-width="2"/><circle cx="24" cy="28" r="2.6" fill="#E03A3E"/>',
+  SOLE: '<g stroke="#F6B70E" stroke-width="3.5" stroke-linecap="round"><path d="M24 4v6M24 38v6M4 24h6M38 24h6M9.9 9.9l4.2 4.2M33.9 33.9l4.2 4.2M9.9 38.1l4.2-4.2M33.9 14.1l4.2-4.2"/></g><circle cx="24" cy="24" r="10" fill="#F6B70E" stroke="#C98A00" stroke-width="1.6"/>',
+  LUNA: '<path d="M30 6a18 18 0 1 0 12 30A15 15 0 1 1 30 6Z" fill="#F5C211" stroke="#C99A0A" stroke-width="1.6"/>',
+  CASA: '<path d="M6 23L24 8l18 15Z" fill="#E03A3E" stroke="#9E1B22" stroke-width="2" stroke-linejoin="round"/><rect x="11" y="22" width="26" height="19" fill="#FFF1C9" stroke="#B98B5A" stroke-width="2"/><rect x="20" y="29" width="8" height="12" fill="#9C6B3A"/><rect x="14" y="26" width="5" height="5" fill="#7DB4F5"/><rect x="29" y="26" width="5" height="5" fill="#7DB4F5"/>',
+  MARE: '<rect x="4" y="10" width="40" height="30" rx="6" fill="#7DC4F5"/><path d="M4 22c5-4 8 4 13 0s8 4 13 0 8 4 14 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M4 31c5-4 8 4 13 0s8 4 13 0 8 4 14 0" fill="none" stroke="#2563EB" stroke-width="2.6" stroke-linecap="round"/>',
+  MELA: '<path d="M24 14c-3-3-12-3-14 5-2 9 4 21 10 21 2 0 3-1 4-1s2 1 4 1c6 0 12-12 10-21-2-8-11-8-14-5Z" fill="#E03A3E" stroke="#9E1B22" stroke-width="1.8"/><path d="M24 14c0-4 1-7 3-9" stroke="#6B4423" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M27 9c3-4 8-4 10-2-2 3-6 5-10 2Z" fill="#2E9B44"/>',
+  UVA: '<path d="M24 9V4" stroke="#6B4423" stroke-width="2.4" stroke-linecap="round"/><path d="M25 7c4-3 9-2 10 1-4 2-7 2-10-1Z" fill="#2E9B44"/><g fill="#8B5CF6" stroke="#5B33C2" stroke-width="1.4"><circle cx="16" cy="15" r="5"/><circle cx="24" cy="14" r="5"/><circle cx="32" cy="15" r="5"/><circle cx="20" cy="23" r="5"/><circle cx="28" cy="23" r="5"/><circle cx="24" cy="31" r="5"/><circle cx="16" cy="25" r="4.5"/><circle cx="32" cy="25" r="4.5"/><circle cx="24" cy="39" r="4.5"/></g>',
+  APE: '<ellipse cx="19" cy="14" rx="7" ry="9" fill="#DCEBFF" stroke="#8FB0D8" stroke-width="1.5" transform="rotate(-25 19 14)"/><ellipse cx="31" cy="14" rx="7" ry="9" fill="#DCEBFF" stroke="#8FB0D8" stroke-width="1.5" transform="rotate(25 31 14)"/><ellipse cx="26" cy="29" rx="13" ry="10" fill="#F5C211" stroke="#2E2A24" stroke-width="2"/><path d="M21 21v16M27 20v18M33 22v14" stroke="#2E2A24" stroke-width="3.2"/><circle cx="11" cy="29" r="5.5" fill="#2E2A24"/><circle cx="9.5" cy="27.5" r="1.4" fill="#fff"/>',
+  ORO: '<path d="M6 38l5-9h26l5 9Z" fill="#F6B70E" stroke="#B57A00" stroke-width="2" stroke-linejoin="round"/><path d="M13 28l5-9h12l5 9Z" fill="#FFD24A" stroke="#B57A00" stroke-width="2" stroke-linejoin="round"/><path d="M20 22h6" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/><path d="M38 10l1.5 3.5L43 15l-3.5 1.5L38 20l-1.5-3.5L33 15l3.5-1.5Z" fill="#FFE27A"/>',
+  NAVE: '<path d="M24 8v22" stroke="#6B4423" stroke-width="2.4"/><path d="M25.5 9l13 18h-13Z" fill="#fff" stroke="#8F98A8" stroke-width="1.6" stroke-linejoin="round"/><path d="M22.5 13L13 27h9.5Z" fill="#E03A3E"/><path d="M6 30h36l-6 9H12Z" fill="#9C6B3A" stroke="#6B4423" stroke-width="2" stroke-linejoin="round"/><path d="M4 43c5-3 8 3 13 0s8 3 13 0 8 3 14 0" stroke="#2563EB" stroke-width="2.4" fill="none" stroke-linecap="round"/>',
+  PALLA: '<circle cx="24" cy="24" r="17" fill="#fff" stroke="#2E3644" stroke-width="2"/><path d="M24 7a17 17 0 0 1 0 34c6-9 6-25 0-34Z" fill="#2563EB"/><path d="M24 7a17 17 0 0 0 0 34c-6-9-6-25 0-34Z" fill="#E03A3E"/><circle cx="24" cy="24" r="17" fill="none" stroke="#2E3644" stroke-width="2"/>',
+  FIORE: '<path d="M24 26v17" stroke="#2E9B44" stroke-width="3" stroke-linecap="round"/><path d="M24 37c-6-1-9-5-9-8 5 0 8 3 9 8Z" fill="#3FA142"/><g fill="#F472B6" stroke="#C2417F" stroke-width="1.2"><circle cx="24" cy="10" r="6"/><circle cx="32.5" cy="16" r="6"/><circle cx="29.5" cy="25.5" r="6"/><circle cx="18.5" cy="25.5" r="6"/><circle cx="15.5" cy="16" r="6"/></g><circle cx="24" cy="18" r="5" fill="#F5C211" stroke="#C99A0A" stroke-width="1.2"/>',
+  GATTO: '<path d="M10 20L12 6l10 8Z" fill="#E08A3C"/><path d="M38 20L36 6l-10 8Z" fill="#E08A3C"/><circle cx="24" cy="26" r="15" fill="#F2A65A" stroke="#B4520C" stroke-width="2"/><ellipse cx="18" cy="24" rx="2.4" ry="3.4" fill="#2E2A24"/><ellipse cx="30" cy="24" rx="2.4" ry="3.4" fill="#2E2A24"/><path d="M22 31h4l-2 2.5Z" fill="#B4520C"/><path d="M8 29h9M8 33l9-2M40 29h-9M40 33l-9-2" stroke="#6B4423" stroke-width="1.4" stroke-linecap="round"/>',
+};
+const EMBLEMA_PAROLA = { AQUILA: 'aquila', CERO: 'cero', TASSO: 'tasso' };   // i simboli delle Casate
+const haDisegno = w => !!(SVG_PAROLE[w] || EMBLEMA_PAROLA[w]);
+const svgParola = w => SVG_PAROLE[w] ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">${SVG_PAROLE[w]}</svg>` : EMBLEMA_PAROLA[w] ? EMBLEMI[EMBLEMA_PAROLA[w]] : '';
+const imgParola = w => IMGS.parola[w] || (EMBLEMA_PAROLA[w] ? IMGS.emblema[EMBLEMA_PAROLA[w]] : null);
+const LIVELLI_TASTIERA = [
+  { nome: 'TRE LETTERE',     tipo: 'tastiera', lettere: 3, w: 15, h: 5, tema: 'castello' },
+  { nome: 'QUATTRO LETTERE', tipo: 'tastiera', lettere: 4, w: 15, h: 5, tema: 'castello' },
+  { nome: 'CINQUE LETTERE',  tipo: 'tastiera', lettere: 5, w: 15, h: 5, tema: 'castello' },
+  { nome: 'SEI LETTERE',     tipo: 'tastiera', lettere: 6, w: 15, h: 5, tema: 'castello' },
+];
+function generaTastiera(d, r) {
+  const parole = d.parole || [pick(PAROLE_TASTIERA[d.lettere], r)];
+  const k = tastoDi(d.start || 'spazio');
+  return { parole, start: { x: k.cx - .5, y: k.r }, uscita: { x: 0, y: 0 }, items: new Map(), gr: new Griglia(1, 1), numeriTot: 0, serveChiave: false, stelleTot: 0, minimo: 0 };
+}
+
+/* Mondo LABORATORIO: stesso motore della Scuola, ma si riconoscono gli oggetti del laboratorio
+   (mouse, tastiera, cuffie, iPad, stampante 3D, MacBook): compare l'oggetto da cercare, non un colore. */
 const LIVELLI_LAB = [
-  { nome: 'IL LABORATORIO', tipo: 'scuola', mappa: 'laboratorio', crop: [0, 0, 34, 16], start: [19, 16], colori: 2, perColore: 2, esche: 1, senza: [4], forme: FORME_LAB, tema: 'castello' },
-  { nome: 'TRA I TAVOLI',   tipo: 'scuola', mappa: 'laboratorio', crop: [0, 0, 34, 16], start: [19, 16], colori: 3, perColore: 2, esche: 2, senza: [4], forme: FORME_LAB, tema: 'castello' },
-  { nome: 'TUTTO IL LAB',   tipo: 'scuola', mappa: 'laboratorio', crop: [0, 0, 34, 16], start: [1, 16],  colori: 3, perColore: 3, esche: 3, senza: [4], forme: FORME_LAB, tema: 'castello' },
+  { nome: 'IL LABORATORIO', tipo: 'scuola', mappa: 'laboratorio', perForma: true, crop: [0, 0, 34, 16], start: [19, 16], colori: 2, perColore: 2, esche: 2, tema: 'castello' },
+  { nome: 'TRA I TAVOLI',   tipo: 'scuola', mappa: 'laboratorio', perForma: true, crop: [0, 0, 34, 16], start: [19, 16], colori: 3, perColore: 2, esche: 3, tema: 'castello' },
+  { nome: 'TUTTO IL LAB',   tipo: 'scuola', mappa: 'laboratorio', perForma: true, crop: [0, 0, 34, 16], start: [1, 16],  colori: 4, perColore: 2, esche: 3, tema: 'castello' },
 ].map(d => ({ ...d, w: d.crop[2] - d.crop[0] + 1, h: d.crop[3] - d.crop[1] + 1 }));
 
 /* Il mondo si sceglie dalla home, dal pannello docente o con ?mondo=coding / ?mondo=strade */
-const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' }, scuola: { livelli: LIVELLI_SCUOLA, partenza: 'lab-partenza-scuola' }, fuga: { livelli: LIVELLI_FUGA, partenza: 'lab-partenza-fuga' }, laboratorio: { livelli: LIVELLI_LAB, partenza: 'lab-partenza-laboratorio' } };
+const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' }, scuola: { livelli: LIVELLI_SCUOLA, partenza: 'lab-partenza-scuola' }, fuga: { livelli: LIVELLI_FUGA, partenza: 'lab-partenza-fuga' }, laboratorio: { livelli: LIVELLI_LAB, partenza: 'lab-partenza-laboratorio' }, tastiera: { livelli: LIVELLI_TASTIERA, partenza: 'lab-partenza-tastiera' } };
 /* Ordine dei mondi: si gioca in sequenza, finito un mondo si passa al successivo */
-const ORD_MONDI = ['labirinto', 'scuola', 'laboratorio', 'strade', 'coding', 'fuga'];
-const MONDI_HOME = ['labirinto', 'scuola', 'laboratorio', 'strade', 'coding'];   // il premio finale non si sceglie dalla home
-const NOME_MONDO = { labirinto: 'LABIRINTI', scuola: 'SCUOLA', strade: 'STRADE', coding: 'CODING', fuga: 'ACCHIAPPARELLA', laboratorio: 'LABORATORIO' };
+const ORD_MONDI = ['labirinto', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding', 'fuga'];
+const MONDI_HOME = ['labirinto', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding'];   // il premio finale non si sceglie dalla home
+const NOME_MONDO = { labirinto: 'LABIRINTI', scuola: 'SCUOLA', strade: 'STRADE', coding: 'CODING', fuga: 'ACCHIAPPARELLA', laboratorio: 'LABORATORIO', tastiera: 'TASTIERA' };
 const mondoDopo = m => ORD_MONDI[ORD_MONDI.indexOf(m) + 1] || null;
-const iconaMondo = m => ({ labirinto: ICO.labirinto, scuola: ICO.scuola, laboratorio: ICO.lab, strade: ICO.auto, coding: ICO.carta, fuga: ICO.stella })[m];
+const iconaMondo = m => ({ labirinto: ICO.labirinto, scuola: ICO.scuola, laboratorio: ICO.lab, tastiera: ICO.tastiera, strade: ICO.auto, coding: ICO.carta, fuga: ICO.stella })[m];
 function mondoAttivo() {
   const q = new URLSearchParams(location.search).get('mondo');
   if (MONDI[q]) return q;
@@ -1463,9 +1602,9 @@ function iniziaPartita(casa, conDemo) {
 }
 
 function preparaLivello(idx, dDemo) {
-  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S', scuola: '|K', fuga: '|F', laboratorio: '|B' }[G.mondo] || '|L') + (idx + 1)));
+  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S', scuola: '|K', fuga: '|F', laboratorio: '|B', tastiera: '|T' }[G.mondo] || '|L') + (idx + 1)));
   G.rng = r;
-  const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', scuola: d.tipo === 'scuola', buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
+  const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', scuola: d.tipo === 'scuola', tastiera: d.tipo === 'tastiera', buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
   if (L.fuga) { const A = generaArena(d, r); Object.assign(L, { gr: A.gr, start: A.start, arena: A }); }
   else if (L.coding) {
     Object.assign(L, generaCoding(d, r));
@@ -1475,6 +1614,7 @@ function preparaLivello(idx, dDemo) {
   }
   else if (L.strade) Object.assign(L, generaStrade(d, r));
   else if (L.scuola) Object.assign(L, generaScuola(d, r));
+  else if (L.tastiera) Object.assign(L, generaTastiera(d, r));
   else Object.assign(L, generaLabirinto(d, r));
   G.L = L;
   Object.assign(G, {
@@ -1483,6 +1623,7 @@ function preparaLivello(idx, dDemo) {
     pings: [], voli: [], fumetti: [], tGioco: 0, ultimoProgresso: 0, chiamaT: -99,
     prog: [], esec: null, erroreIdx: -1, nuova: -1, tentativi: 0, puntiCorsa: 0,
     colIdx: 0, presiColore: 0, trovati: 0, sbagli: 0, annuncio: null,
+    parolaIdx: 0, trovIdx: 0, scrittoIdx: 0, fase: 'cammina', salti: 0, erroriScrittura: 0, flashT: null, premutoT: null, voliT: [], prossimaT: null, doppiaT: null, tastoPl: null, annuncioParola: -9,
     pauraT: 0, modoT: 0, modo: 'sparsi', invuln: 0, scossa: 0, flash: 0, dondola: new Map(), visti: new Set(), entraT: 0, presoT: 0,
   });
   G.pl = { x: L.start.x, y: L.start.y, tx: L.start.x, ty: L.start.y, t: 0, moving: false, dir: null, tilt: 0, urto: null };
@@ -1520,7 +1661,7 @@ function obiettivoCorrente() {
   if (L.scuola) {   // l'oggetto più vicino (a piedi) del colore da cercare
     const p = G.pl, da = p.moving ? { x: p.tx, y: p.ty } : { x: p.x, y: p.y }, dist = L.gr.bfs([da]).dist, cur = L.colori[G.colIdx];
     let best = null, bd = 1e9;
-    L.items.forEach(it => { if (it.preso || it.col !== cur) return; const q = dist[L.gr.i(it.x, it.y)]; if (q >= 0 && q < bd) { bd = q; best = it; } });
+    L.items.forEach(it => { if (it.preso || !vale(it, cur)) return; const q = dist[L.gr.i(it.x, it.y)]; if (q >= 0 && q < bd) { bd = q; best = it; } });
     return best || L.start;
   }
   if (L.numeriTot && G.prossimo <= L.numeriTot) return [...L.items.values()].find(i => i.tipo === 'numero' && i.n === G.prossimo);
@@ -1618,6 +1759,7 @@ function sblocca() {
 function usaAiuto() {
   if (G.stato !== 'gioco' || G.L.fuga) return;
   if (G.L.strade) { aiutoStrade(); return; }
+  if (G.L.tastiera) { aiutoTastiera(); return; }
   const p = G.pl, c = centro(p.x, p.y);
   if (G.aiuti <= 0) { fumetto('pl', 'lanternaNo', 0, 1.4); SFX.play('nonAncora'); return; }
   let da = p.moving ? { x: p.tx, y: p.ty } : { x: p.x, y: p.y }, verso = obiettivoCorrente();
@@ -1641,6 +1783,7 @@ function ping(c, n = 3, col = '#9BF0BF', dopo = 0) { for (let k = 0; k < n; k++)
 function avviaTour() {
   const L = G.L, tappe = [];
   if (L.scuola) { annunciaColore(); return; }
+  if (L.tastiera) { G.annuncioParola = G.tempo; return; }
   if (L.fuga) L.arena.poteri.forEach(k => tappe.push({ x: k % L.w, y: (k / L.w) | 0 }));
   else {
     [...L.items.values()].filter(i => i.tipo === 'numero').sort((a, b) => a.n - b.n).forEach(i => tappe.push(i));
@@ -1985,7 +2128,8 @@ const DEMO = {
   labirinto: { nome: 'GUARDA', tipo: 'labirinto', w: 3, h: 2, tema: 'prato' },
   strade:    { nome: 'GUARDA', tipo: 'strade', w: 3, h: 2, tema: 'prato', svolte: .5, prefill: .5, distrattori: 0, ostacoli: 0, stelle: 0, minCurve: 1, maxLen: 5 },
   coding:    { nome: 'GUARDA', tipo: 'coding', w: 3, h: 2, tema: 'prato', anelli: .5, dist: [3, 3] },
-  laboratorio: { nome: 'GUARDA', tipo: 'scuola', mappa: 'laboratorio', crop: [14, 8, 20, 12], w: 7, h: 5, start: [17, 12], tema: 'castello', coloriFissi: [1], perColore: 1, forme: FORME_LAB, demoOggetti: [{ x: 17, y: 10, col: 1, forma: 'mouse' }, { x: 15, y: 9, col: 0, forma: 'cuffie' }] },
+  tastiera: { nome: 'GUARDA', tipo: 'tastiera', parole: ['RE'], start: 'T', w: 15, h: 5, tema: 'castello' },
+  laboratorio: { nome: 'GUARDA', tipo: 'scuola', mappa: 'laboratorio', perForma: true, crop: [14, 8, 20, 12], w: 7, h: 5, start: [17, 12], tema: 'castello', coloriFissi: ['mouse'], perColore: 1, demoOggetti: [{ x: 17, y: 10, forma: 'mouse' }, { x: 15, y: 9, forma: 'cuffie' }] },
   scuola:    { nome: 'GUARDA', tipo: 'scuola', crop: [0, 2, 5, 7], w: 6, h: 6, start: [4, 5], tema: 'castello', coloriFissi: [2], perColore: 1, demoOggetti: [{ x: 2, y: 5, col: 2, forma: 'palla' }, { x: 2, y: 7, col: 3, forma: 'libro' }] },
 };
 /* Tempi pensati per 6 anni: la freccia viaggia piano, si ferma, preme, poi si guarda l'effetto */
@@ -2128,6 +2272,25 @@ async function demoCoding() {
   faro(null); nascondiFreccia(); avviaEsecuzione();
   await finche(() => G.stato !== 'esegue', 20000);
 }
+async function demoTastiera() {   // 1 sei tu · 2 la parola · 3 i salti · 4 il tasto vero che si accende
+  const L = G.L, w = L.parole[0], cvr = () => cv.getBoundingClientRect();
+  const zona = k => { const R = rettTasto(k), c = cvr(); return { x: c.left + R.x - 8, y: c.top + R.y - lay.cell * .7, w: R.w + 16, h: R.h + lay.cell * .7 + 8 }; };
+  const punto = k => scrCella(k.cx - .5, k.r, -.15);
+  const io = TASTI[G.tastoPl];
+  await mostra(zona(io), punto(io), 1);
+  const B = rettBarra(), c = cvr(), zb = { x: c.left + B.x, y: c.top + B.y, w: B.w, h: B.h };
+  await mostra(zb, { x: zb.x + zb.w * .45, y: zb.y + zb.h * .7 }, 2);
+  for (const ch of w) {
+    const cam = percorsoTasti(TASTI[G.tastoPl], tastoDi(ch));
+    for (let i = 1; i < cam.length; i++) {
+      await premiTasto(dirTasto(cam[i - 1], cam[i]), kk => { muoviTasto(kk); setTimeout(() => { IN.tenuti = IN.tenuti.filter(z => z !== kk); }, 110); }, 3);
+      await finche(() => !G.pl.moving, 2000);
+      await guarda(zona(cam[i]), punto(cam[i]));
+    }
+  }
+  for (const ch of w) { const k = tastoDi(ch); await mostra(zona(k), punto(k), 4); await premi(); premiLettera(ch); await attendi(1100); }
+  await finche(() => G.stato !== 'gioco', 8000);
+}
 async function demoScuola() {   // 1 sei tu · 2 il colore da cercare · 3 eccolo · 4 i tasti · 5 preso!
   const L = G.L, ob = [...L.items.values()].find(i => i.col === L.colori[0]);
   await mostra(rettCella(G.pl.x, G.pl.y), scrCella(G.pl.x, G.pl.y, -.25), 1);
@@ -2153,7 +2316,7 @@ function avviaDemo() {
   const p = $('#puntatore'), st = $('#stage').getBoundingClientRect();
   p.querySelector('.pn').textContent = '';
   p.style.transition = 'none'; p.style.transform = `translate(${Math.round(st.left + st.width / 2)}px,${Math.round(st.top + st.height / 2)}px)`; void p.offsetWidth; p.style.transition = '';
-  const copione = { labirinto: demoLabirinto, strade: demoStrade, coding: demoCoding, scuola: demoScuola, laboratorio: demoScuola }[G.mondo];
+  const copione = { labirinto: demoLabirinto, strade: demoStrade, coding: demoCoding, scuola: demoScuola, laboratorio: demoScuola, tastiera: demoTastiera }[G.mondo];
   (async () => { try { await attendi(900); await copione(); } catch (e) { /* dimostrazione interrotta */ } })();
 }
 function nascondiDemo() {
@@ -2368,7 +2531,8 @@ function frame(ts) {
     if (G.stato === 'gioco') {
       G.tGioco += dt;
       G.entrata = Math.min(1, G.entrata + dt / .65);
-      if (!G.L.coding && !G.L.strade) aggiornaGiocatore(dt);
+      if (G.L.tastiera) aggiornaTastiera(dt);
+      else if (!G.L.coding && !G.L.strade) aggiornaGiocatore(dt);
       if (G.stato === 'gioco' && !G.L.fuga) controllaBlocco();
       if (G.stato === 'gioco' && G.L.fuga) {
         aggiornaModo(dt); aggiornaInseguitori(dt); controllaContatti();
@@ -2377,7 +2541,7 @@ function frame(ts) {
     } else if (G.stato === 'esegue') {
       G.tGioco += dt; G.L.strade ? aggiornaGuida(dt) : aggiornaEsecuzione(dt);
     } else if (G.stato === 'entra') {
-      G.entraT -= dt; if (G.entraT <= 0) { G.stato = 'completo'; G.demo ? fineDemo() : G.L.scuola ? completaScuola() : G.L.strade ? completaStrade() : G.L.coding ? completaCoding() : completaLabirinto(); }
+      G.entraT -= dt; if (G.entraT <= 0) { G.stato = 'completo'; G.demo ? fineDemo() : G.L.tastiera ? completaTastiera() : G.L.scuola ? completaScuola() : G.L.strade ? completaStrade() : G.L.coding ? completaCoding() : completaLabirinto(); }
     } else if (G.stato === 'preso') {
       G.presoT -= dt; if (G.presoT <= 0) dopoPreso();
     }
@@ -2405,6 +2569,7 @@ function calcolaLayout() {
   cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
   const pad = Math.max(30, Math.min(W, H) * .05), riserva = L.coding ? $('#prog').offsetHeight + 16 : 0;   // spazio per la barra del programma
   if (L.scuola) { impostaLayoutScuola(W, H, dpr); return; }
+  if (L.tastiera) { impostaLayoutTastiera(W, H, dpr); return; }
   if (L.strade) {   // una colonna in più a sinistra (parcheggio) e a destra (castello)
     const ris = $('#tray').offsetHeight + 16, cols = L.w + 2, c = Math.floor(Math.min((W - 2 * pad) / cols, (H - ris - 2 * pad) / L.h, 150));
     lay = { W, H, dpr, cell: c, ox: Math.round((W - c * cols) / 2) + c, oy: Math.round((H - ris - c * L.h) / 2) };
@@ -2499,20 +2664,20 @@ function rrect(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a 
    poi arriva il colore dopo. Colore sbagliato: l'oggetto dondola e il fumetto rimostra la macchia.
    ===================================================================== */
 function annunciaColore() {
-  const L = G.L, col = L.colori[G.colIdx];
-  G.annuncio = { col, t0: G.tempo };
-  [...L.items.values()].filter(i => !i.preso && i.col === col).forEach((it, k) => ping(it, 2, COLORI_OGG[col].hex, .6 + k * .3));
+  const L = G.L, tg = L.colori[G.colIdx];
+  G.annuncio = { col: tg, t0: G.tempo };
+  [...L.items.values()].filter(i => !i.preso && vale(i, tg)).forEach((it, k) => ping(it, 2, hexTarget(tg), .6 + k * .3));
 }
 function raccogliOggetto(it, k, c) {
   const L = G.L, cur = L.colori[G.colIdx];
-  if (it.col !== cur) {
+  if (!vale(it, cur)) {
     G.dondola.set(k, G.tempo); G.sbagli++; SFX.play('nonAncora');
-    fumetto('pl', 'colore', cur, 1.9, COLORI_OGG[cur].hex);
+    fumetto('pl', 'colore', cur, 1.9, hexTarget(cur));
     return;
   }
   it.preso = true; G.presiColore++; G.trovati++; G.ultimoProgresso = G.tGioco;
   aggiungiPunti(PUNTI.oggetto, it); SFX.play('stella');
-  const hx = COLORI_OGG[cur].hex;
+  const hx = hexTarget(cur);
   emetti(c.x, c.y, 20, { col: [hx, '#FFFFFF', '#FFD24A'], v: 190, vita: .8, r: 4, tipo: 'stellina' });
   if (G.presiColore >= L.perColore) coloreFinito();
   aggiornaObiettivo();
@@ -2531,7 +2696,7 @@ function coloreFinito() {
 }
 function completaScuola() {
   const L = G.L;
-  G.log.push({ liv: G.livello + 1, nome: L.def.nome, tipo: 'scuola', ok: true, trovati: G.trovati, colori: L.colori, perColore: L.perColore, passi: G.passi, sbagli: G.sbagli, aiuti: G.aiutiUsati, punti: G.puntiLivello });
+  G.log.push({ liv: G.livello + 1, nome: L.def.nome, tipo: 'scuola', ok: true, trovati: G.trovati, colori: L.colori, perForma: !!L.perForma, perColore: L.perColore, passi: G.passi, sbagli: G.sbagli, aiuti: G.aiutiUsati, punti: G.puntiLivello });
   mostraFineLivello();
 }
 /* ---------- SCUOLA: disegno dall'alto ---------- */
@@ -2839,8 +3004,13 @@ function disegnaAnnuncio(x) {   // la macchia del colore da cercare compare gran
   const R = Math.min(lay.SW, lay.SH) * .15, cx = lay.SW / 2, cy = lay.SH / 2;
   x.save(); x.translate(cx, cy); x.scale(sc, sc);
   x.fillStyle = 'rgba(255,255,255,.94)'; x.shadowColor = 'rgba(0,0,0,.35)'; x.shadowBlur = 24; x.beginPath(); x.arc(0, 0, R, 0, 7); x.fill(); x.shadowBlur = 0;
-  x.lineWidth = R * .07; x.strokeStyle = COLORI_OGG[G.annuncio.col].hex; x.stroke();
-  const d = R * 1.5; x.drawImage(IMGS.macchia[G.annuncio.col], -d / 2, -d / 2, d, d);
+  x.lineWidth = R * .07; x.strokeStyle = hexTarget(G.annuncio.col); x.stroke();
+  const d = R * (perForma() ? 1.35 : 1.5); x.drawImage(imgTarget(G.annuncio.col), -d / 2, -d / 2, d, d);
+  if (perForma()) {   // il nome dell'oggetto, per chi sa già leggere
+    x.font = `700 ${R * .3}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.lineWidth = R * .1; x.strokeStyle = '#FFFFFF'; x.lineJoin = 'round'; x.strokeText(NOMI_OGG[G.annuncio.col], 0, R * 1.3);
+    x.fillStyle = '#123E90'; x.fillText(NOMI_OGG[G.annuncio.col], 0, R * 1.3);
+  }
   x.restore();
 }
 function renderScuola() {
@@ -2860,7 +3030,7 @@ function renderScuola() {
     x.fillStyle = 'rgba(0,0,0,.2)'; x.beginPath(); x.ellipse(c.x, c.y + s * .5, s * .42, s * .12, 0, 0, 7); x.fill();
     x.save(); x.translate(c.x, c.y + b); x.rotate(rot);
     x.fillStyle = 'rgba(255,255,255,.92)'; x.beginPath(); x.arc(0, 0, s * .6, 0, 7); x.fill();
-    x.drawImage(IMGS.ogg[it.forma + it.col], -s / 2, -s / 2, s, s); x.restore();
+    x.drawImage(imgOggetto(it), -s / 2, -s / 2, s, s); x.restore();
   });
   disegnaOrme(x);
   disegnaGiocatore(x, t);
@@ -2871,6 +3041,219 @@ function renderScuola() {
   disegnaFumetti(x);
   x.setTransform(d, 0, 0, d, 0, 0);
   disegnaAnnuncio(x);
+}
+
+/* =====================================================================
+   TASTIERA: logica e disegno
+   ===================================================================== */
+const VEL_SALTO = 3.4;
+const parolaOra = () => G.L.parole[Math.min(G.parolaIdx, G.L.parole.length - 1)];
+function muoviTasto(k) {
+  if (G.fase === 'scrivi') { G.annuncioParola = G.tempo; SFX.play('nonAncora'); return; }   // adesso si scrive: la barra pulsa
+  if (G.fase !== 'cammina') return;
+  IN.tenuti = IN.tenuti.filter(z => z !== k); IN.tenuti.push(k);
+  if (G.pl.moving) { IN.coda = k; IN.codaT = performance.now(); return; }
+  salta(k);
+}
+function salta(k) {
+  const da = TASTI[G.tastoPl], a = vicinoTasto(da, k);
+  if (a === da) { G.pl.urto = { d: DIR[k], t0: G.tempo }; SFX.play('muro'); return; }
+  G.tastoPl = a.i; G.salti++;
+  Object.assign(G.pl, { tx: a.cx - .5, ty: a.r, t: 0, moving: true, dir: k });
+  SFX.play('passo', G.salti);
+}
+function aggiornaTastiera(dt) {
+  const p = G.pl;
+  if (p.moving) { p.t += dt * VEL_SALTO; if (p.t >= 1) { p.x = p.tx; p.y = p.ty; p.t = 0; p.moving = false; atterra(); } }
+  if (!p.moving && G.stato === 'gioco' && G.fase === 'cammina') {
+    let k = null;
+    if (IN.coda && performance.now() - IN.codaT < 450) k = IN.coda; else if (IN.tenuti.length) k = IN.tenuti[IN.tenuti.length - 1];
+    IN.coda = null;
+    if (k) salta(k);
+  }
+  if (G.doppiaT != null && G.tempo >= G.doppiaT) { G.doppiaT = null; controllaLettera(); }   // doppie: PALLA, GATTO
+  if (G.prossimaT != null && G.tempo >= G.prossimaT) { G.prossimaT = null; prossimaParola(); }
+}
+function atterra() {
+  const k = TASTI[G.tastoPl], c = centro(k.cx - .5, k.r);
+  emetti(c.x, c.y + lay.cell * .3, 6, { col: ['#FFFFFF', '#DCE6FA'], v: 70, vita: .4, r: 3, tipo: 'fumo', g: -20 });
+  if (G.fase === 'cammina') controllaLettera();
+}
+/* Atterrando sulla lettera che serve la si raccoglie; sulle altre lettere non succede niente
+   (attraversare la tastiera non è un errore) */
+function controllaLettera() {
+  const w = parolaOra(), k = TASTI[G.tastoPl];
+  if (G.fase !== 'cammina' || G.trovIdx >= w.length || k.lab !== w[G.trovIdx]) return;
+  const c = centro(k.cx - .5, k.r);
+  G.trovIdx++; G.ultimoProgresso = G.tGioco;
+  aggiungiPunti(PUNTI.lettera, { x: k.cx - .5, y: k.r }); SFX.play('numero', G.trovIdx);
+  emetti(c.x, c.y, 18, { col: [CASE[G.casa].col, '#FFFFFF', '#FFD24A'], v: 180, vita: .7, r: 4, tipo: 'stellina' });
+  G.voliT.push({ ch: k.lab, da: { x: c.x, y: c.y }, i: G.trovIdx - 1, t0: G.tempo });
+  if (G.trovIdx >= w.length) { G.fase = 'scrivi'; G.scrittoIdx = 0; G.annuncioParola = G.tempo + .5; SFX.play('apri'); }
+  else if (w[G.trovIdx] === k.lab) G.doppiaT = G.tempo + .55;
+  aggiornaObiettivo();
+}
+/* Tasti veri del Mac: nella fase di scrittura compongono la parola; mentre si salta fanno solo
+   lampeggiare il tasto sul pavimento (così si vede dove sta) */
+function premiLettera(ch) {
+  const k = tastoDi(ch); if (!k) return;
+  if (G.fase !== 'scrivi') { G.flashT = { k, t0: G.tempo, ok: true }; return; }
+  const w = parolaOra();
+  if (ch !== w[G.scrittoIdx]) { G.flashT = { k, t0: G.tempo, ok: false }; G.erroriScrittura++; SFX.play('nonAncora'); return; }
+  const p = G.pl, pos = posOgg(p);
+  Object.assign(p, { x: pos.x, y: pos.y, tx: k.cx - .5, ty: k.r, t: 0, moving: true });   // il personaggio salta sul tasto premuto
+  G.tastoPl = k.i; G.premutoT = { k, t0: G.tempo }; G.scrittoIdx++; G.ultimoProgresso = G.tGioco;
+  aggiungiPunti(PUNTI.scritta, { x: k.cx - .5, y: k.r }, '#9BF0BF'); SFX.play('carta', 'su');
+  if (G.scrittoIdx >= w.length) parolaScritta();
+  aggiornaObiettivo();
+}
+function parolaScritta() {
+  G.fase = 'fatta';
+  aggiungiPunti(PUNTI.parola, G.pl, '#9BF0BF'); SFX.play('vittoria');
+  const C = CASE[G.casa]; FX.coriandoli(60, [C.col, '#FFD24A', '#FFFFFF', '#2BD67B']);
+  G.prossimaT = G.tempo + 1.8;
+}
+function prossimaParola() {
+  G.parolaIdx++;
+  if (G.parolaIdx >= G.L.parole.length) { G.stato = 'entra'; G.entraT = G.demo ? 2.6 : .9; return; }
+  Object.assign(G, { fase: 'cammina', trovIdx: 0, scrittoIdx: 0, annuncioParola: G.tempo });
+  SFX.play('apri'); aggiornaObiettivo();
+}
+function aiutoTastiera() {
+  if (G.fase !== 'cammina') return;
+  if (G.aiuti <= 0) { fumetto('pl', 'lanternaNo', 0, 1.4); SFX.play('nonAncora'); return; }
+  const dest = tastoDi(parolaOra()[G.trovIdx]), cam = percorsoTasti(TASTI[G.tastoPl], dest);
+  if (cam.length < 2) return;
+  G.aiuti--; G.aiutiUsati++; G.ultimoProgresso = G.tGioco;
+  G.orme = { celle: cam.map(k => ({ x: k.cx - .5, y: k.r })), t0: G.tempo };
+  G.fumetti = G.fumetti.filter(f => f.tipo !== 'lanterna');
+  $('#risorse').classList.remove('chiama'); SFX.play('lanterna'); aggiornaRisorse();
+}
+function completaTastiera() {
+  G.log.push({ liv: G.livello + 1, nome: G.L.def.nome, tipo: 'tastiera', ok: true, parole: G.L.parole, salti: G.salti, errori: G.erroriScrittura, aiuti: G.aiutiUsati, punti: G.puntiLivello });
+  mostraFineLivello();
+}
+/* Disegno: la tastiera in alluminio con i tasti bianchi; sopra, la barra della parola */
+function impostaLayoutTastiera(W, H, dpr) {
+  const bt = G.demo ? 74 : 12, Hb = Math.min(220, H * .25) + bt - 12, pad = 22;   // nella dimostrazione la barra GUARDA sta sopra la parola
+  const u = Math.floor(Math.min((W - 2 * pad) / 15.3, (H - Hb - 3 * pad) / 5.7));
+  lay = { W, H, dpr, cell: u, Hb, bt, ox: Math.round((W - 14.5 * u) / 2), oy: Math.round(Hb + 2 * pad + Math.max(0, (H - Hb - 3 * pad - 5.7 * u) / 2) + .35 * u) };
+  if (G.tastoPl == null) G.tastoPl = TASTI.findIndex(k => k.cx - .5 === G.L.start.x && k.r === G.L.start.y);
+  costruisciSprite(); costruisciStaticoTastiera();
+}
+function rettTasto(k) {
+  const u = lay.cell, g = u * .055;
+  let x = lay.ox + k.x0 * u + g, y = lay.oy + k.r * u + g, w = k.w * u - 2 * g, h = u - 2 * g;
+  if (k.lab === 'sx' || k.lab === 'dx') { y += h / 2; h /= 2; }
+  return { x, y, w, h };
+}
+function etichettaTasto(x, k, R, u) {
+  const lab = k.lab.trim();
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  if (k.lettera || lab.length === 1) {
+    x.fillStyle = k.lettera ? '#1F2633' : '#7D879B';
+    x.font = `${k.lettera ? 700 : 600} ${u * (k.lettera ? .44 : .32)}px Fredoka, 'Arial Rounded MT Bold', sans-serif`;
+    x.fillText(lab, R.x + R.w / 2, R.y + R.h / 2 + u * .02);
+    return;
+  }
+  const tri = (cx, cy, s, rot) => { x.save(); x.translate(cx, cy); x.rotate(rot); x.beginPath(); x.moveTo(0, -s); x.lineTo(s * .9, s * .6); x.lineTo(-s * .9, s * .6); x.closePath(); x.fill(); x.restore(); };
+  x.fillStyle = '#7D879B';
+  if (lab === 'sx') { tri(R.x + R.w / 2, R.y + R.h / 2, u * .1, -Math.PI / 2); return; }
+  if (lab === 'dx') { tri(R.x + R.w / 2, R.y + R.h / 2, u * .1, Math.PI / 2); return; }
+  if (lab === 'sugiu') { tri(R.x + R.w / 2, R.y + R.h * .26, u * .09, 0); tri(R.x + R.w / 2, R.y + R.h * .76, u * .09, Math.PI); x.fillRect(R.x + u * .06, R.y + R.h / 2 - 1, R.w - u * .12, 2); return; }
+  if (lab === 'spazio' || lab === 'return2') return;
+  x.font = `500 ${u * .16}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+  x.fillText(lab, R.x + u * .1, R.y + R.h - u * .12);
+}
+function costruisciStaticoTastiera() {
+  const u = lay.cell, { ox, oy, dpr } = lay;
+  stat = nuovaTela(cv.width, cv.height); nebbia = nuovaTela(1, 1);
+  const x = stat.getContext('2d'); x.scale(dpr, dpr);
+  const m = u * .32, bw = 14.5 * u + 2 * m, bh = 5 * u + 2 * m;
+  x.save(); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 34; x.shadowOffsetY = 16;
+  rrect(x, ox - m, oy - m, bw, bh, u * .35); const gr = x.createLinearGradient(0, oy - m, 0, oy - m + bh); gr.addColorStop(0, '#E4E7EC'); gr.addColorStop(1, '#C3C8D1'); x.fillStyle = gr; x.fill(); x.restore();
+  rrect(x, ox - m * .45, oy - m * .45, 14.5 * u + m * .9, 5 * u + m * .9, u * .24); x.fillStyle = '#2B2F38'; x.fill();   // il fondo scuro tra i tasti
+  TASTI.forEach(k => {
+    const R = rettTasto(k), rr = u * .13;
+    if (k.lab === 'return2') return;   // si disegna insieme a return
+    const parti = [R];
+    if (k.lab === 'return') { const R2 = rettTasto(tastoDi('return2')), su = u * .3; parti.push({ x: R2.x, y: R2.y - su, w: R2.w, h: R2.h + su }); }   // invio ISO: una L rovesciata su due file
+    x.fillStyle = '#9EA5B3'; parti.forEach(P => { rrect(x, P.x, P.y + u * .04, P.w, P.h, rr); x.fill(); });
+    x.fillStyle = '#FBFBFC'; parti.forEach(P => { rrect(x, P.x, P.y, P.w, P.h - u * .03, rr); x.fill(); });
+    etichettaTasto(x, k, R, u);
+  });
+}
+function rettBarra() { return { x: lay.W * .08, y: lay.bt, w: lay.W * .84, h: lay.Hb - lay.bt + 6 }; }
+function slotParola(i, n) {
+  const B = rettBarra(), pic = haDisegno(parolaOra()) ? B.h * .8 + 26 : 0, gap = 12;
+  const s = Math.min(B.h * .64, (B.w - pic - 150 - (n - 1) * gap) / n), tot = n * s + (n - 1) * gap;
+  const x0 = B.x + pic + 20 + (B.w - pic - 150 - tot) / 2;
+  return { x: x0 + i * (s + gap), y: B.y + (B.h - s) / 2, s };
+}
+function barraParola(x, t) {
+  const B = rettBarra(), w = parolaOra(), n = w.length, C = CASE[G.casa];
+  const ea = t - G.annuncioParola, pulse = ea >= 0 && ea < .6 ? 1 + .06 * Math.sin(ea / .6 * Math.PI) : 1;
+  x.save(); x.translate(B.x + B.w / 2, B.y + B.h / 2); x.scale(pulse, pulse); x.translate(-(B.x + B.w / 2), -(B.y + B.h / 2));
+  x.fillStyle = 'rgba(0,0,0,.25)'; rrect(x, B.x, B.y + 6, B.w, B.h, 26); x.fill();
+  x.fillStyle = '#FFF8E8'; rrect(x, B.x, B.y, B.w, B.h, 26); x.fill();
+  const img = imgParola(w);
+  if (img) { const d = B.h * .8; x.drawImage(img, B.x + 22, B.y + (B.h - d) / 2, d, d); }
+  for (let i = 0; i < n; i++) {
+    const S = slotParola(i, n), trovata = i < G.trovIdx, scritta = G.fase !== 'cammina' && i < G.scrittoIdx;
+    const prossima = (G.fase === 'cammina' && i === G.trovIdx) || (G.fase === 'scrivi' && i === G.scrittoIdx);
+    const sal = prossima ? Math.sin(t * 6) * 4 - 4 : 0;
+    x.fillStyle = 'rgba(0,0,0,.14)'; rrect(x, S.x, S.y + 5, S.s, S.s, S.s * .18); x.fill();
+    x.fillStyle = scritta ? '#1E9E57' : trovata ? '#2563EB' : '#FFFFFF'; rrect(x, S.x, S.y + sal, S.s, S.s, S.s * .18); x.fill();
+    if (prossima) { x.lineWidth = Math.max(4, S.s * .08); x.strokeStyle = G.fase === 'scrivi' ? '#F6B70E' : C.col; x.stroke(); }
+    else if (!trovata) { x.setLineDash([S.s * .1, S.s * .07]); x.lineWidth = 3; x.strokeStyle = '#B9C3DC'; x.stroke(); x.setLineDash([]); }
+    x.fillStyle = trovata || scritta ? '#FFFFFF' : prossima ? '#1F2633' : '#5E6B7D';
+    x.font = `700 ${S.s * .62}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText(w[i], S.x + S.s / 2, S.y + S.s / 2 + sal + S.s * .03);
+  }
+  // a destra: quale tastiera si usa adesso (le frecce per saltare, i tasti veri per scrivere)
+  const ix = B.x + B.w - 128, iy = B.y + B.h / 2, s = 34;
+  if (G.fase === 'scrivi') {
+    const b = 1 + .08 * Math.sin(t * 6), d = 104 * b;
+    x.drawImage(IMGS.icoTastiera, ix + 64 - d / 2, iy - d / 2 - 8, d, d);
+    x.fillStyle = '#123E90'; x.font = `700 17px Fredoka, sans-serif`; x.textAlign = 'center'; x.fillText('SCRIVILA', ix + 64, iy + 40);
+  } else {
+    [[ix + 64 - s / 2, iy - s - 3], [ix + 64 - s * 1.5 - 4, iy + 3], [ix + 64 - s / 2, iy + 3], [ix + 64 + s / 2 + 4, iy + 3]].forEach(([a, b], j) => {
+      x.fillStyle = C.col; rrect(x, a, b, s, s, 8); x.fill();
+      x.fillStyle = '#FFFFFF'; x.save(); x.translate(a + s / 2, b + s / 2); x.rotate([0, -Math.PI / 2, Math.PI, Math.PI / 2][j]);
+      x.beginPath(); x.moveTo(0, -9); x.lineTo(8, 4); x.lineTo(-8, 4); x.closePath(); x.fill(); x.restore();
+    });
+  }
+  x.restore();
+}
+function renderTastiera() {
+  const x = ctx, u = lay.cell, t = G.tempo;
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height);
+  x.setTransform(lay.dpr, 0, 0, lay.dpr, 0, 0);
+  if (G.scossa > 0) x.translate((Math.random() - .5) * G.scossa * 22, (Math.random() - .5) * G.scossa * 22);
+  x.drawImage(stat, 0, 0, lay.W, lay.H);
+  const w = parolaOra();
+  if (G.fase === 'scrivi' && G.stato === 'gioco') {   // il tasto da premere sulla tastiera vera si accende
+    const k = tastoDi(w[G.scrittoIdx]);
+    if (k) { const R = rettTasto(k), p = .5 + .5 * Math.sin(t * 6); x.save(); x.shadowColor = '#F6B70E'; x.shadowBlur = u * .5 * p + u * .2; x.fillStyle = `rgba(255,214,90,${.55 + .35 * p})`; rrect(x, R.x, R.y, R.w, R.h, u * .13); x.fill(); x.restore(); etichettaTasto(x, k, R, u); }
+  }
+  if (G.flashT && t - G.flashT.t0 < .6) {   // tasto premuto davvero: blu mentre si salta, ambra se è quello sbagliato
+    const e = (t - G.flashT.t0) / .6, R = rettTasto(G.flashT.k);
+    x.save(); x.globalAlpha = 1 - e; x.fillStyle = G.flashT.ok ? '#6FA3FF' : '#F59E0B'; rrect(x, R.x, R.y, R.w, R.h, u * .13); x.fill(); x.restore();
+  }
+  if (G.premutoT && t - G.premutoT.t0 < .3) { const R = rettTasto(G.premutoT.k); x.fillStyle = 'rgba(30,158,87,.35)'; rrect(x, R.x, R.y + u * .03, R.w, R.h, u * .13); x.fill(); }
+  disegnaOrme(x);
+  disegnaGiocatore(x, t);
+  disegnaParticelle(x);
+  disegnaTesti(x);
+  barraParola(x, t);
+  G.voliT = G.voliT.filter(v => t - v.t0 < .6);
+  for (const v of G.voliT) {   // la lettera raccolta vola nella sua casella
+    const e = easeOut((t - v.t0) / .6), S = slotParola(v.i, w.length), tx = S.x + S.s / 2, ty = S.y + S.s / 2;
+    const px = v.da.x + (tx - v.da.x) * e, py = v.da.y + (ty - v.da.y) * e - Math.sin(e * Math.PI) * u;
+    x.fillStyle = '#2563EB'; rrect(x, px - u * .3, py - u * .3, u * .6, u * .6, u * .1); x.fill();
+    x.fillStyle = '#fff'; x.font = `700 ${u * .4}px Fredoka, sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(v.ch, px, py);
+  }
+  disegnaFumetti(x);
 }
 
 /* ---------- STRADE: disegno ---------- */
@@ -3178,6 +3561,7 @@ function disegnaMoneta(x, c, R, n, ora, t, dondola) {
 function render() {
   if (G.L.strade) { renderStrade(); return; }
   if (G.L.scuola) { renderScuola(); return; }
+  if (G.L.tastiera) { renderTastiera(); return; }
   const x = ctx, L = G.L, { cell } = lay, t = G.tempo;
   x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height);
   x.setTransform(lay.dpr, 0, 0, lay.dpr, 0, 0);
@@ -3254,10 +3638,11 @@ function disegnaGiocatore(x, t) {
   const spr = SPR.fig[G.casa], s = spr.dim;
   let sc = 1, sy = 1, bob = 0, ond = 0;
   if (p.moving) { const ph = (pos.x + pos.y) * Math.PI; bob = -Math.abs(Math.sin(ph)) * cell * .08; ond = Math.sin(ph) * .09; }
+  if (p.moving && G.L.tastiera) { bob = -Math.sin(p.t * Math.PI) * cell * .6; ond = (p.tx - p.x) * .12; }   // un salto da un tasto all'altro
   else sy = 1 + .025 * Math.sin(t * 3.2);
   if (p.urto) { const e = t - p.urto.t0; if (e < .2) { const k = Math.sin(e / .2 * Math.PI) * cell * .1; cx += p.urto.d.dx * k; cy += p.urto.d.dy * k; } else p.urto = null; }
   let caduta = 0; if (G.stato === 'gioco' || G.stato === 'preso') caduta = (1 - rimbalzo(G.entrata)) * cell * 2.2;
-  if (G.stato === 'entra') { if (G.L.scuola) bob = -Math.abs(Math.sin(t * 9)) * cell * .3; else sc = Math.max(0, G.entraT / .7); }
+  if (G.stato === 'entra') { if (G.L.scuola || G.L.tastiera) bob = -Math.abs(Math.sin(t * 9)) * cell * .3; else sc = Math.max(0, G.entraT / .7); }
   if (G.stato === 'preso') sc = Math.max(.15, G.presoT / 1.4);
   const piedi = cy + cell * .34;
   // anello del potere: si svuota quando i rivali stanno per tornare cacciatori
@@ -3314,7 +3699,7 @@ function disegnaFumetti(x) {
       x.save(); x.rotate(ROT[f.val] * Math.PI / 180); x.strokeStyle = '#F59E0B'; x.lineWidth = h * .13; x.lineCap = 'round'; x.lineJoin = 'round';
       x.beginPath(); x.moveTo(0, h * .26); x.lineTo(0, -h * .24); x.moveTo(-h * .2, -h * .04); x.lineTo(0, -h * .26); x.lineTo(h * .2, -h * .04); x.stroke(); x.restore();
     }
-    else if (f.tipo === 'colore') { const d = h * .86; x.drawImage(IMGS.macchia[f.val], -d / 2, -d / 2, d, d); }
+    else if (f.tipo === 'colore') { const d = h * .86; x.drawImage(imgTarget(f.val), -d / 2, -d / 2, d, d); }
     else if (f.tipo === 'buco') {
       x.save(); x.setLineDash([h * .13, h * .09]); x.strokeStyle = '#F59E0B'; x.lineWidth = h * .09;
       rrect(x, -h * .3, -h * .3, h * .6, h * .6, h * .12); x.stroke(); x.restore();
@@ -3467,13 +3852,21 @@ function aggiornaRisorse() {
 function aggiornaObiettivo() {
   const L = G.L, C = CASE[G.casa]; let h = '';
   const stato = v => `<span class="ob-stato">${v}</span>`;
+  if (L.tastiera) {   // la parola da comporre: disegno (se c'è), parola e lettere già prese
+    const w = parolaOra();
+    h += `<div class="ob-riga">${haDisegno(w) ? `<span class="ob-macchia">${svgParola(w)}</span>` : ''}<span class="ob-nome">${w}</span><span class="ob-val">${G.fase === 'cammina' ? G.trovIdx : w.length}/${w.length}</span></div>`;
+    const cl = i => G.fase === 'cammina' ? (i < G.trovIdx ? 'preso' : i === G.trovIdx ? 'ora' : '') : i < G.scrittoIdx ? 'fatto' : G.fase === 'scrivi' && i === G.scrittoIdx ? 'preso ora' : 'preso';   // blu = presa saltando, verde = scritta
+    h += `<div class="ob-riga"><div class="chips" style="--c:${G.fase === 'scrivi' ? '#F6B70E' : C.col}">${[...w].map((c, i) => `<span class="chip ${cl(i)}">${c}</span>`).join('')}</div></div>`;
+    $('#obiettivo').innerHTML = h;
+    return;
+  }
   if (L.scuola) {   // la macchia del colore da cercare, quanti ne mancano, e la fila dei colori
     const cur = L.colori[G.colIdx], fatto = G.colIdx >= L.colori.length;
     if (!fatto) {
-      const hx = COLORI_OGG[cur].hex;
-      h += `<div class="ob-riga"><span class="ob-macchia">${svgMacchia(cur)}</span><div class="slots-col" style="--sc:${hx}">${Array.from({ length: L.perColore }, (_, i) => `<span class="sl ${i < G.presiColore ? 'pieno' : ''}"></span>`).join('')}</div></div>`;
+      const hx = hexTarget(cur);
+      h += `<div class="ob-riga"><span class="ob-macchia">${svgTarget(cur)}</span>${L.perForma ? `<span class="ob-nome">${NOMI_OGG[cur]}</span>` : ''}<div class="slots-col" style="--sc:${hx}">${Array.from({ length: L.perColore }, (_, i) => `<span class="sl ${i < G.presiColore ? 'pieno' : ''}"></span>`).join('')}</div></div>`;
     } else h += `<div class="ob-riga"><span class="ob-macchia">${ICO.ok}</span></div>`;
-    if (L.colori.length > 1) h += `<div class="ob-riga"><div class="seq">${L.colori.map((c, i) => `<span class="${i < G.colIdx ? 'fatto' : i === G.colIdx ? 'ora' : ''}">${svgMacchia(c)}${i < G.colIdx ? `<i class="ok">${ICO.ok}</i>` : ''}</span>`).join('')}</div></div>`;
+    if (L.colori.length > 1) h += `<div class="ob-riga"><div class="seq">${L.colori.map((c, i) => `<span class="${i < G.colIdx ? 'fatto' : i === G.colIdx ? 'ora' : ''}">${svgTarget(c)}${i < G.colIdx ? `<i class="ok">${ICO.ok}</i>` : ''}</span>`).join('')}</div></div>`;
     $('#obiettivo').innerHTML = h;
     return;
   }
@@ -3561,10 +3954,17 @@ const tile = (html, cls = '') => `<div class="rt ${cls}">${html}</div>`;
 const figImg = k => `<img src="${IMG_DATA[k + '_full']}" alt="">`;
 function ricetta(L) {
   const C = CASE[G.casa], me = tile(figImg(G.casa), 'tok' + (L.buio ? ' buio' : ''));
+  if (L.tastiera) {   // salto sulle lettere della parola, poi la scrivo sulla tastiera vera
+    const w = L.parole[0], tasto = (c, cls = '') => `<div class="rt tasto-t ${cls}"><span>${c}</span></div>`;
+    return `<div class="rr">${tile(MINI_TASTI, 'tasti')}${FR}${me}${FR}${[...w].map(c => tasto(c)).join('')}${haDisegno(w) ? `<span class="uguale">=</span>${tile(svgParola(w), 'tes')}` : ''}</div>
+      <div class="rr">${tile(`<span style="color:#2563EB">${ICO.tastiera}</span>`, 'tes')}${FR}${[...w].map(c => tasto(c, 'ok')).join('')}</div>`;
+  }
   if (L.scuola) {   // io → la macchia → gli oggetti di quel colore; poi la fila dei colori
     const c0 = L.colori[0];
-    let h = `<div class="rr">${me}${FR}${tile(svgMacchia(c0), 'tes')}${FR}${tile(svgOgg('palla', c0), 'tes')}${tile(svgOgg('libro', c0), 'tes')}<span class="piu">×${L.perColore}</span></div>`;
-    if (L.colori.length > 1) h += `<div class="rr piccola">${L.colori.map(c => tile(svgMacchia(c), 'tes')).join(FR)}</div>`;
+    let h = L.perForma
+      ? `<div class="rr">${me}${FR}${tile(svgReale(c0), 'tes')}<span class="piu">×${L.perColore}</span></div>`
+      : `<div class="rr">${me}${FR}${tile(svgMacchia(c0), 'tes')}${FR}${tile(svgOgg('palla', c0), 'tes')}${tile(svgOgg('libro', c0), 'tes')}<span class="piu">×${L.perColore}</span></div>`;
+    if (L.colori.length > 1) h += `<div class="rr piccola">${L.colori.map(c => tile(svgTarget(c), 'tes')).join(FR)}</div>`;
     return h;
   }
   if (L.strade) {   // frecce → riquadro · SPAZIO → la tessera gira · VIA → l'auto arriva al castello
@@ -3617,9 +4017,13 @@ function mostraIntro() {
 function mostraFineLivello() {
   const e = G.log[G.log.length - 1], C = CASE[G.casa], ultimo = G.livello + 1 >= G.livelli.length;
   let tit, corpo;
-  if (e.tipo === 'scuola') {
+  if (e.tipo === 'tastiera') {
+    tit = 'PAROLA SCRITTA!';
+    corpo = `<div class="fila">${e.parole.map(w => `<div class="gr parola-fine">${haDisegno(w) ? `<span>${svgParola(w)}</span>` : ''}${w}</div>`).join('')}</div>
+      <div class="fila"><div class="gr"><span style="color:var(--blu)">${ICO.orme}</span>${e.salti}</div></div>`;
+  } else if (e.tipo === 'scuola') {
     tit = 'TUTTO TROVATO!';
-    corpo = `<div class="fila">${e.colori.map(c => `<div class="gr"><span>${svgMacchia(c)}</span>×${e.perColore}</div>`).join('')}</div>
+    corpo = `<div class="fila">${e.colori.map(c => `<div class="gr"><span>${svgTarget(c, e.perForma)}</span>×${e.perColore}</div>`).join('')}</div>
       <div class="fila"><div class="gr"><span style="color:var(--blu)">${ICO.orme}</span>${e.passi}</div></div>`;
   } else if (e.tipo === 'strade') {
     tit = 'STRADA COSTRUITA!';
@@ -3700,8 +4104,13 @@ const DEBRIEF_FUGA = [
   { ico: ICO.stella, testo: 'PRENDO I SIMBOLI', risp: 'I SIMBOLI NEGLI ANGOLI TI DANNO TEMPO PER SCAPPARE E ACCHIAPPARE.' },
   { ico: ICO.lucina, testo: 'PRENDO LE LUCINE VICINE', risp: 'PRENDERE PRIMA LE LUCINE VICINE TI FA FARE MENO STRADA.' },
 ];
+const DEBRIEF_TASTIERA = [
+  { ico: ICO.occhio, testo: 'GUARDO TUTTA LA TASTIERA', risp: 'GUARDARE PRIMA TUTTA LA TASTIERA TI FA TROVARE LE LETTERE PIÙ IN FRETTA.' },
+  { ico: ICO.orme, testo: 'UNA RIGA ALLA VOLTA', risp: 'LE LETTERE STANNO SU TRE RIGHE: CERCARE UNA RIGA ALLA VOLTA È UN BUON METODO.' },
+  { ico: ICO.tastiera, testo: 'RICORDO DOVE SONO', risp: 'PIÙ GIOCHI E PIÙ TI RICORDI DOVE SONO LE LETTERE: COSÌ SCRIVERAI PIÙ IN FRETTA.' },
+];
 const DEBRIEF_LAB = [
-  { ico: ICO.occhio, testo: 'GUARDO LA MAPPA_ATTIVA PRIMA', risp: 'GUARDARE LA MAPPA_ATTIVA PRIMA TI FA SCEGLIERE LA STRADA PIÙ CORTA.' },
+  { ico: ICO.occhio, testo: 'GUARDO LA FORMA', risp: 'OGNI OGGETTO HA LA SUA FORMA: IL MOUSE È TONDO, LA TASTIERA È LUNGA E PIENA DI TASTI.' },
   { ico: ICO.orme, testo: 'UN TAVOLO ALLA VOLTA', risp: 'GIRARE INTORNO AI TAVOLI UNO ALLA VOLTA TI FA VEDERE TUTTO IL LABORATORIO.' },
   { ico: ICO.lab, testo: 'PASSO IN MEZZO', risp: 'IL PASSAGGIO IN MEZZO AI DUE TAVOLI È LA SCORCIATOIA DEL LABORATORIO.' },
 ];
@@ -3732,17 +4141,19 @@ function finePartita() {
   G.stato = 'off'; G.debrief = null; G.focusDeb = 0; G.focusFine = 0;
   const C = CASE[G.casa];
   const n = G.log.length, mondo = G.mondo;
-  G.domande = { coding: DEBRIEF_CODING, strade: DEBRIEF_STRADE, scuola: DEBRIEF_SCUOLA, laboratorio: DEBRIEF_LAB, fuga: DEBRIEF_FUGA }[mondo] || DEBRIEF;
+  G.domande = { coding: DEBRIEF_CODING, strade: DEBRIEF_STRADE, scuola: DEBRIEF_SCUOLA, laboratorio: DEBRIEF_LAB, tastiera: DEBRIEF_TASTIERA, fuga: DEBRIEF_FUGA }[mondo] || DEBRIEF;
   $('#fineTit').textContent = mondo === 'coding' ? `${C.nome} HA PROGRAMMATO ${n} ${n === 1 ? 'PERCORSO' : 'PERCORSI'}`
     : mondo === 'fuga' ? `${C.nome} HA RACCOLTO ${G.log.reduce((s, e) => s + (e.lucine || 0), 0)} LUCINE`
+    : mondo === 'tastiera' ? `${C.nome} HA SCRITTO ${G.log.reduce((s, e) => s + (e.parole || []).length, 0)} PAROLE`
     : mondo === 'scuola' || mondo === 'laboratorio' ? `${C.nome} HA TROVATO ${G.log.reduce((s, e) => s + (e.trovati || 0), 0)} OGGETTI`
     : mondo === 'strade' ? `${C.nome} HA COSTRUITO ${n} ${n === 1 ? 'STRADA' : 'STRADE'}` : `${C.nome} HA ATTRAVERSATO ${n} ${n === 1 ? 'LABIRINTO' : 'LABIRINTI'}`;
-  $('.debrief .dq').textContent = { coding: 'COME HAI COSTRUITO IL PROGRAMMA?', strade: 'COME HAI COSTRUITO LA STRADA?', scuola: 'COME HAI TROVATO GLI OGGETTI?', laboratorio: 'COME HAI TROVATO GLI OGGETTI?', fuga: 'COME HAI FATTO A SCAPPARE?' }[mondo] || 'COME HAI TROVATO LA STRADA?';
+  $('.debrief .dq').textContent = { coding: 'COME HAI COSTRUITO IL PROGRAMMA?', strade: 'COME HAI COSTRUITO LA STRADA?', scuola: 'COME HAI TROVATO GLI OGGETTI?', laboratorio: 'COME HAI RICONOSCIUTO GLI OGGETTI?', tastiera: 'COME HAI TROVATO LE LETTERE?', fuga: 'COME HAI FATTO A SCAPPARE?' }[mondo] || 'COME HAI TROVATO LA STRADA?';
   $('#fineFig').src = IMG_DATA[G.casa + (mondo === 'strade' ? '_car' : '_full')];
   $('#fineTot').innerHTML = `LA TUA PARTITA<b>${G.punti}</b>PUNTI PER ${C.nome}`;
   $('#fineLivelli').innerHTML = G.livelli.map((d, i) => {
     const e = G.log.find(l => l.liv === i + 1);
     if (!e) return `<div class="lv no"><b>${i + 1}</b><span>${d.nome}</span><small>NON GIOCATO</small></div>`;
+    if (e.tipo === 'tastiera') return `<div class="lv"><b>${i + 1}</b><span>${e.parole.join(' ')}</span><small>${e.salti} SALTI</small></div>`;
     if (e.tipo === 'scuola') return `<div class="lv"><b>${i + 1}</b><span>${e.trovati} OGGETTI</span><small>${e.passi} PASSI</small></div>`;
     if (e.tipo === 'strade') return `<div class="lv"><b>${i + 1}</b><span>${e.tessere} TESSERE</span><small>PIÙ CORTA ${e.minimo}<br>${e.tentativi} ${e.tentativi === 1 ? 'PROVA' : 'PROVE'}</small></div>`;
     if (e.tipo === 'coding') return `<div class="lv"><b>${i + 1}</b><span>${e.carte} CARTE</span><small>MINIMO ${e.minimo}<br>${e.tentativi} ${e.tentativi === 1 ? 'PROVA' : 'PROVE'}</small></div>`;
@@ -3792,8 +4203,8 @@ function salvaTelemetria(debrief, completa) {
 
 /* ---------- Pannello docente ---------- */
 function apriDocente() {
-  const log = LS.get('lab-partite', []), deb = [0, 0, 0], debC = [0, 0, 0], debS = [0, 0, 0], debK = [0, 0, 0], debF = [0, 0, 0], debB = [0, 0, 0];
-  log.forEach(p => { if (p.debrief != null) ({ coding: debC, strade: debS, scuola: debK, fuga: debF, laboratorio: debB }[p.mondo] || deb)[p.debrief]++; });
+  const log = LS.get('lab-partite', []), deb = [0, 0, 0], debC = [0, 0, 0], debS = [0, 0, 0], debK = [0, 0, 0], debF = [0, 0, 0], debB = [0, 0, 0], debT = [0, 0, 0];
+  log.forEach(p => { if (p.debrief != null) ({ coding: debC, strade: debS, scuola: debK, fuga: debF, laboratorio: debB, tastiera: debT }[p.mondo] || deb)[p.debrief]++; });
   const mondo = mondoAttivo(), M = MONDI[mondo], part = LS.get(M.partenza, 1), sync = Classifica.stato.sync, daUrl = !!new URLSearchParams(location.search).get('mondo');
   $('#modBody').innerHTML = `<button class="chiudi" id="mChiudi" tabindex="-1">${ICO.x}</button><h2>Pannello docente</h2>
     <h4>CLASSIFICA</h4><p>${sync ? 'Condivisa tra i Mac tramite Apps Script.' : 'Salvata su questo Mac. Per condividerla tra più Mac, inserire l\'URL dell\'Apps Script in <code>CONFIG.URL_CLASSIFICA</code>.'} Il punteggio è <b>a testa</b>: punti della casata diviso i giocatori entrati in gioco.${CONFIG.AZZERA_OGNI_NOTTE ? ' Riparte da zero ogni notte a mezzanotte (ora italiana): ogni partita conta nel giorno in cui è iniziata.' : ''}</p>
@@ -3806,7 +4217,7 @@ function apriDocente() {
     <p style="margin-top:6px">Quando un bambino sceglie la casata, il mondo si gioca da solo su un livello piccolo e una freccia numerata indica i passaggi (circa 15 secondi). Si salta con INVIO o con il pulsante SALTA. Con <code>?demo=0</code> nell'indirizzo non compare.</p>
     <h4>AUDIO</h4><div class="riga-b"><button class="mb ${SFX.on ? 'on' : ''}" id="mSuoni" tabindex="-1">SUONI ${SFX.on ? 'ATTIVI' : 'SPENTI'}</button></div>
     <h4>MODALITÀ LEZIONE</h4><p>Aggiungendo <code>?seed=2A</code> all'indirizzo, tutti i Mac generano gli stessi labirinti: si può discutere insieme la stessa partita. Con <code>?livello=5</code> si parte da un livello preciso.</p>
-    <h4>SU QUESTO MAC</h4><p>${log.length} partite registrate. Labirinti, «come hai trovato la strada?»: guardo prima ${deb[0]} · provo e riprovo ${deb[1]} · lanterne ${deb[2]}. Coding, «come hai costruito il programma?»: tutto prima ${debC[0]} · un pezzo alla volta ${debC[1]} · provo e correggo ${debC[2]}. Strade, «come hai costruito la strada?»: guardo tutta la strada ${debS[0]} · una tessera alla volta ${debS[1]} · provo e aggiusto ${debS[2]}. Scuola, «come hai trovato gli oggetti?»: guardo la mappa ${debK[0]} · una stanza alla volta ${debK[1]} · seguo il corridoio ${debK[2]}. Laboratorio: guardo la mappa ${debB[0]} · un tavolo alla volta ${debB[1]} · passo in mezzo ${debB[2]}. Acchiapparella, «come hai fatto a scappare?»: guardo dove vanno ${debF[0]} · prendo i simboli ${debF[1]} · lucine vicine ${debF[2]}.</p>
+    <h4>SU QUESTO MAC</h4><p>${log.length} partite registrate. Labirinti, «come hai trovato la strada?»: guardo prima ${deb[0]} · provo e riprovo ${deb[1]} · lanterne ${deb[2]}. Coding, «come hai costruito il programma?»: tutto prima ${debC[0]} · un pezzo alla volta ${debC[1]} · provo e correggo ${debC[2]}. Strade, «come hai costruito la strada?»: guardo tutta la strada ${debS[0]} · una tessera alla volta ${debS[1]} · provo e aggiusto ${debS[2]}. Scuola, «come hai trovato gli oggetti?»: guardo la mappa ${debK[0]} · una stanza alla volta ${debK[1]} · seguo il corridoio ${debK[2]}. Laboratorio: guardo la forma ${debB[0]} · un tavolo alla volta ${debB[1]} · passo in mezzo ${debB[2]}. Tastiera: tutta la tastiera ${debT[0]} · una riga alla volta ${debT[1]} · ricordo dove sono ${debT[2]}. Acchiapparella, «come hai fatto a scappare?»: guardo dove vanno ${debF[0]} · prendo i simboli ${debF[1]} · lucine vicine ${debF[2]}.</p>
     <p style="margin-top:6px">La mappa del mondo SCUOLA è un disegno semplificato del primo piano: senza misure, senza uscite di sicurezza e senza la zona dei padri.</p>`;
   $('#modDocente').classList.add('on');
   $('#mChiudi').onclick = chiudiDocente;
@@ -3838,7 +4249,7 @@ function cambiaMondo(m) {
   if (m !== prima) {
     SFX.play('scegli');
     const b = $(`#mondi .mondo-btn[data-m="${m}"]`), r = b.getBoundingClientRect();
-    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9', scuola: '#A78BFA', laboratorio: '#F08A3C' }[m] || '#6FA3FF']);
+    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9', scuola: '#A78BFA', laboratorio: '#F08A3C', tastiera: '#9EA5B3' }[m] || '#6FA3FF']);
   }
 }
 
@@ -3893,10 +4304,11 @@ document.addEventListener('keydown', e => {
     if (performance.now() < (G.bloccoInput || 0)) return;
     if (G.stato === 'intro' && (k || (G.L.coding && invio) || (G.L.strade && (invio || spazio)))) {
       iniziaGioco();
-      if (k && !G.L.strade) { if (!G.L.coding) tastoFreccia(k); else if (!G.L.def.debug) aggiungiCarta(k); }   // nel livello "aggiusta" il programma c'è già
+      if (k && !G.L.strade) { if (G.L.tastiera) muoviTasto(k); else if (!G.L.coding) tastoFreccia(k); else if (!G.L.def.debug) aggiungiCarta(k); }   // nel livello "aggiusta" il programma c'è già
       return;
     }
     if (G.stato === 'completo' && (invio || spazio)) { prossimoLivello(); return; }
+    if (G.stato === 'gioco' && G.L.tastiera) { if (k) muoviTasto(k); else if (spazio) usaAiuto(); else if (e.key.length === 1) premiLettera(e.key.toUpperCase()); return; }
     if (G.stato === 'gioco' && G.L.strade) { if (k) muoviCursore(k); else if (spazio) cicla(); else if (canc) togliTessera(); else if (invio) avviaGuida(); return; }
     if (G.stato === 'gioco' && G.L.coding) { if (k) aggiungiCarta(k); else if (invio) avviaEsecuzione(); else if (spazio) usaAiuto(); else if (canc) togliCarta(); return; }
     if (G.stato === 'gioco') { if (k) tastoFreccia(k); else if (spazio) usaAiuto(); }
@@ -3956,7 +4368,10 @@ async function avvio() {
     IMGS.emblema[k] = await svgImg(EMBLEMI[k]);
   }));
   IMGS.lanterna = await svgImg(ICO.lanterna);
-  IMGS.ogg = {}; IMGS.macchia = [];
+  IMGS.ogg = {}; IMGS.macchia = []; IMGS.reale = {}; IMGS.parola = {};
+  await Promise.all(Object.keys(SVG_PAROLE).map(async w => { IMGS.parola[w] = await svgImg(svgParola(w)); }));
+  IMGS.icoTastiera = await svgImg(ICO.tastiera.replace(/currentColor/g, '#2563EB'));
+  await Promise.all(FORME_REALI.map(async f => { IMGS.reale[f] = await svgImg(svgReale(f)); }));
   await Promise.all(COLORI_OGG.map(async (_, i) => {
     IMGS.macchia[i] = await svgImg(svgMacchia(i));
     for (const f of FORME.concat(FORME_LAB)) IMGS.ogg[f + i] = await svgImg(svgOgg(f, i));
@@ -3986,7 +4401,7 @@ async function avvio() {
   $('#bVia').onclick = () => avviaEsecuzione();
   $('#slots').addEventListener('click', e => { const c = e.target.closest('.cp.carta'); if (c && G.stato === 'gioco') togliCarta(+c.dataset.i); });
   document.querySelectorAll('#mondi .mondo-btn').forEach(b => {
-    b.innerHTML = { coding: `${ICO.carta}<span>CODING</span>`, strade: `${ICO.auto}<span>STRADE</span>`, scuola: `${ICO.scuola}<span>SCUOLA</span>`, laboratorio: `${ICO.lab}<span>LABORATORIO</span>` }[b.dataset.m] || `${ICO.labirinto}<span>LABIRINTI</span>`;
+    b.innerHTML = { coding: `${ICO.carta}<span>CODING</span>`, strade: `${ICO.auto}<span>STRADE</span>`, scuola: `${ICO.scuola}<span>SCUOLA</span>`, laboratorio: `${ICO.lab}<span>LABORATORIO</span>`, tastiera: `${ICO.tastiera}<span>TASTIERA</span>` }[b.dataset.m] || `${ICO.labirinto}<span>LABIRINTI</span>`;
     b.onclick = () => { focusMondi = false; cambiaMondo(b.dataset.m); aggiornaFocus(); };
   });
   aggiornaMondi();
