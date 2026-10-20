@@ -2292,7 +2292,7 @@ async function demoTastiera() {   // 1 sei tu · 2 la parola · 3 i salti · 4 i
   await finche(() => G.stato !== 'gioco', 8000);
 }
 async function demoScuola() {   // 1 sei tu · 2 il colore da cercare · 3 eccolo · 4 i tasti · 5 preso!
-  const L = G.L, ob = [...L.items.values()].find(i => i.col === L.colori[0]);
+  const L = G.L, ob = [...L.items.values()].find(i => vale(i, L.colori[0]));   // nel Laboratorio conta la forma, non il colore
   await mostra(rettCella(G.pl.x, G.pl.y), scrCella(G.pl.x, G.pl.y, -.25), 1);
   await mostra($('#obiettivo .ob-macchia'), $('#obiettivo .ob-macchia'), 2, 12);
   await mostra(rettCella(ob.x, ob.y), scrCella(ob.x, ob.y), 3);
