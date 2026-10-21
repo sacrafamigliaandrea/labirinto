@@ -283,6 +283,11 @@ img{-webkit-user-drag:none;user-select:none}
 .tv .tvi svg{width:100%;height:100%;display:block}
 .tv b{position:absolute;right:-8px;bottom:-8px;padding:0 .4em;border-radius:999px;background:#fff;color:var(--inchiostro);font-size:calc(var(--cw)*.3);line-height:1.25;font-weight:700;box-shadow:0 2px 0 rgba(0,0,0,.15)}
 .tv.finita{opacity:.3;filter:grayscale(1)}
+.tv.preso{animation:pop .45s}
+.buche{display:flex;gap:6px;flex-wrap:wrap}
+.buche span{width:clamp(28px,2vw,38px);height:clamp(28px,2vw,38px);display:block;transition:transform .3s}
+.buche span svg{width:100%;height:100%;display:block}
+.buche span.piena{transform:scale(.9)}
 .tv-tasti{display:flex;align-items:center;gap:.5vw;color:var(--blu);margin:0 .4vw}
 .tv-tasti .tvr{width:calc(var(--cw)*.5);height:calc(var(--cw)*.5)}
 .tv-tasti .tvr svg{width:100%;height:100%}
@@ -1118,6 +1123,7 @@ function generaStrade(d, r) {
       posa(idx(q.x, q.y), q.tipo, (q.rot + 1 + Math.floor(r() * (n - 1))) % n);   // mai già giusta
     });
     const buchi = tess.filter(q => !tiles[idx(q.x, q.y)]).length;
+    const buchiSet = d.buchi ? new Set(tess.filter(q => !tiles[idx(q.x, q.y)]).map(q => idx(q.x, q.y))) : null;   // buche disegnate sul prato
     if (!ultimo && d.prefill > 0 && d.prefill < 1 && (buchi < 2 || buchi === tess.length)) continue;
     const libere = []; for (let k = 0; k < W * H; k++) if (!suVia.has(k) && terreno[k] === 'prato') libere.push(k);
     shuffle(libere, r).slice(0, d.distrattori || 0).forEach(k => { const tipo = r() < .5 ? 'dritto' : 'curva'; posa(k, tipo, Math.floor(r() * (tipo === 'curva' ? 4 : 2))); });
@@ -1130,7 +1136,7 @@ function generaStrade(d, r) {
     tess.forEach(q => { if (!tiles[idx(q.x, q.y)]) vasca[q.tipo]++; });
     if (buchi) Object.entries(d.extra || {}).forEach(([k, n]) => { vasca[k] += n; });
     const corta = stradaPiuCorta(W, H, terreno, tiles, vasca, r0, r1);
-    ris = { w: W, h: H, r0, r1, xr, terreno, tiles, items, vasca, soluzione: tess, minimo: Math.min(tess.length, corta || 1e9),
+    ris = { w: W, h: H, r0, r1, xr, terreno, tiles, items, vasca, buchiSet, soluzione: tess, minimo: Math.min(tess.length, corta || 1e9),
       start: { x: -1, y: r0 }, uscita: { x: W, y: r1 }, gr: new Griglia(W, H), stelleTot: items.size, numeriTot: 0, serveChiave: false };
   }
   return ris;
@@ -1237,7 +1243,7 @@ const LIVELLI_CODING = [
 const LIVELLI_STRADE = [
   { nome: 'GIRA LA STRADA',    tipo: 'strade', w: 5, h: 3, tema: 'prato', svolte: .45, prefill: 1,  distrattori: 0, ostacoli: .3,  stelle: 1, minCurve: 2, maxLen: 9 },
   { nome: 'TESSERE IN PIÙ',    tipo: 'strade', w: 6, h: 4, tema: 'prato', svolte: .5,  prefill: 1,  distrattori: 4, ostacoli: .15, stelle: 2, minCurve: 3, maxLen: 12 },
-  { nome: 'I BUCHI',           tipo: 'strade', w: 6, h: 4, tema: 'prato', svolte: .5,  prefill: .5, distrattori: 1, ostacoli: .25, stelle: 2, minCurve: 3, maxLen: 12, extra: { curva: 1 } },
+  { nome: 'I BUCHI',           tipo: 'strade', w: 6, h: 4, tema: 'prato', svolte: .5,  prefill: .5, distrattori: 0, buchi: true, ostacoli: .25, stelle: 2, minCurve: 3, maxLen: 12, extra: { curva: 1 } },
   { nome: 'IL FIUME',          tipo: 'strade', w: 7, h: 4, tema: 'prato', svolte: .5,  prefill: .3, fiume: true,    ostacoli: .25, stelle: 2, minCurve: 2, maxLen: 14, extra: { dritto: 1, curva: 1 } },
   { nome: 'DA SOLO',           tipo: 'strade', w: 7, h: 5, tema: 'prato', svolte: .55, prefill: 0,  ostacoli: .3,  stelle: 2, minCurve: 4, maxLen: 15, extra: { dritto: 1, curva: 2 } },
   { nome: 'IL GRANDE VIAGGIO', tipo: 'strade', w: 9, h: 5, tema: 'prato', svolte: .6,  prefill: 0,  fiume: true, ostacoli: .3, stelle: 3, minCurve: 4, maxLen: 20, extra: { dritto: 2, curva: 2 } },
@@ -1830,31 +1836,53 @@ function muoviCursore(k) {
   G.cur = { x: clamp(G.cur.x + d.dx, 0, L.w - 1), y: clamp(G.cur.y + d.dy, 0, L.h - 1) };
   SFX.play('tick');
 }
-function modificata() { G.guasto = null; G.ultimoProgresso = G.tGioco; aggiornaTray(); }
-/* SPAZIO sulla casella: tessera già posata → gira di 90°; casella libera → dritto, dritto girato,
-   curva nei 4 versi, vuoto (si saltano i tipi finiti nel cesto). Sul fiume va solo il ponte. */
+function modificata() { G.guasto = null; G.ultimoProgresso = G.tGioco; aggiornaTray(); if (G.L.buchiSet) aggiornaObiettivo(); }
+/* SPAZIO sulla casella: tessera già posata → gira di 90°. Casella libera → arriva dal cesto la tessera che si
+   attacca meglio alla strada intorno (parcheggio, castello, tessere vicine); premendo ancora gira e poi cambia
+   tipo (dritto, curva), e dopo un giro completo torna nel cesto. Sul fiume va solo il ponte. */
+const STATI_TESSERA = [['dritto', 0], ['dritto', 1], ['curva', 0], ['curva', 1], ['curva', 2], ['curva', 3]];
+function puntiAttacco(c, tipo, rot) {   // quanto la tessera (tipo, rot) messa in c si collega a ciò che ha intorno
+  const L = G.L, ap = APERTURE[tipo][rot]; let s = 0;
+  for (const d of DIRL) {
+    const x = c.x + d.dx, y = c.y + d.dy, dentro = x >= 0 && y >= 0 && x < L.w && y < L.h, kk = y * L.w + x;
+    const vic = dentro ? L.tiles[kk] : null, bordo = (x === -1 && y === L.r0) || (x === L.w && y === L.r1);
+    const verso = bordo || !!(vic && (apertureDi(vic) & d.o));   // da lì arriva una strada
+    const girabile = vic && vic.fonte === 'girabile';             // girandola, potrà arrivare
+    if (ap & d.b) s += verso ? 3 : girabile ? 2 : !dentro || L.terreno[kk] === 'albero' || L.terreno[kk] === 'roccia' ? -2 : vic ? -1 : L.buchiSet && L.buchiSet.has(kk) ? 1 : 0;
+    else if (verso && !girabile) s -= 1;   // quella strada resterebbe senza uscita
+  }
+  return s;
+}
 function cicla() {
   if (G.stato !== 'gioco') return;
   const L = G.L, k = G.cur.y * L.w + G.cur.x, ter = L.terreno[k], tl = L.tiles[k];
   if (ter === 'albero' || ter === 'roccia') { G.curUrto = G.tempo; SFX.play('muro'); return; }
   if (tl && tl.fonte === 'girabile') { tl.daGiri = tl.giri; tl.giri++; tl.t0 = G.tempo; SFX.play('carta', 'destra'); modificata(); return; }
-  const stati = ter === 'fiume' ? [['ponte', 0], [null, 0]] : [['dritto', 0], ['dritto', 1], ['curva', 0], ['curva', 1], ['curva', 2], ['curva', 3], [null, 0]];
-  const ora = tl ? stati.findIndex(s => s[0] === tl.tipo && s[1] === rotDi(tl)) : stati.length - 1;
-  for (let n = 1; n <= stati.length; n++) {
-    const [tipo, rot] = stati[(ora + n) % stati.length];
-    if (tipo === null) {
-      if (!tl) { const tr = $('#tray'); tr.classList.remove('pieno'); void tr.offsetWidth; tr.classList.add('pieno'); SFX.play('nonAncora'); return; }
-      togliTessera(); return;
-    }
-    if (G.dispo[tipo] + (tl && tl.tipo === tipo ? 1 : 0) <= 0) continue;
-    if (tl && tl.tipo === tipo) { tl.daGiri = tl.giri; tl.giri++; tl.t0 = G.tempo; }
-    else {
-      if (tl) G.dispo[tl.tipo]++;
-      G.dispo[tipo]--;
-      L.tiles[k] = { tipo, giri: rot, daGiri: rot, fonte: 'giocatore', t0: -9, pop: G.tempo };
-    }
-    SFX.play('carta', tl && tl.tipo === tipo ? 'destra' : 'su'); modificata(); return;
+  const stati = ter === 'fiume' ? [['ponte', 0]] : STATI_TESSERA;
+  const ce = ([tipo]) => G.dispo[tipo] + (tl && tl.tipo === tipo ? 1 : 0) > 0;
+  if (!tl) {
+    const cand = stati.filter(ce);
+    if (!cand.length) { const tr = $('#tray'); tr.classList.remove('pieno'); void tr.offsetWidth; tr.classList.add('pieno'); SFX.play('nonAncora'); return; }
+    const [tipo, rot] = cand.reduce((a, b) => puntiAttacco(G.cur, b[0], b[1]) > puntiAttacco(G.cur, a[0], a[1]) ? b : a);
+    G.dispo[tipo]--; G.presoTipo = { tipo, t0: G.tempo };
+    L.tiles[k] = { tipo, giri: rot, daGiri: rot, fonte: 'giocatore', t0: -9, pop: G.tempo, da: stati.findIndex(s => s[0] === tipo && s[1] === rot) };
+    SFX.play('carta', 'su'); modificata(); return;
   }
+  const ora = stati.findIndex(s => s[0] === tl.tipo && s[1] === rotDi(tl));
+  for (let n = 1; n < stati.length; n++) {
+    const i = (ora + n) % stati.length;
+    if (i === tl.da) break;   // ha fatto il giro completo: torna nel cesto
+    const [tipo, rot] = stati[i];
+    if (!ce(stati[i])) continue;
+    if (tl.tipo === tipo) { tl.daGiri = tl.giri; tl.giri++; tl.t0 = G.tempo; SFX.play('carta', 'destra'); }
+    else {
+      G.dispo[tl.tipo]++; G.dispo[tipo]--; G.presoTipo = { tipo, t0: G.tempo };
+      L.tiles[k] = { tipo, giri: rot, daGiri: rot, fonte: 'giocatore', t0: -9, pop: G.tempo, da: tl.da };
+      SFX.play('carta', 'su');
+    }
+    modificata(); return;
+  }
+  togliTessera();
 }
 function togliTessera() {
   if (G.stato !== 'gioco') return;
@@ -1967,11 +1995,13 @@ const TESSERA_SVG = {
   ponte: `<svg viewBox="0 0 48 48"><rect x="3" y="3" width="42" height="42" rx="8" fill="#5DB3EA"/><path d="M8 11c3-2 5 2 8 0M28 39c3-2 5 2 8 0" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/><rect x="0" y="15" width="48" height="18" fill="#B07A45"/><path d="M8 15v18M16 15v18M24 15v18M32 15v18M40 15v18" stroke="#8A5A2E" stroke-width="1.6"/><path d="M0 15h48M0 33h48" stroke="#6B4423" stroke-width="3"/></svg>`,
 };
 const ACQUA_SVG = `<svg viewBox="0 0 48 48"><rect x="3" y="3" width="42" height="42" rx="8" fill="#5DB3EA"/><path d="M9 16c4-3 7 3 11 0s7 3 11 0 6 2 8 1M9 28c4-3 7 3 11 0s7 3 11 0 6 2 8 1" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".8"/></svg>`;
+const BUCA_SVG = `<svg viewBox="0 0 48 48"><rect x="3" y="3" width="42" height="42" rx="8" fill="#A9D673"/><rect x="7" y="9" width="32" height="32" rx="8" fill="#B98A55"/><rect x="11" y="15" width="24" height="22" rx="6" fill="#7A4E2A"/><circle cx="18" cy="24" r="2.4" fill="#5E3A1E"/><circle cx="28" cy="30" r="2" fill="#5E3A1E"/><circle cx="24" cy="21" r="1.6" fill="#5E3A1E"/><path d="M38 4l6 14H32Z" fill="#F97316"/><rect x="34.2" y="9.5" width="7.6" height="2.8" fill="#fff"/><rect x="30.5" y="17" width="15" height="3" rx="1" fill="#C2410C"/></svg>`;
 const CURSORE_SVG = `<svg viewBox="0 0 48 48"><rect x="5" y="5" width="38" height="38" rx="9" fill="none" stroke="currentColor" stroke-width="4.5" stroke-dasharray="8 5"/></svg>`;
 function aggiornaTray() {
   const L = G.L; if (!L || !L.strade) return;
   const tipi = ['dritto', 'curva', 'ponte'].filter(k => L.vasca[k] > 0);
-  let h = tipi.map(k => `<div class="tv ${G.dispo[k] ? '' : 'finita'}"><span class="tvi">${TESSERA_SVG[k]}</span><b>×${G.dispo[k]}</b></div>`).join('');
+  const preso = G.presoTipo && G.tempo - G.presoTipo.t0 < .3 ? G.presoTipo.tipo : null;
+  let h = tipi.map(k => `<div class="tv ${G.dispo[k] ? '' : 'finita'} ${k === preso ? 'preso' : ''}"><span class="tvi">${TESSERA_SVG[k]}</span><b>×${G.dispo[k]}</b></div>`).join('');
   h += `<div class="tv-tasti"><span class="cap">SPAZIO</span><span class="tvr">${ICO.riprova}</span></div>`;
   $('#trayT').innerHTML = h;
   const libero = G.stato === 'gioco', b = $('#bViaS');
@@ -2235,6 +2265,7 @@ function preparaDemoStrade(L) {
     L.tiles[k] = { tipo: q.tipo, giri, daGiri: giri, fonte: 'girabile', t0: -9, pop: -9 };
   });
   G.dispo = { dritto: 0, curva: 0, ponte: 0 }; if (best) G.dispo[best.buco.tipo]++;
+  L.buchiSet = best ? new Set([idx(best.buco)]) : null;
   L.vasca = { ...G.dispo };
 }
 async function demoStrade() {
@@ -3363,6 +3394,20 @@ function costruisciStaticoStrade() {
   for (let k = 0; k < 4; k++) for (let j = 0; j < 2; j++) { x.fillStyle = (k + j) % 2 ? '#FFFFFF' : '#1F2A44'; x.fillRect(ox - cell * .1 + j * cell * .05, ys - cell * .19 + k * cell * .095, cell * .05, cell * .095); }
   stradaOrizzontale(x, ox + L.w * cell, ox + (L.w + .5) * cell, yc, cell);
 }
+function bucaStrade(x, cx, cy, cell, t) {   // la buca: terra smossa e un cono, «qui manca un pezzo di strada»
+  const s = cell * .74, p = .5 + .5 * Math.sin(t * 4);
+  x.save(); x.translate(cx, cy);
+  x.fillStyle = '#B98A55'; rrect(x, -s / 2, -s / 2, s, s, cell * .16); x.fill();
+  x.fillStyle = '#7A4E2A'; rrect(x, -s * .36, -s * .3, s * .72, s * .68, cell * .13); x.fill();
+  x.fillStyle = '#5E3A1E'; [[-.13, -.02, .045], [.11, .11, .04], [-.03, .17, .03], [.03, -.09, .03]].forEach(([a, b, r]) => { x.beginPath(); x.arc(a * cell, b * cell, r * cell, 0, 7); x.fill(); });
+  const kx = s * .4, ky = -s * .34, h = cell * .3, w = cell * .21;
+  x.fillStyle = '#F97316'; x.beginPath(); x.moveTo(kx, ky - h * .55); x.lineTo(kx + w / 2, ky + h * .42); x.lineTo(kx - w / 2, ky + h * .42); x.closePath(); x.fill();
+  x.fillStyle = '#FFFFFF'; x.fillRect(kx - w * .26, ky - h * .08, w * .52, h * .13);
+  x.fillStyle = '#C2410C'; rrect(x, kx - w * .62, ky + h * .38, w * 1.24, h * .13, h * .04); x.fill();
+  x.globalAlpha = .4 + .5 * p; x.strokeStyle = '#FFFFFF'; x.lineWidth = cell * .035; x.setLineDash([cell * .08, cell * .06]);   // «metti qui una tessera»
+  rrect(x, -s / 2 - cell * .04, -s / 2 - cell * .04, s + cell * .08, s + cell * .08, cell * .18); x.stroke(); x.setLineDash([]);
+  x.restore();
+}
 function badgeGira(x, cx, cy, s) {
   x.save(); x.translate(cx, cy);
   x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(0, 0, s, 0, 7); x.fill();
@@ -3400,6 +3445,7 @@ function renderStrade() {
   if (riv) { x.save(); x.beginPath(); x.arc(st.x, st.y, easeOut(G.rivela) * Math.hypot(lay.W, lay.H), 0, 7); x.clip(); }
   x.drawImage(stat, 0, 0, lay.W, lay.H);
   disegnaCastello(x, centro(L.uscita.x, L.uscita.y), cell, t);
+  if (L.buchiSet) L.buchiSet.forEach(k => { if (!L.tiles[k]) { const c = centro(k % L.w, (k / L.w) | 0); bucaStrade(x, c.x, c.y, cell, t); } });
   // tessere: girano con un'animazione, quelle nuove "saltano" fuori
   for (let k = 0; k < L.w * L.h; k++) {
     const tl = L.tiles[k]; if (!tl) continue;
@@ -3872,6 +3918,10 @@ function aggiornaObiettivo() {
   }
   if (L.strade) {
     h += `<div class="ob-riga"><span class="ob-auto"><img src="${IMG_DATA[G.casa + '_car']}" alt=""></span>${FR}<span class="ob-ico" style="color:${C.col}">${ICO.castello}</span></div>`;
+    if (L.buchiSet) {   // una casella per buca: si riempie quando ci va una tessera
+      const piene = [...L.buchiSet].filter(k => L.tiles[k]).length;
+      h += `<div class="ob-riga"><div class="buche">${Array.from({ length: L.buchiSet.size }, (_, i) => i < piene ? `<span class="piena">${TESSERA_SVG.dritto}</span>` : `<span>${BUCA_SVG}</span>`).join('')}</div></div>`;
+    }
     if (L.stelleTot) h += `<div class="ob-riga"><div class="stelle-slot">${Array.from({ length: L.stelleTot }, (_, i) => `<span class="${i < G.stellePrese ? '' : 'vuota'}">${ICO.stella}</span>`).join('')}</div></div>`;
   } else if (L.fuga) {
     const A = L.arena, presi = A.lucineTot - A.lucine.size;
@@ -3972,7 +4022,8 @@ function ricetta(L) {
     const castello = tile(`<span style="color:${C.col}">${ICO.castello}</span>`, 'meta');
     const cesto = ['dritto', 'curva', 'ponte'].filter(k => L.vasca[k] > 0 && k !== 'ponte');
     let h = `<div class="rr">${tile(MINI_TASTI, 'tasti')}${FR}${tile(`<span style="color:${C.col}">${CURSORE_SVG}</span>`, 'tes')}</div>
-      <div class="rr">${tile('<span class="cap">SPAZIO</span>', 'tasto-sp')}${FR}${tile(TESSERA_SVG.curva, 'tes gira')}${cesto.length ? `<span class="uguale">+</span>${cesto.map(k => tile(TESSERA_SVG[k], 'tes')).join('')}` : ''}</div>
+      ${L.buchiSet ? `<div class="rr">${tile(BUCA_SVG, 'tes')}${FR}${tile('<span class="cap">SPAZIO</span>', 'tasto-sp')}${FR}${tile(TESSERA_SVG.dritto, 'tes')}</div>` : ''}
+      <div class="rr">${tile('<span class="cap">SPAZIO</span>', 'tasto-sp')}${FR}${tile(TESSERA_SVG.curva, 'tes gira')}${cesto.length && !L.buchiSet ? `<span class="uguale">+</span>${cesto.map(k => tile(TESSERA_SVG[k], 'tes')).join('')}` : ''}</div>
       <div class="rr">${tile(ICO.play, 'via')}${FR}${car}${FR}${castello}</div>`;
     if (L.xr >= 0) h += `<div class="rr piccola">${tile(ACQUA_SVG, 'tes')}${FR}${tile(TESSERA_SVG.ponte, 'tes')}</div>`;
     if (L.stelleTot) h += `<div class="rr piccola">${tile(ICO.stella)}<span class="piu">+${PUNTI.stella}</span></div>`;
