@@ -76,6 +76,10 @@ img{-webkit-user-drag:none;user-select:none}
 .mondo-btn[data-m=laboratorio].on{color:#B4520C}
 .mondo-btn[data-m=laboratorio].on svg{color:#E8762A}
 .mondo-btn[data-m=tastiera] svg{color:#C9CED8}
+.mondo-btn[data-m=aula] svg{color:#7FD07A}
+.mondo-btn[data-m=aula].on{color:#1F6B2A}
+.mondo-btn[data-m=aula].on svg{color:#2E9B44}
+#cv3d{position:absolute;inset:0;width:100%;height:100%;display:none;pointer-events:none}
 .mondo-btn[data-m=tastiera].on{color:#2E3644}
 .mondo-btn[data-m=tastiera].on svg{color:#5E6B7D}
 .rt.tasto-t{background:#FBFBFC;box-shadow:inset 0 -6px 0 #C3C8D2,0 2px 0 #9EA5B3}
@@ -524,7 +528,7 @@ img{-webkit-user-drag:none;user-select:none}
   <header class="testata">
     <div class="tit1">IL LABIRINTO</div>
     <div class="tit2">DELLE CASATE</div>
-    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="scuola" tabindex="-1"></button><button class="mondo-btn" data-m="laboratorio" tabindex="-1"></button><button class="mondo-btn" data-m="tastiera" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button></div>
+    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="aula" tabindex="-1"></button><button class="mondo-btn" data-m="scuola" tabindex="-1"></button><button class="mondo-btn" data-m="laboratorio" tabindex="-1"></button><button class="mondo-btn" data-m="tastiera" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button></div>
   </header>
   <div class="carte" id="carte"></div>
   <footer class="piede">
@@ -551,6 +555,7 @@ img{-webkit-user-drag:none;user-select:none}
     </div>
   </header>
   <main class="stage" id="stage">
+    <canvas id="cv3d"></canvas>
     <canvas id="cv"></canvas>
     <div class="prog off" id="prog"><div class="slots" id="slots"></div><button class="pbtn gomma" id="bGomma" tabindex="-1" aria-label="Togli l'ultima carta"></button><button class="pbtn via" id="bVia" tabindex="-1" aria-label="Esegui il programma"></button></div>
     <div class="prog off" id="tray"><div class="tray-t" id="trayT"></div><button class="pbtn via" id="bViaS" tabindex="-1" aria-label="Fai partire l'auto"></button></div>
@@ -676,6 +681,7 @@ const ICO = {
   regola: S24('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/>'),
   x: S24('<path d="M6 6l12 12M18 6L6 18"/>'),
   auto: S24('<path d="M2.5 15.5v-2.4c0-.9.6-1.6 1.4-1.8l2.6-.6 2.4-3.1c.4-.5 1-.8 1.6-.8h4.2c.6 0 1.2.3 1.6.8l2.5 3.1 1.9.5c.8.2 1.3.9 1.3 1.7v2.6"/><path d="M2.5 15.5h2.3M9.6 15.5h4.8M19.3 15.5h2.2M10 7.3v3.8M3.8 11.2h16.6"/><circle cx="7.2" cy="15.7" r="2.3"/><circle cx="16.8" cy="15.7" r="2.3"/>'),
+  aula: S24('<path d="M3 8.5L12 4l9 4.5-9 4.5z"/><path d="M3 8.5v7L12 20l9-4.5v-7"/><path d="M12 13v7M7.5 10.8v6.9M16.5 10.8v6.9"/>'),
   tastiera: S24('<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 9.5h1M9.5 9.5h1M13 9.5h1M16.5 9.5h1M6 12.5h1M9.5 12.5h1M13 12.5h1M16.5 12.5h1M8 15.5h8"/>'),
   lab: S24('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16v4"/><path d="M7 8.5h4M7 11.5h7"/>'),
   scuola: S24('<path d="M3 21h18M5 21V10.5L12 6l7 4.5V21"/><path d="M10 21v-5h4v5M8.5 12h1M14.5 12h1"/><path d="M12 6V2.5l3.2 1.3L12 5"/>'),
@@ -1221,6 +1227,12 @@ const LIVELLI = [
   { nome: 'AL BUIO',             tipo: 'labirinto', w: 11, h: 7, tema: 'notte',    stelle: 3, chiave: true, buio: true },
   { nome: 'IL GRANDE LABIRINTO', tipo: 'labirinto', w: 14, h: 8, tema: 'castello', stelle: 4, numeri: 5, anelli: .2 },
 ];
+/* Mondo AULA MAGNA: gli stessi labirinti, in 3D sul pavimento dell'aula magna (siepi) */
+const LIVELLI_AULA = [
+  { nome: 'LE SIEPI',         tipo: 'labirinto', aula3d: true, w: 8,  h: 4, tema: 'castello', stelle: 2 },
+  { nome: 'I NUMERI IN AULA', tipo: 'labirinto', aula3d: true, w: 11, h: 5, tema: 'castello', stelle: 2, numeri: 3, anelli: .1 },
+  { nome: 'LA CHIAVE',        tipo: 'labirinto', aula3d: true, w: 14, h: 6, tema: 'castello', stelle: 3, chiave: true, anelli: .12 },
+];
 /* Premio finale, dopo il Coding: le fughe in stile Pac-Man (non compare tra i pulsanti della home) */
 const LIVELLI_FUGA = [
   { nome: 'ACCHIAPPARELLA',      tipo: 'fuga',      w: 13, h: 9, tema: 'arena', inseguitori: 2, vel: 3.1, paura: 7 },
@@ -1555,13 +1567,13 @@ const LIVELLI_LAB = [
 ].map(d => ({ ...d, w: d.crop[2] - d.crop[0] + 1, h: d.crop[3] - d.crop[1] + 1 }));
 
 /* Il mondo si sceglie dalla home, dal pannello docente o con ?mondo=coding / ?mondo=strade */
-const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' }, scuola: { livelli: LIVELLI_SCUOLA, partenza: 'lab-partenza-scuola' }, fuga: { livelli: LIVELLI_FUGA, partenza: 'lab-partenza-fuga' }, laboratorio: { livelli: LIVELLI_LAB, partenza: 'lab-partenza-laboratorio' }, tastiera: { livelli: LIVELLI_TASTIERA, partenza: 'lab-partenza-tastiera' } };
+const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, aula: { livelli: LIVELLI_AULA, partenza: 'lab-partenza-aula' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' }, scuola: { livelli: LIVELLI_SCUOLA, partenza: 'lab-partenza-scuola' }, fuga: { livelli: LIVELLI_FUGA, partenza: 'lab-partenza-fuga' }, laboratorio: { livelli: LIVELLI_LAB, partenza: 'lab-partenza-laboratorio' }, tastiera: { livelli: LIVELLI_TASTIERA, partenza: 'lab-partenza-tastiera' } };
 /* Ordine dei mondi: si gioca in sequenza, finito un mondo si passa al successivo */
-const ORD_MONDI = ['labirinto', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding', 'fuga'];
-const MONDI_HOME = ['labirinto', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding'];   // il premio finale non si sceglie dalla home
-const NOME_MONDO = { labirinto: 'LABIRINTI', scuola: 'SCUOLA', strade: 'STRADE', coding: 'CODING', fuga: 'ACCHIAPPARELLA', laboratorio: 'LABORATORIO', tastiera: 'TASTIERA' };
+const ORD_MONDI = ['labirinto', 'aula', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding', 'fuga'];
+const MONDI_HOME = ['labirinto', 'aula', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding'];   // il premio finale non si sceglie dalla home
+const NOME_MONDO = { labirinto: 'LABIRINTI', aula: 'AULA MAGNA', scuola: 'SCUOLA', strade: 'STRADE', coding: 'CODING', fuga: 'ACCHIAPPARELLA', laboratorio: 'LABORATORIO', tastiera: 'TASTIERA' };
 const mondoDopo = m => ORD_MONDI[ORD_MONDI.indexOf(m) + 1] || null;
-const iconaMondo = m => ({ labirinto: ICO.labirinto, scuola: ICO.scuola, laboratorio: ICO.lab, tastiera: ICO.tastiera, strade: ICO.auto, coding: ICO.carta, fuga: ICO.stella })[m];
+const iconaMondo = m => ({ labirinto: ICO.labirinto, aula: ICO.aula, scuola: ICO.scuola, laboratorio: ICO.lab, tastiera: ICO.tastiera, strade: ICO.auto, coding: ICO.carta, fuga: ICO.stella })[m];
 function mondoAttivo() {
   const q = new URLSearchParams(location.search).get('mondo');
   if (MONDI[q]) return q;
@@ -1608,9 +1620,9 @@ function iniziaPartita(casa, conDemo) {
 }
 
 function preparaLivello(idx, dDemo) {
-  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S', scuola: '|K', fuga: '|F', laboratorio: '|B', tastiera: '|T' }[G.mondo] || '|L') + (idx + 1)));
+  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S', scuola: '|K', fuga: '|F', laboratorio: '|B', tastiera: '|T', aula: '|A' }[G.mondo] || '|L') + (idx + 1)));
   G.rng = r;
-  const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', scuola: d.tipo === 'scuola', tastiera: d.tipo === 'tastiera', buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
+  const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', scuola: d.tipo === 'scuola', tastiera: d.tipo === 'tastiera', aula3d: !!d.aula3d, buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
   if (L.fuga) { const A = generaArena(d, r); Object.assign(L, { gr: A.gr, start: A.start, arena: A }); }
   else if (L.coding) {
     Object.assign(L, generaCoding(d, r));
@@ -2156,6 +2168,7 @@ function completaCoding() {
 /* Livelli mini, senza stelle né lanterna: pochi passaggi, uno alla volta */
 const DEMO = {
   labirinto: { nome: 'GUARDA', tipo: 'labirinto', w: 3, h: 2, tema: 'prato' },
+  aula:      { nome: 'GUARDA', tipo: 'labirinto', aula3d: true, w: 3, h: 2, tema: 'castello' },
   strade:    { nome: 'GUARDA', tipo: 'strade', w: 3, h: 2, tema: 'prato', svolte: .5, prefill: .5, distrattori: 0, ostacoli: 0, stelle: 0, minCurve: 1, maxLen: 5 },
   coding:    { nome: 'GUARDA', tipo: 'coding', w: 3, h: 2, tema: 'prato', anelli: .5, dist: [3, 3] },
   tastiera: { nome: 'GUARDA', tipo: 'tastiera', parole: ['RE'], start: 'T', w: 15, h: 5, tema: 'castello' },
@@ -2183,6 +2196,7 @@ function scrCella(x, y, dy = 0) { const r = cv.getBoundingClientRect(), c = cent
 /* Zone da illuminare: una casella (con un po' di spazio sopra per il personaggio) o un elemento della pagina */
 function rettCella(x, y) {   // con spazio sopra per il personaggio; nelle strade basta la casella
   const r = cv.getBoundingClientRect(), c = lay.cell, su = G.L && G.L.strade ? .1 : .42;
+  if (usa3D()) { const p = centro(x, y); return { x: r.left + p.x - c * .62, y: r.top + p.y - c * 1.25, w: c * 1.24, h: c * 1.7 }; }
   const s = aSchermo(lay.ox + (x - .1) * c, lay.oy + (y - su) * c);
   return { x: r.left + s.x, y: r.top + s.y, w: c * 1.2 * s.z, h: c * (1.1 + su) * s.z };
 }
@@ -2347,7 +2361,7 @@ function avviaDemo() {
   const p = $('#puntatore'), st = $('#stage').getBoundingClientRect();
   p.querySelector('.pn').textContent = '';
   p.style.transition = 'none'; p.style.transform = `translate(${Math.round(st.left + st.width / 2)}px,${Math.round(st.top + st.height / 2)}px)`; void p.offsetWidth; p.style.transition = '';
-  const copione = { labirinto: demoLabirinto, strade: demoStrade, coding: demoCoding, scuola: demoScuola, laboratorio: demoScuola, tastiera: demoTastiera }[G.mondo];
+  const copione = { labirinto: demoLabirinto, aula: demoLabirinto, strade: demoStrade, coding: demoCoding, scuola: demoScuola, laboratorio: demoScuola, tastiera: demoTastiera }[G.mondo];
   (async () => { try { await attendi(900); await copione(); } catch (e) { /* dimostrazione interrotta */ } })();
 }
 function nascondiDemo() {
@@ -2536,7 +2550,7 @@ function aggiornaGiocatore(dt) {
   }
   const dx = p.moving ? DIR[p.dir].dx : 0;
   p.tilt += (dx * .14 - p.tilt) * Math.min(1, dt * 12);
-  if (p.moving && Math.random() < dt * 14) { const q = posOgg(p); emetti(lay.ox + (q.x + .5) * lay.cell, lay.oy + (q.y + .78) * lay.cell, 1, { col: [CASE[G.casa].col, '#FFFFFF'], v: 25, vita: .5, r: 2.4, g: -30 }); }
+  if (p.moving && Math.random() < dt * 14) { const q = posOgg(p), c = centro(q.x, q.y + .28); emetti(c.x, c.y, 1, { col: [CASE[G.casa].col, '#FFFFFF'], v: 25, vita: .5, r: 2.4, g: -30 }); }
 }
 function tastoFreccia(k) {
   const p = G.pl;
@@ -2589,18 +2603,266 @@ function frame(ts) {
 }
 
 /* =====================================================================
+   MONDO AULA MAGNA (3D): un labirinto di siepi sul pavimento dell'aula magna.
+   L'aula è ricostruita in piccolo dalle misure di Aula_Magna (scansione RoomPlan Room/room.usdz):
+   stanza x[-5,385 … 5,300] × z[-10,509 … 10,509], alta 3,02 m. x = -5,385 parete del corridoio
+   (pilastri e trave blu, finestre con veneziane, porta gialla, porta sul corridoio); z = +10,509
+   teatrino, crocifisso, tavolone, lavagna; z = -10,509 le pile di sedie. Pavimento a blocchi da
+   60 cm in diagonale (grigio 2×2, crema 3×3, rosa 2×2).
+   Vista unica e fissa, con le spalle alle vetrate (x = +5,30): i 21 m dell'aula vanno in orizzontale
+   sullo schermo, il corridoio è in fondo. La logica è quella del labirinto 2D (Griglia, oggetti,
+   mosse in caselle): cambia solo il disegno. Casella → metri con a3Mondo(), metri → schermo con
+   proiettaCella(); centro() la usa, così particelle, fumetti, impronte e dimostrazione funzionano uguali.
+   Personaggio e oggetti sono sprite senza test di profondità: non spariscono mai dietro le siepi.
+   Three.js r128 da cdnjs, caricato in sottofondo all'avvio: se non arriva, il mondo si gioca in 2D.
+   ===================================================================== */
+const AULA = { x0: -5.385, x1: 5.300, z0: -10.509, z1: 10.509, h: 3.02,
+  pilCor: [-6.64, -3.15, .55, 3.97, 7.57], finCor: [[-2.675, .075], [.92, 3.47], [4.40, 7.11]], portaGialla: [8.25, 9.55], portaCor: [-8.15, -7.15],
+  area: { x0: -4.75, x1: 4.55, z0: -9.75, z1: 8.95 } };   // dove può stare il labirinto (davanti al tavolone e alle sedie)
+const A3 = { stato: 'no', ren: null, scena: null, cam: null, aula: null, gruppo: null, liv: null, C: 1, xc: 0, zc: 0, sprite: [], pl: null, ombra: null, anello: null, castello: null };
+function caricaThree() {
+  if (A3.stato !== 'no') return;
+  if (window.THREE) { A3.stato = 'pronto'; return; }
+  A3.stato = 'carica';
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  s.onload = () => { A3.stato = window.THREE ? 'pronto' : 'errore'; if (A3.stato === 'pronto' && G.L && G.L.aula3d) calcolaLayout(); };
+  s.onerror = () => { A3.stato = 'errore'; };
+  document.head.appendChild(s);
+}
+const usa3D = () => !!(G.L && G.L.aula3d && A3.liv === G.L);
+function a3Mondo(x, y) { const L = G.L, C = A3.C; return { X: A3.xc - L.h * C / 2 + (y + .5) * C, Z: A3.zc + L.w * C / 2 - (x + .5) * C }; }
+const _v3 = () => A3._v || (A3._v = new THREE.Vector3());
+function proietta3(X, Y, Z) { const v = _v3().set(X, Y, Z).project(A3.cam); return { x: (v.x + 1) / 2 * lay.W, y: (1 - v.y) / 2 * lay.H }; }
+function proiettaCella(x, y, alt = 0) { const m = a3Mondo(x, y); return proietta3(m.X, alt, m.Z); }
+/* Tante scatole in una sola geometria (una chiamata di disegno); UV in metri, così le trame non si stirano */
+function geoScatole(lista, passo = 1) {
+  const pos = [], nor = [], uv = [], idx = [];
+  const faccia = (vv, n, uu) => { const k = pos.length / 3; vv.forEach((p, i) => { pos.push(p[0], p[1], p[2]); nor.push(n[0], n[1], n[2]); uv.push(uu[i][0] / passo, uu[i][1] / passo); }); idx.push(k, k + 1, k + 2, k, k + 2, k + 3); };
+  for (const b of lista) {
+    const [x0, x1, y0, y1, z0, z1] = b;
+    faccia([[x1, y0, z1], [x1, y0, z0], [x1, y1, z0], [x1, y1, z1]], [1, 0, 0], [[-z1, y0], [-z0, y0], [-z0, y1], [-z1, y1]]);
+    faccia([[x0, y0, z0], [x0, y0, z1], [x0, y1, z1], [x0, y1, z0]], [-1, 0, 0], [[z0, y0], [z1, y0], [z1, y1], [z0, y1]]);
+    faccia([[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], [0, 0, 1], [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]);
+    faccia([[x1, y0, z0], [x0, y0, z0], [x0, y1, z0], [x1, y1, z0]], [0, 0, -1], [[-x1, y0], [-x0, y0], [-x0, y1], [-x1, y1]]);
+    faccia([[x0, y1, z1], [x1, y1, z1], [x1, y1, z0], [x0, y1, z0]], [0, 1, 0], [[x0, -z1], [x1, -z1], [x1, -z0], [x0, -z0]]);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx);
+  return g;
+}
+function trama(w, h, fn, ripeti = true) {
+  const c = nuovaTela(w, h); fn(c.getContext('2d'), w, h);
+  const tx = new THREE.CanvasTexture(c); if (ripeti) tx.wrapS = tx.wrapT = THREE.RepeatWrapping;
+  tx.anisotropy = 4; return tx;
+}
+const lambert = (col, map) => new THREE.MeshLambertMaterial(map ? { color: col, map } : { color: col });
+/* L'aula: si costruisce una volta sola */
+function costruisciAula3D() {
+  const A = AULA, S = new THREE.Scene(), r = mulberry32(7);
+  S.background = new THREE.Color('#2B3A4A');
+  S.add(new THREE.HemisphereLight(0xFFFFFF, 0xB9A98C, .62));
+  const sole = new THREE.DirectionalLight(0xFFF3DC, .72);   // la luce entra dalle vetrate, alle spalle di chi guarda
+  sole.position.set(14, 11, -4); sole.target.position.set(-1, 0, 0); S.add(sole.target);
+  sole.castShadow = true; sole.shadow.mapSize.set(2048, 2048); sole.shadow.bias = -.0006; sole.shadow.normalBias = .02;
+  Object.assign(sole.shadow.camera, { left: -13, right: 13, top: 9, bottom: -9, near: 1, far: 40 }); S.add(sole);
+  // pavimento: blocchi da 60 cm in diagonale, colore = (riga + colonna) mod 3 (come floorTexture di Aula_Magna)
+  const PX = 3, Sx = 180 * PX;
+  const pav = trama(Sx, Sx, (g) => {
+    const COLS = [['#727170', '#626160', '#868583'], ['#E3D8BD', '#d2c7ab', '#efe6cf'], ['#B48E7E', '#A27D6E', '#C4A090']];
+    g.fillStyle = '#7d7b76'; g.fillRect(0, 0, Sx, Sx);
+    const tile = (x, y, s, set) => { g.fillStyle = set[0]; g.fillRect(x + 1, y + 1, s - 2, s - 2); const n = Math.floor(s * s / 40); for (let i = 0; i < n; i++) { g.fillStyle = r() < .5 ? set[1] : set[2]; g.globalAlpha = .5; g.fillRect(x + 1 + r() * (s - 3), y + 1 + r() * (s - 3), 1.4, 1.4); } g.globalAlpha = 1; };
+    for (let br = 0; br < 3; br++) for (let bc = 0; bc < 3; bc++) {
+      const k = (br + bc) % 3, X = bc * 60 * PX, Y = br * 60 * PX;
+      if (k === 1) { for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) tile(X + j * 20 * PX, Y + i * 20 * PX, 20 * PX, COLS[1]); }
+      else for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) tile(X + j * 30 * PX, Y + i * 30 * PX, 30 * PX, COLS[k]);
+    }
+  });
+  const lx = A.x1 - A.x0, lz = A.z1 - A.z0;
+  pav.repeat.set(lx / 1.8 * 1.414, lz / 1.8 * 1.414); pav.center.set(.5, .5); pav.rotation = Math.PI / 4;
+  const pavimento = new THREE.Mesh(new THREE.PlaneGeometry(lx, lz), new THREE.MeshLambertMaterial({ map: pav }));
+  pavimento.rotation.x = -Math.PI / 2; pavimento.position.set((A.x0 + A.x1) / 2, 0, 0); pavimento.receiveShadow = true; S.add(pavimento);
+  const bianco = [], blu = [], zoccolo = [], legno = [], pino = [], nero = [];
+  // pareti: corridoio in fondo, le due corte ai lati (la parete delle vetrate è alle spalle di chi guarda)
+  bianco.push([A.x0 - .25, A.x0, 0, A.h, A.z0 - .25, A.z1 + .25], [A.x0, A.x1 + 1.2, 0, A.h, A.z1, A.z1 + .25], [A.x0, A.x1 + 1.2, 0, A.h, A.z0 - .25, A.z0]);
+  zoccolo.push([A.x0, A.x0 + .02, 0, .1, A.z0, A.z1], [A.x0, A.x1, 0, .1, A.z1 - .02, A.z1], [A.x0, A.x1, 0, .1, A.z0, A.z0 + .02]);
+  A.pilCor.forEach(z => blu.push([A.x0, A.x0 + .28, 0, A.h, z - .225, z + .225]));
+  blu.push([A.x0, A.x0 + .36, A.h - .3, A.h, A.z0, A.z1]);   // trave alta
+  // teatrino «Il Gran Teatro dei Burattini» e crocifisso (parete corta di sinistra)
+  legno.push([-5.25, -5.13, 0, 1.95, A.z1 - .5, A.z1 - .02], [-3.97, -3.85, 0, 1.95, A.z1 - .5, A.z1 - .02], [-5.25, -3.85, 1.62, 1.95, A.z1 - .5, A.z1 - .02], [-5.25, -3.85, 0, .9, A.z1 - .5, A.z1 - .02]);
+  legno.push([-3.58, -3.50, 1.95, 2.7, A.z1 - .05, A.z1 - .01], [-3.74, -3.34, 2.42, 2.5, A.z1 - .05, A.z1 - .01]);
+  // tavolone di pino su ruote 5,0 × 1,05 m, alto 0,74
+  pino.push([-1.98, 3.02, .69, .74, 9.26, 10.31]);
+  [[-1.9, 9.34], [2.88, 9.34], [-1.9, 10.17], [2.88, 10.17]].forEach(([x, z]) => pino.push([x, x + .1, .06, .69, z, z + .1]));
+  nero.push([4.55, 5.03, 0, 1.05, 9.44, 9.92]);   // mobile dell'impianto audio
+  // lavagna su cavalletto
+  nero.push([3.75, 4.65, .95, 1.6, 10.05, 10.1]); legno.push([3.8, 3.86, 0, 1.75, 10.1, 10.16], [4.54, 4.6, 0, 1.75, 10.1, 10.16]);
+  // 12 pile di sedie lungo la parete corta di destra
+  const sedute = [], gambe = [];
+  for (let i = 0; i < 12; i++) {
+    const x = -1.7 + i * (6.2 / 11), z = A.z0 + .32, n = 6 + Math.floor(r() * 4);
+    for (let k = 0; k < n; k++) sedute.push([x - .23, x + .23, .44 + k * .085, .47 + k * .085, z - .22, z + .24]);
+    [[-.21, -.2], [.18, -.2], [-.21, .2], [.18, .2]].forEach(([dx, dz]) => gambe.push([x + dx, x + dx + .03, 0, .47 + (n - 1) * .085, z + dz, z + dz + .03]));
+  }
+  const aggiungi = (lista, mat, ombre = true) => { if (!lista.length) return; const m = new THREE.Mesh(geoScatole(lista), mat); m.castShadow = ombre; m.receiveShadow = true; S.add(m); };
+  aggiungi(bianco, lambert('#EEF0EF'), false); aggiungi(blu, lambert('#597285')); aggiungi(zoccolo, lambert('#B39C80'), false);
+  aggiungi(legno, lambert('#8B5A2B')); aggiungi(pino, lambert('#D9B77E')); aggiungi(nero, lambert('#2B2E33'));
+  aggiungi(sedute, lambert('#4E6F96')); aggiungi(gambe, lambert('#3A3D42'));
+  // finestre sul corridoio con le veneziane, porta gialla, porta aperta sul corridoio, sipario del teatrino
+  const venez = trama(32, 32, (g, w, h) => { for (let y = 0; y < h; y += 8) { g.fillStyle = '#ECEDE8'; g.fillRect(0, y, w, 5); g.fillStyle = '#B8BBB4'; g.fillRect(0, y + 5, w, 3); } });
+  const pannello = (x, y0, y1, za, zb, mat) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(zb - za, y1 - y0), mat); m.rotation.y = Math.PI / 2; m.position.set(x, (y0 + y1) / 2, (za + zb) / 2); S.add(m); return m; };
+  A.finCor.forEach(([za, zb]) => { const tx = venez.clone(); tx.needsUpdate = true; tx.repeat.set(1, (2.65 - .95) / .08); pannello(A.x0 + .01, .95, 2.65, za, zb, new THREE.MeshLambertMaterial({ color: '#FFFFFF', map: tx })); pannello(A.x0 + .005, .9, 2.7, za - .05, zb + .05, lambert('#C4C6C6')); });
+  pannello(A.x0 + .012, 0, 2.15, A.portaGialla[0], A.portaGialla[1], lambert('#E8C547'));
+  pannello(A.x0 + .015, .05, 2.1, (A.portaGialla[0] + A.portaGialla[1]) / 2 - .01, (A.portaGialla[0] + A.portaGialla[1]) / 2 + .01, lambert('#8C6E1E'));
+  pannello(A.x0 + .012, 0, 2.1, A.portaCor[0], A.portaCor[1], lambert('#46505C'));
+  const sip = new THREE.Mesh(new THREE.PlaneGeometry(1.16, .72), lambert('#B8323A')); sip.position.set(-4.55, 1.26, A.z1 - .51); sip.rotation.y = Math.PI; S.add(sip);
+  return S;
+}
+/* Le siepi e gli oggetti del livello */
+function costruisciLivelloAula3D() {
+  const L = G.L, S = A3.scena, C = A3.C, T = Math.min(.34, C * .26), Hh = Math.min(.85, C * .62);
+  if (A3.gruppo) { S.remove(A3.gruppo); A3.gruppo.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) { if (o.material.map && o.material.map !== A3.foglie) o.material.map.dispose(); o.material.dispose(); } }); }
+  const Gr = new THREE.Group(); A3.gruppo = Gr; S.add(Gr);
+  const X0 = A3.xc - L.h * C / 2, Z0 = A3.zc + L.w * C / 2;   // angolo della casella (0,0): bordo nord-ovest
+  const seg = [], pali = new Set(), palo = (i, j) => pali.add(i + ',' + j);
+  for (let y = 0; y < L.h; y++) for (let x = 0; x < L.w; x++) {
+    const xa = X0 + y * C, za = Z0 - x * C;
+    if (!L.gr.aperto(x, y, DIR.su)) { seg.push([xa - T / 2, xa + T / 2, 0, Hh, za - C, za]); palo(x, y); palo(x + 1, y); }
+    if (!L.gr.aperto(x, y, DIR.sinistra)) { seg.push([xa, xa + C, 0, Hh, za - T / 2, za + T / 2]); palo(x, y); palo(x, y + 1); }
+    if (y === L.h - 1 && !L.gr.aperto(x, y, DIR.giu)) { seg.push([xa + C - T / 2, xa + C + T / 2, 0, Hh, za - C, za]); palo(x, y + 1); palo(x + 1, y + 1); }
+    if (x === L.w - 1 && !L.gr.aperto(x, y, DIR.destra)) { seg.push([xa, xa + C, 0, Hh, za - C - T / 2, za - C + T / 2]); palo(x + 1, y); palo(x + 1, y + 1); }
+  }
+  pali.forEach(s => { const [i, j] = s.split(',').map(Number), xa = X0 + j * C, za = Z0 - i * C, q = T * .62; seg.push([xa - q, xa + q, 0, Hh * 1.06, za - q, za + q]); });
+  if (!A3.foglie) A3.foglie = trama(256, 256, (g, w, h) => {
+    const rr = mulberry32(11); g.fillStyle = '#3B7A30'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 1400; i++) { g.fillStyle = pick(['#2C6524', '#4A963A', '#5DAE45', '#357029', '#6FC456', '#447F33'], rr); g.beginPath(); g.ellipse(rr() * w, rr() * h, 3 + rr() * 6, 2 + rr() * 4, rr() * 3, 0, 7); g.fill(); }
+  });
+  const siepe = new THREE.Mesh(geoScatole(seg, .55), new THREE.MeshLambertMaterial({ map: A3.foglie }));
+  siepe.castShadow = siepe.receiveShadow = true; Gr.add(siepe);
+  // aiuola sotto il labirinto: un tappeto d'erba appena più largo
+  const prato = new THREE.Mesh(new THREE.PlaneGeometry(L.h * C + .5, L.w * C + .5), new THREE.MeshLambertMaterial({ color: '#8CC063' }));
+  prato.rotation.x = -Math.PI / 2; prato.rotation.z = 0; prato.position.set(A3.xc, .004, A3.zc); prato.receiveShadow = true; Gr.add(prato);
+  // partenza: anello del colore della casata
+  const an = new THREE.Mesh(new THREE.RingGeometry(C * .26, C * .33, 48), new THREE.MeshBasicMaterial({ color: CASE[G.casa].col, transparent: true, opacity: .75 }));
+  an.rotation.x = -Math.PI / 2; const ps = a3Mondo(L.start.x, L.start.y); an.position.set(ps.X, .012, ps.Z); Gr.add(an); A3.anello = an;
+  // sprite: personaggio, oggetti e castello (tela 2D ridisegnata quando serve)
+  const sprite = (canvas, alt, cx = .5, cy = .5) => {
+    const tx = new THREE.CanvasTexture(canvas), m = new THREE.SpriteMaterial({ map: tx, depthTest: false, depthWrite: false });
+    const s = new THREE.Sprite(m); s.scale.set(alt, alt, 1); s.center.set(cx, cy); Gr.add(s); return s;
+  };
+  A3.sprite = [];
+  L.items.forEach((it, k) => {
+    let tela, alt;
+    if (it.tipo === 'stella') { tela = SPR.stella; alt = C * .62; }
+    else if (it.tipo === 'chiave') { tela = SPR.chiave; alt = C * .74; }
+    else { tela = nuovaTela(128, 128); alt = C * .62; }
+    A3.sprite.push({ it, k, s: sprite(tela, alt), tela, alt });
+  });
+  A3.telaCastello = nuovaTela(256, 256);
+  A3.castello = sprite(A3.telaCastello, C * 1.9, .5, .3);
+  const ombra = trama(64, 64, (g) => { const gr = g.createRadialGradient(32, 32, 2, 32, 32, 31); gr.addColorStop(0, 'rgba(0,0,0,.45)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); }, false);
+  A3.ombra = new THREE.Mesh(new THREE.PlaneGeometry(C * .62, C * .62), new THREE.MeshBasicMaterial({ map: ombra, transparent: true, depthWrite: false }));
+  A3.ombra.rotation.x = -Math.PI / 2; Gr.add(A3.ombra);
+  A3.pl = sprite(SPR.fig[G.casa], C * 1.08, .5, .03);
+}
+/* Telecamera fissa: alta, inclinata di 56°, con le spalle alle vetrate; la distanza è la più piccola
+   che fa stare tutto il labirinto (siepi comprese) nello schermo */
+function inquadraAula3D(W, H) {
+  const L = G.L, C = A3.C, cam = A3.cam, el = 56 * Math.PI / 180, tg = new THREE.Vector3(A3.xc - .35, 0, A3.zc);
+  cam.aspect = W / H; cam.fov = 30; cam.updateProjectionMatrix();
+  const hx = L.h * C / 2 + .45, hz = L.w * C / 2 + .45, punti = [];
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) for (const y of [0, 1.1]) punti.push(new THREE.Vector3(A3.xc + sx * hx, y, A3.zc + sz * hz));
+  const metti = D => { cam.position.set(tg.x + D * Math.cos(el), D * Math.sin(el), tg.z); cam.lookAt(tg); cam.updateMatrixWorld(); };
+  const entra = () => punti.every(p => { const v = p.clone().project(cam); return Math.abs(v.x) < .95 && Math.abs(v.y) < .9 && v.z < 1; });
+  let a = 4, b = 90;
+  for (let i = 0; i < 32; i++) { const m = (a + b) / 2; metti(m); if (entra()) b = m; else a = m; }
+  metti(b);
+}
+function impostaLayoutAula(W, H, dpr) {
+  const L = G.L, cv3 = $('#cv3d');
+  if (!A3.ren) {
+    A3.ren = new THREE.WebGLRenderer({ canvas: cv3, antialias: true });
+    A3.ren.shadowMap.enabled = true; A3.ren.shadowMap.type = THREE.PCFSoftShadowMap;
+    A3.cam = new THREE.PerspectiveCamera(30, W / H, .1, 200);
+    A3.scena = costruisciAula3D();
+  }
+  cv3.style.display = 'block';
+  A3.ren.setPixelRatio(Math.min(dpr, 1.5)); A3.ren.setSize(W, H, false);
+  const ar = AULA.area;
+  A3.C = Math.min((ar.z1 - ar.z0) / L.w, (ar.x1 - ar.x0) / L.h, 2.2);
+  A3.xc = (ar.x0 + ar.x1) / 2; A3.zc = (ar.z0 + ar.z1) / 2;
+  lay = { W, H, dpr, cell: 60, ox: 0, oy: 0, aula: true };
+  inquadraAula3D(W, H);
+  A3.liv = L;
+  const a = proiettaCella(L.w / 2 - .5, L.h / 2 - .5), b = proiettaCella(L.w / 2 + .5, L.h / 2 - .5);
+  lay.cell = Math.max(24, Math.hypot(b.x - a.x, b.y - a.y));   // grandezza di una casella a metà schermo: misura per fumetti e particelle
+  costruisciSprite();
+  costruisciLivelloAula3D();
+}
+function renderAula() {
+  const L = G.L, t = G.tempo, C = A3.C, cell = lay.cell;
+  A3.anello.rotation.z = t * .6;
+  // oggetti
+  for (const o of A3.sprite) {
+    const it = o.it, s = o.s; s.visible = !it.preso;
+    if (it.preso) continue;
+    const m = a3Mondo(it.x, it.y), ph = it.x * 7 + it.y * 3;
+    let y = C * .42, rot = 0;
+    if (it.tipo === 'stella') { y += Math.sin(t * 2.6 + ph) * C * .05; rot = Math.sin(t * 1.8 + ph) * .16; }
+    else if (it.tipo === 'chiave') { y += Math.sin(t * 2.2) * C * .06; rot = Math.sin(t * 1.5) * .12; }
+    else {
+      const g = o.tela.getContext('2d'), dd = G.dondola.get(o.k);
+      g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 128, 128);
+      disegnaMoneta(g, { x: 64, y: 64 }, 44, it.n, it.n === G.prossimo, t, dd != null ? G.tempo - dd : null);
+      s.material.map.needsUpdate = true; y = C * .36;
+    }
+    s.position.set(m.X, y, m.Z); s.material.rotation = rot; s.renderOrder = 10 + (m.X + 6) * 10;
+  }
+  // castello (si apre quando si hanno numeri e chiave)
+  { const g = A3.telaCastello.getContext('2d'), m = a3Mondo(L.uscita.x, L.uscita.y);
+    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 256, 256); disegnaCastello(g, { x: 128, y: 150 }, 118, t);
+    A3.castello.material.map.needsUpdate = true; A3.castello.position.set(m.X, 0, m.Z); A3.castello.renderOrder = 10 + (m.X + 6) * 10; }
+  // personaggio
+  const p = G.pl, pos = posOgg(p), m = a3Mondo(pos.x, pos.y), s = A3.pl;
+  let bob = 0, ond = 0, sc = 1, caduta = 0, dx = 0, dz = 0;
+  if (p.moving) { const ph = (pos.x + pos.y) * Math.PI; bob = Math.abs(Math.sin(ph)) * C * .08; ond = Math.sin(ph) * .09; }
+  if (p.urto) { const e = t - p.urto.t0; if (e < .2) { const k = Math.sin(e / .2 * Math.PI) * C * .1; dz = -p.urto.d.dx * k; dx = p.urto.d.dy * k; } else p.urto = null; }
+  if (G.stato === 'gioco' || G.stato === 'preso') caduta = (1 - rimbalzo(G.entrata)) * C * 2.4;
+  if (G.stato === 'entra') sc = Math.max(0, G.entraT / .7);
+  s.visible = !(G.stato === 'completo');
+  s.position.set(m.X + dx, bob + caduta, m.Z + dz); s.scale.set(C * 1.08 * sc, C * 1.08 * sc * (1 + .025 * Math.sin(t * 3.2)), 1);
+  s.material.rotation = -(p.tilt + ond) + (G.stato === 'entra' ? (1 - sc) * 6 : 0); s.renderOrder = 11 + (m.X + 6) * 10;
+  A3.ombra.position.set(m.X + dx, .015, m.Z + dz); A3.ombra.visible = s.visible; A3.ombra.scale.setScalar(Math.max(.2, sc) * (1 - Math.min(.6, caduta / (C * 3))));
+  if (s.material.map.image !== SPR.fig[G.casa]) { s.material.map.image = SPR.fig[G.casa]; s.material.map.needsUpdate = true; }
+  A3.ren.render(A3.scena, A3.cam);
+  // sopra la scena, sul canvas 2D: impronte, particelle, punti, fumetti
+  const x = ctx;
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height);
+  x.setTransform(lay.dpr, 0, 0, lay.dpr, 0, 0);
+  disegnaOrme(x);
+  disegnaParticelle(x);
+  disegnaPing(x);
+  disegnaVoli(x);
+  disegnaTesti(x);
+  disegnaFumetti(x);
+}
+
+/* =====================================================================
    RENDER
    ===================================================================== */
-function centro(x, y) { return { x: lay.ox + (x + .5) * lay.cell, y: lay.oy + (y + .5) * lay.cell }; }
+function centro(x, y) { if (usa3D()) return proiettaCella(x, y, .15); return { x: lay.ox + (x + .5) * lay.cell, y: lay.oy + (y + .5) * lay.cell }; }
 
 function calcolaLayout() {
   if (!G.L) return;
+  $('#cv3d').style.display = 'none'; A3.liv = null;
   const st = $('#stage').getBoundingClientRect(), W = st.width, H = st.height, L = G.L;
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
   const pad = Math.max(30, Math.min(W, H) * .05), riserva = L.coding ? $('#prog').offsetHeight + 16 : 0;   // spazio per la barra del programma
   if (L.scuola) { impostaLayoutScuola(W, H, dpr); return; }
   if (L.tastiera) { impostaLayoutTastiera(W, H, dpr); return; }
+  if (L.aula3d && A3.stato === 'pronto') { impostaLayoutAula(W, H, dpr); return; }   // senza Three.js si gioca in 2D
   if (L.strade) {   // una colonna in più a sinistra (parcheggio) e a destra (castello)
     const ris = $('#tray').offsetHeight + 16, cols = L.w + 2, c = Math.floor(Math.min((W - 2 * pad) / cols, (H - ris - 2 * pad) / L.h, 150));
     lay = { W, H, dpr, cell: c, ox: Math.round((W - c * cols) / 2) + c, oy: Math.round((H - ris - c * L.h) / 2) };
@@ -3605,6 +3867,7 @@ function disegnaMoneta(x, c, R, n, ora, t, dondola) {
 }
 
 function render() {
+  if (usa3D()) { renderAula(); return; }
   if (G.L.strade) { renderStrade(); return; }
   if (G.L.scuola) { renderScuola(); return; }
   if (G.L.tastiera) { renderTastiera(); return; }
@@ -3732,7 +3995,7 @@ function disegnaFumetti(x) {
   G.fumetti = G.fumetti.filter(f => G.tempo - f.t0 < f.dur);
   for (const f of G.fumetti) {
     const e = G.tempo - f.t0, pos = f.dove === 'pl' ? posOgg(G.pl) : f.dove;
-    const cx = lay.ox + (pos.x + .5) * cell, cy = lay.oy + (pos.y + .5) * cell - cell * (f.dove === 'pl' ? 1.05 : .86);
+    const cc = centro(pos.x, pos.y), cx = cc.x, cy = cc.y - cell * (f.dove === 'pl' ? 1.05 : .86);
     const sc = e < .25 ? easeOutBack(e / .25) : (e > f.dur - .2 ? Math.max(0, (f.dur - e) / .2) : 1);
     const lungo = f.tipo === 'lanterna', w = cell * (lungo ? 1.3 : .76), h = cell * .66, r = h * .32;
     x.save(); x.translate(cx, cy + Math.sin(e * 5) * cell * .025); x.scale(sc, sc);
@@ -4300,7 +4563,7 @@ function cambiaMondo(m) {
   if (m !== prima) {
     SFX.play('scegli');
     const b = $(`#mondi .mondo-btn[data-m="${m}"]`), r = b.getBoundingClientRect();
-    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9', scuola: '#A78BFA', laboratorio: '#F08A3C', tastiera: '#9EA5B3' }[m] || '#6FA3FF']);
+    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9', scuola: '#A78BFA', laboratorio: '#F08A3C', tastiera: '#9EA5B3', aula: '#3FA142' }[m] || '#6FA3FF']);
   }
 }
 
@@ -4419,6 +4682,7 @@ async function avvio() {
     IMGS.emblema[k] = await svgImg(EMBLEMI[k]);
   }));
   IMGS.lanterna = await svgImg(ICO.lanterna);
+  caricaThree();   // per il mondo Aula Magna, in sottofondo
   IMGS.ogg = {}; IMGS.macchia = []; IMGS.reale = {}; IMGS.parola = {};
   await Promise.all(Object.keys(SVG_PAROLE).map(async w => { IMGS.parola[w] = await svgImg(svgParola(w)); }));
   IMGS.icoTastiera = await svgImg(ICO.tastiera.replace(/currentColor/g, '#2563EB'));
@@ -4452,7 +4716,7 @@ async function avvio() {
   $('#bVia').onclick = () => avviaEsecuzione();
   $('#slots').addEventListener('click', e => { const c = e.target.closest('.cp.carta'); if (c && G.stato === 'gioco') togliCarta(+c.dataset.i); });
   document.querySelectorAll('#mondi .mondo-btn').forEach(b => {
-    b.innerHTML = { coding: `${ICO.carta}<span>CODING</span>`, strade: `${ICO.auto}<span>STRADE</span>`, scuola: `${ICO.scuola}<span>SCUOLA</span>`, laboratorio: `${ICO.lab}<span>LABORATORIO</span>`, tastiera: `${ICO.tastiera}<span>TASTIERA</span>` }[b.dataset.m] || `${ICO.labirinto}<span>LABIRINTI</span>`;
+    b.innerHTML = { aula: `${ICO.aula}<span>AULA MAGNA</span>`, coding: `${ICO.carta}<span>CODING</span>`, strade: `${ICO.auto}<span>STRADE</span>`, scuola: `${ICO.scuola}<span>SCUOLA</span>`, laboratorio: `${ICO.lab}<span>LABORATORIO</span>`, tastiera: `${ICO.tastiera}<span>TASTIERA</span>` }[b.dataset.m] || `${ICO.labirinto}<span>LABIRINTI</span>`;
     b.onclick = () => { focusMondi = false; cambiaMondo(b.dataset.m); aggiornaFocus(); };
   });
   aggiornaMondi();
