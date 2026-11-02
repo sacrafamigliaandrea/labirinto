@@ -1391,14 +1391,13 @@ const LIVELLI_NUMERI = [
   { nome: 'CONTA FINO A 10',  tipo: 'abbina', quantita: true, destra: 'cifre', w: 7, h: 5, da: 1, a: 10, ostacoli: .1, tema: 'prato' },
   { nome: 'FINO A 10',        tipo: 'abbina', w: 7, h: 5, da: 0,  a: 10, ostacoli: .1,  tema: 'prato' },
   { nome: 'CONTA E LEGGI',    tipo: 'abbina', quantita: true, w: 7, h: 5, da: 1, a: 10, ostacoli: .15, tema: 'prato' },
-  { nome: 'DA 11 A 20',       tipo: 'abbina', w: 8, h: 5, da: 11, a: 20, ostacoli: .15, tema: 'prato' },
-  { nome: 'SEMBRANO UGUALI',  tipo: 'abbina', w: 8, h: 6, gemelli: true, ostacoli: .18, tema: 'prato' },
+  { nome: 'SEMBRANO UGUALI',  tipo: 'abbina', w: 8, h: 6, da: 0, a: 10, includi: [6, 7, 2, 10], ostacoli: .18, tema: 'prato' },   // SEI/SETTE e DUE/DIECI iniziano uguali
 ];
 function generaAbbina(d, r) {
   const W = d.w, H = d.h;
   let nums;
   if (d.gemelli) nums = shuffle(GEMELLI_NUMERI, r).slice(0, Math.floor(H / 2)).flat();
-  else { const pool = []; for (let n = d.da; n <= d.a; n++) pool.push(n); nums = shuffle(pool, r).slice(0, H); }
+  else { const inc = d.includi || [], pool = []; for (let n = d.da; n <= d.a; n++) if (!inc.includes(n)) pool.push(n); nums = inc.concat(shuffle(pool, r).slice(0, H - inc.length)); }   // il mondo resta entro il 10
   const righe = shuffle([...Array(nums.length).keys()], r);
   let righeP = righe;
   for (let k = 0; k < 20 && righeP.every((v, i) => v === righe[i]); k++) righeP = shuffle([...Array(nums.length).keys()], r);   // mai tutte allineate
