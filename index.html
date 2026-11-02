@@ -101,6 +101,10 @@ img{-webkit-user-drag:none;user-select:none}
 .rif-pan span{background:#FFFFFF!important;box-shadow:inset 0 0 0 2px #D6DCE6}
 .rif-pan span{width:clamp(32px,2.4vw,46px);height:clamp(32px,2.4vw,46px);border-radius:10px;display:grid;place-items:center;background:#F6EEDA;transition:opacity .3s,transform .3s}
 .rif-pan span svg{width:86%;height:86%}
+.rif-pan span.fatto-s{box-shadow:inset 0 0 0 3px #1E9E57!important;background:#DCFCE7!important}
+.rif-pan span svg{color:#B45309}
+.rif-pan span.vuota-f{display:grid;place-items:center;font-weight:700;font-size:clamp(18px,1.4vw,26px);color:#9C6B3A;background:#F6EEDA!important;box-shadow:inset 0 0 0 2px #C7B08A}
+.rt svg{width:84%;height:84%}
 .rif-pan span.fatto{opacity:.3;filter:grayscale(1)}
 .rif-pan span.mano{background:#FFFFFF;box-shadow:0 0 0 3px var(--c);transform:scale(1.12)}
 .rt.cest img{height:94%;width:auto;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
@@ -187,7 +191,7 @@ img{-webkit-user-drag:none;user-select:none}
 #panCase .carta.sel .spunta{display:grid}
 /* card quadrate: il lato --s è il più grande che fa stare la griglia nel riquadro (unità del contenitore) */
 .ps-corpo{container-type:size;min-height:0;min-width:0}
-.griglia-mondi{--g:clamp(8px,.9vw,16px);--s:min(calc((100cqw - 4 * var(--g)) / 5),calc((100cqh - var(--g)) / 2));grid-template-columns:repeat(5,var(--s));grid-template-rows:repeat(2,var(--s));gap:var(--g);justify-content:center;align-content:center;height:100%}
+.griglia-mondi{--g:clamp(8px,.8vw,14px);--s:min(calc((100cqw - 4 * var(--g)) / 5),calc((100cqh - 2 * var(--g)) / 3));grid-template-columns:repeat(5,var(--s));grid-template-rows:repeat(3,var(--s));gap:var(--g);justify-content:center;align-content:center;height:100%}
 .mondo-card{width:var(--s);height:var(--s);gap:calc(var(--s) * .06);padding:0;border-radius:calc(var(--s) * .16)}
 .mondo-card .mi{width:calc(var(--s) * .46);height:calc(var(--s) * .46)}
 .mondo-card .mt{font-size:calc(var(--s) * .115)}
@@ -739,7 +743,7 @@ const CONFIG = {
   POLL_MS: 6000,
   AZZERA_OGNI_NOTTE: true,          // la classifica riparte da zero a mezzanotte (ora italiana); deve coincidere con l'Apps Script
 };
-const PUNTI = { pezzo: 10, rifiuto: 10, coppia: 15, lettera: 10, parola: 20, scritta: 5, oggetto: 10, colore: 10, stella: 10, numero: 15, chiave: 15, castello: 50, lucina: 2, simbolo: 10, acchiappa: 30, vita: 20 };
+const PUNTI = { sillaba: 10, parolaS: 20, tesoro: 15, carta: 10, pezzo: 10, rifiuto: 10, coppia: 15, lettera: 10, parola: 20, scritta: 5, oggetto: 10, colore: 10, stella: 10, numero: 15, chiave: 15, castello: 50, lucina: 2, simbolo: 10, acchiappa: 30, vita: 20 };
 
 /* ---------- PRNG deterministico ---------- */
 function cyrb53(s, seed = 0) {
@@ -810,6 +814,12 @@ const ICO = {
   regola: S24('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/>'),
   x: S24('<path d="M6 6l12 12M18 6L6 18"/>'),
   auto: S24('<path d="M2.5 15.5v-2.4c0-.9.6-1.6 1.4-1.8l2.6-.6 2.4-3.1c.4-.5 1-.8 1.6-.8h4.2c.6 0 1.2.3 1.6.8l2.5 3.1 1.9.5c.8.2 1.3.9 1.3 1.7v2.6"/><path d="M2.5 15.5h2.3M9.6 15.5h4.8M19.3 15.5h2.2M10 7.3v3.8M3.8 11.2h16.6"/><circle cx="7.2" cy="15.7" r="2.3"/><circle cx="16.8" cy="15.7" r="2.3"/>'),
+  forme: S24('<circle cx="7.5" cy="8" r="4"/><path d="M16.5 3.5l4.5 8h-9Z"/><rect x="3.5" y="14.5" width="7" height="6" rx=".5"/><rect x="13" y="15.5" width="8.5" height="4.5" rx=".5"/>'),
+  animali: S24('<circle cx="6.5" cy="9.5" r="2"/><circle cx="11.5" cy="6.5" r="2"/><circle cx="17" cy="9.5" r="2"/><path d="M12 12c3 0 5.5 3 5.5 5.5 0 2-1.5 3-3 3-1 0-1.5-.5-2.5-.5s-1.5.5-2.5.5c-1.5 0-3-1-3-3C6.5 15 9 12 12 12Z"/>'),
+  tempo: S24('<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>'),
+  forziere: S24('<path d="M4 11.5c0-3 2-5 5-5h6c3 0 5 2 5 5"/><rect x="4" y="11" width="16" height="9" rx="1.5"/><path d="M4 14.5h16M11 13h2v3h-2Z"/>'),
+  sillabe: S24('<rect x="2.5" y="7" width="8.5" height="10" rx="2"/><rect x="13" y="7" width="8.5" height="10" rx="2"/><path d="M5 10.5h3.5M15.5 10.5h3.5M5 13.5h2.5M15.5 13.5h2.5"/>'),
+  tesoro: S24('<path d="M4 6l5-2 6 2 5-2v14l-5 2-6-2-5 2Z"/><path d="M9 4v14M15 6v14"/><path d="M11 10l2 2M13 10l-2 2"/>'),
   puzzle: S24('<path d="M4 8h4.2a2.2 2.2 0 1 1 4.4 0H17v4.4a2.2 2.2 0 1 0 0 4.4V21H4z"/>'),
   eco: S24('<path d="M5 7h14M9.5 7V4.5h5V7M6.5 7l1.2 13h8.6l1.2-13"/><path d="M10 11v5.5M14 11v5.5"/>'),
   codice: S24('<path d="M8.5 7L3.5 12l5 5M15.5 7l5 5-5 5M13.5 5l-3 14"/>'),
@@ -1450,7 +1460,7 @@ const LIVELLI_ECO = [
   { nome: 'GRANDE PULIZIA',   tipo: 'eco', cestini: ORD_ECO, n: 12, w: 11, h: 6, ostacoli: .16, tema: 'prato' },
 ];
 function generaEco(d, r) {
-  const W = d.w, H = d.h, cats = ORD_ECO.filter(c => d.cestini.includes(c)), nb = cats.length;
+  const W = d.w, H = d.h, cats = d.cestini.slice(), nb = cats.length;
   const gr = new Griglia(W, H);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { if (x < W - 1) gr.apri(x, y, DIR.destra); if (y < H - 1) gr.apri(x, y, DIR.giu); }
   const start = { x: Math.floor(r() * W), y: 0 };
@@ -1520,6 +1530,244 @@ function generaPuzzle(d, r) {
   }
   const img = (cyrb53(G.seed + '|immagine') + Math.max(0, LIVELLI_PUZZLE.indexOf(d))) % IMG_PUZZLE.length;
   return { gr, w: W, h: H, img, pw, ph, bx, by, pezzi, start, uscita: { x: -9, y: -9 }, items: new Map(), numeriTot: 0, serveChiave: false, stelleTot: 0, minimo: 0, aiutoSlot: null, flashSlot: null };
+}
+
+/* =====================================================================
+   Disegni condivisi dai mondi ANIMALI E CASE e SILLABE (SVG 48×48, flat)
+   ===================================================================== */
+const DISEGNI = {
+  mucca: '<path d="M9 22c0-5 4-8 9-8h14c5 0 8 3 8 8v8c0 3-2 5-5 5H14c-3 0-5-2-5-5Z" fill="#FFFFFF" stroke="#374151" stroke-width="2"/><path d="M15 15c3 0 5 3 4 6-2 3-6 2-7 0M27 21c3-2 7-1 7 3s-4 5-7 3Z" fill="#1F2937"/><path d="M13 35v7M19 35v7M30 35v7M36 35v7" stroke="#374151" stroke-width="3" stroke-linecap="round"/><path d="M40 20c3 1 4 4 3 7" stroke="#374151" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="43" cy="28" r="1.8" fill="#374151"/><ellipse cx="9" cy="20" rx="7" ry="6.5" fill="#FFFFFF" stroke="#374151" stroke-width="2"/><ellipse cx="6.5" cy="23.5" rx="5" ry="3.6" fill="#F9A8D4" stroke="#BE185D" stroke-width="1.6"/><circle cx="5" cy="23.5" r=".9" fill="#BE185D"/><circle cx="8" cy="23.5" r=".9" fill="#BE185D"/><circle cx="9.5" cy="17.5" r="1.4" fill="#1F2937"/><path d="M5 14l-2-4M12 13l2-4" stroke="#B45309" stroke-width="2.4" stroke-linecap="round"/><path d="M15 16l3-2" stroke="#374151" stroke-width="2" stroke-linecap="round"/>',
+  pecora: '<g fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.6"><circle cx="20" cy="20" r="7"/><circle cx="29" cy="18" r="7"/><circle cx="36" cy="24" r="6.5"/><circle cx="31" cy="30" r="7"/><circle cx="21" cy="30" r="7"/><circle cx="15" cy="25" r="6"/></g><path d="M18 34v8M24 35v7M30 35v7M35 33v8" stroke="#1F2937" stroke-width="3" stroke-linecap="round"/><ellipse cx="10" cy="21" rx="5.5" ry="7" fill="#1F2937" transform="rotate(-15 10 21)"/><path d="M6 15c-3-1-4 1-3 3M14 15c2-2 4-1 4 1" stroke="#1F2937" stroke-width="2.4" stroke-linecap="round" fill="none"/><circle cx="9" cy="19" r="1.2" fill="#FFFFFF"/><g fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.4"><circle cx="10" cy="13" r="3"/><circle cx="13" cy="12" r="2.5"/></g>',
+  maiale: '<ellipse cx="25" cy="26" rx="16" ry="11" fill="#F9A8D4" stroke="#BE185D" stroke-width="2"/><path d="M14 35v6M20 36v6M30 36v6M36 35v6" stroke="#BE185D" stroke-width="3.4" stroke-linecap="round"/><path d="M41 22c3-2 5 0 4 2s-3 1-2-1" stroke="#BE185D" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="12" cy="21" r="8" fill="#F9A8D4" stroke="#BE185D" stroke-width="2"/><ellipse cx="7" cy="24" rx="4.4" ry="3.4" fill="#F472B6" stroke="#BE185D" stroke-width="1.6"/><circle cx="5.6" cy="24" r=".9" fill="#831843"/><circle cx="8.4" cy="24" r=".9" fill="#831843"/><circle cx="12" cy="18.5" r="1.4" fill="#1F2937"/><path d="M14 13l4-4 1 6Z" fill="#F472B6" stroke="#BE185D" stroke-width="1.6" stroke-linejoin="round"/>',
+  gallina: '<path d="M14 18c0-6 5-10 10-9 1 4 0 6-1 8 6-2 13 0 17 6 2 4 1 9-3 12-5 4-15 4-20 0-4-3-4-8-3-11Z" fill="#FFFFFF" stroke="#92400E" stroke-width="2" stroke-linejoin="round"/><path d="M40 20c3-5 6-3 5 0 2 0 2 3 0 4" fill="#FFFFFF" stroke="#92400E" stroke-width="1.8" stroke-linejoin="round"/><path d="M22 27c4 4 10 4 13 0" stroke="#D6D3D1" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M17 8c1-3 3-3 4-1 1-2 3-2 3 1 2 0 2 2 0 3h-7Z" fill="#DC2626"/><path d="M14 15l-5 2 5 2Z" fill="#F59E0B" stroke="#B45309" stroke-width="1.2" stroke-linejoin="round"/><path d="M15 20c-1 2 0 4 2 4 1-2 0-4-2-4Z" fill="#DC2626"/><circle cx="18" cy="14" r="1.4" fill="#1F2937"/><path d="M24 38v5M30 38v5M22 43h4M28 43h4" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round"/>',
+  volpe: '<path d="M30 30c6-2 12 0 14 5-3 3-8 4-12 2" fill="#EA580C" stroke="#9A3412" stroke-width="2" stroke-linejoin="round"/><path d="M41 34c1 2 1 3 0 4-2 0-4-1-5-2Z" fill="#FFFFFF"/><path d="M12 22c2-4 8-5 12-3 6 3 9 9 8 16-1 5-5 7-10 7s-9-2-10-6c-1-5-2-10 0-14Z" fill="#F97316" stroke="#9A3412" stroke-width="2" stroke-linejoin="round"/><path d="M16 32c2 4 6 6 10 4-1-3-4-5-7-5Z" fill="#FFFFFF"/><path d="M14 42h5M24 42h5" stroke="#1F2937" stroke-width="3" stroke-linecap="round"/><path d="M6 14l4-9 4 7c3-1 6-1 8 0l4-7 3 9c1 4-1 8-5 10l-6 3-6-3c-4-2-7-6-6-10Z" fill="#F97316" stroke="#9A3412" stroke-width="2" stroke-linejoin="round"/><path d="M12 19c3 2 4 6 4 8-3 0-6-2-7-5ZM24 19c-3 2-4 6-4 8 3 0 6-2 7-5Z" fill="#FFFFFF"/><circle cx="18" cy="26.5" r="1.8" fill="#1F2937"/><circle cx="13.5" cy="17" r="1.4" fill="#1F2937"/><circle cx="22.5" cy="17" r="1.4" fill="#1F2937"/>',
+  gufo: '<path d="M11 18c0-8 6-13 13-13s13 5 13 13v14c0 7-6 11-13 11s-13-4-13-11Z" fill="#A16207" stroke="#713F12" stroke-width="2"/><path d="M11 10l3 6M37 10l-3 6" stroke="#713F12" stroke-width="3" stroke-linecap="round"/><ellipse cx="24" cy="32" rx="8" ry="9" fill="#FDE68A"/><path d="M20 29l2 2 2-2 2 2 2-2M20 34l2 2 2-2 2 2 2-2" stroke="#CA8A04" stroke-width="1.4" fill="none"/><circle cx="18" cy="18" r="6" fill="#FFFFFF" stroke="#713F12" stroke-width="1.6"/><circle cx="30" cy="18" r="6" fill="#FFFFFF" stroke="#713F12" stroke-width="1.6"/><circle cx="18" cy="18" r="3.4" fill="#F97316"/><circle cx="30" cy="18" r="3.4" fill="#F97316"/><circle cx="18" cy="18" r="1.8" fill="#1F2937"/><circle cx="30" cy="18" r="1.8" fill="#1F2937"/><path d="M22 23l2 3 2-3Z" fill="#F59E0B"/><path d="M11 24c-4 4-4 10 0 13M37 24c4 4 4 10 0 13" stroke="#713F12" stroke-width="2.4" fill="#854D0E"/>',
+  scoiattolo: '<path d="M26 40c10 2 18-6 16-16-1-7-8-12-14-10-5 2-6 8-2 11 4 2 7 0 7-3" fill="#C2410C" stroke="#7C2D12" stroke-width="2" stroke-linejoin="round"/><path d="M33 20c3 1 4 5 2 7" stroke="#FDBA74" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M10 30c0-7 4-11 9-11s8 5 8 11v6c0 4-3 6-8 6s-9-2-9-6Z" fill="#EA580C" stroke="#7C2D12" stroke-width="2"/><ellipse cx="17" cy="33" rx="4" ry="6" fill="#FED7AA"/><circle cx="15" cy="16" r="7" fill="#EA580C" stroke="#7C2D12" stroke-width="2"/><path d="M11 10l-1-5 4 3M18 9l2-4 1 5" fill="#EA580C" stroke="#7C2D12" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12.5" cy="15" r="1.5" fill="#1F2937"/><circle cx="9" cy="18" r="1.2" fill="#7C2D12"/><ellipse cx="14" cy="27" rx="3.2" ry="3.6" fill="#92400E" stroke="#78350F" stroke-width="1.2"/><path d="M12 25h4" stroke="#FCD34D" stroke-width="1.4"/><path d="M13 42h4M20 42h4" stroke="#7C2D12" stroke-width="2.6" stroke-linecap="round"/>',
+  lupo: '<path d="M30 33c6 0 12 2 13 7-4 2-9 1-13-2" fill="#6B7280" stroke="#374151" stroke-width="2" stroke-linejoin="round"/><path d="M13 22c3-3 9-3 13 0 5 3 7 9 6 15-1 4-4 6-9 6s-10-2-11-6c-1-5-1-11 1-15Z" fill="#9CA3AF" stroke="#374151" stroke-width="2" stroke-linejoin="round"/><path d="M16 30c2 4 5 7 9 6-1-4-4-6-6-6Z" fill="#E5E7EB"/><path d="M15 43h5M24 43h5" stroke="#374151" stroke-width="3" stroke-linecap="round"/><path d="M8 15l2-10 5 7h6l5-7 2 10c1 4-1 8-5 10l-5 2-5-2c-4-2-6-6-5-10Z" fill="#9CA3AF" stroke="#374151" stroke-width="2" stroke-linejoin="round"/><path d="M13 21c2 3 5 5 5 5s3-2 5-5c-2 1-3 1-5 1s-3 0-5-1Z" fill="#E5E7EB"/><circle cx="18" cy="23" r="1.6" fill="#1F2937"/><path d="M13 16l3 1M23 16l-3 1" stroke="#1F2937" stroke-width="2" stroke-linecap="round"/><circle cx="14.5" cy="18" r="1.2" fill="#FBBF24"/><circle cx="21.5" cy="18" r="1.2" fill="#FBBF24"/>',
+  pesce: '<path d="M6 24c6-10 20-12 28-4l8-7v22l-8-7c-8 8-22 6-28-4Z" fill="#F97316" stroke="#9A3412" stroke-width="2" stroke-linejoin="round"/><path d="M15 15c-2 5-2 13 0 18M25 14c-2 6-2 14 0 20" stroke="#FFFFFF" stroke-width="4"/><path d="M15 15c-2 5-2 13 0 18M25 14c-2 6-2 14 0 20" stroke="#1F2937" stroke-width="1" opacity=".5"/><circle cx="11" cy="21" r="2.2" fill="#1F2937"/><circle cx="11.6" cy="20.4" r=".7" fill="#FFFFFF"/><path d="M20 31l3 6 3-5" fill="#FB923C" stroke="#9A3412" stroke-width="1.6" stroke-linejoin="round"/><circle cx="40" cy="10" r="1.6" fill="#BAE6FD"/><circle cx="44" cy="6" r="1.1" fill="#BAE6FD"/>',
+  balena: '<path d="M4 28c0-9 9-15 20-15 9 0 15 5 17 11l5-6c1 4 0 8-3 11 2 2 2 5 0 7-3-1-5-3-6-5-4 6-11 9-19 9C9 40 4 35 4 28Z" fill="#3B82F6" stroke="#1E3A8A" stroke-width="2" stroke-linejoin="round"/><path d="M6 31c6 6 22 6 30-1-6 7-24 9-30 1Z" fill="#DBEAFE"/><path d="M9 32h3M14 34h3M20 35h3" stroke="#93C5FD" stroke-width="1.4"/><circle cx="12" cy="25" r="1.8" fill="#1F2937"/><path d="M21 13c-2-3-1-6 1-7M21 13c1-3 3-4 5-4M21 13c-1-2-3-3-5-2" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round" fill="none"/>',
+  granchio: '<ellipse cx="24" cy="28" rx="13" ry="9" fill="#EF4444" stroke="#7F1D1D" stroke-width="2"/><path d="M11 28l-6 4M12 32l-5 6M37 28l6 4M36 32l5 6M14 35l-3 6M34 35l3 6" stroke="#7F1D1D" stroke-width="2.4" stroke-linecap="round"/><path d="M14 22c-3-3-4-7-2-10M34 22c3-3 4-7 2-10" stroke="#7F1D1D" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M6 10c0-3 3-5 6-4 2 1 2 3 1 5l-3-1-1 3c-2 0-3-1-3-3ZM42 10c0-3-3-5-6-4-2 1-2 3-1 5l3-1 1 3c2 0 3-1 3-3Z" fill="#EF4444" stroke="#7F1D1D" stroke-width="1.8" stroke-linejoin="round"/><path d="M20 20v-5M28 20v-5" stroke="#7F1D1D" stroke-width="2"/><circle cx="20" cy="14" r="2.4" fill="#FFFFFF" stroke="#7F1D1D" stroke-width="1.4"/><circle cx="28" cy="14" r="2.4" fill="#FFFFFF" stroke="#7F1D1D" stroke-width="1.4"/><circle cx="20" cy="14" r="1.1" fill="#1F2937"/><circle cx="28" cy="14" r="1.1" fill="#1F2937"/><path d="M20 30c2 2 6 2 8 0" stroke="#7F1D1D" stroke-width="1.6" fill="none" stroke-linecap="round"/>',
+  polpo: '<path d="M11 22c0-9 6-15 13-15s13 6 13 15c0 4-2 7-4 9H15c-2-2-4-5-4-9Z" fill="#A855F7" stroke="#581C87" stroke-width="2"/><path d="M15 30c-3 4-7 6-10 5M19 31c-1 5-4 9-7 10M24 31v11M29 31c1 5 4 9 7 10M33 30c3 4 7 6 10 5" stroke="#A855F7" stroke-width="4.4" stroke-linecap="round" fill="none"/><path d="M15 30c-3 4-7 6-10 5M19 31c-1 5-4 9-7 10M24 31v11M29 31c1 5 4 9 7 10M33 30c3 4 7 6 10 5" stroke="#581C87" stroke-width="1" stroke-linecap="round" fill="none" opacity=".5"/><circle cx="19" cy="20" r="3.2" fill="#FFFFFF"/><circle cx="29" cy="20" r="3.2" fill="#FFFFFF"/><circle cx="19.5" cy="20.5" r="1.6" fill="#1F2937"/><circle cx="29.5" cy="20.5" r="1.6" fill="#1F2937"/><path d="M21 26c2 1.5 4 1.5 6 0" stroke="#581C87" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="17" cy="12" r="1.6" fill="#D8B4FE"/><circle cx="29" cy="11" r="1.2" fill="#D8B4FE"/>',
+  leone: '<path d="M30 30c6 0 11 3 12 8-3 1-6 1-8-1" fill="#F59E0B" stroke="#92400E" stroke-width="2" stroke-linejoin="round"/><circle cx="42" cy="37" r="2.4" fill="#92400E"/><path d="M14 26c4-3 12-3 16 1 3 3 4 8 3 12-1 3-4 4-8 4h-8c-4 0-6-2-6-5 0-5 1-9 3-12Z" fill="#FBBF24" stroke="#92400E" stroke-width="2" stroke-linejoin="round"/><path d="M15 43h5M25 43h5" stroke="#92400E" stroke-width="3" stroke-linecap="round"/><circle cx="16" cy="18" r="12" fill="#B45309" stroke="#78350F" stroke-width="2"/><g fill="#92400E"><circle cx="6" cy="14" r="3"/><circle cx="8" cy="25" r="3"/><circle cx="16" cy="29" r="3"/><circle cx="25" cy="25" r="3"/><circle cx="27" cy="14" r="3"/><circle cx="20" cy="7" r="3"/><circle cx="10" cy="7" r="3"/></g><circle cx="16" cy="18" r="8" fill="#FBBF24" stroke="#92400E" stroke-width="1.6"/><circle cx="13" cy="16.5" r="1.4" fill="#1F2937"/><circle cx="19" cy="16.5" r="1.4" fill="#1F2937"/><path d="M14.5 20h3l-1.5 2Z" fill="#78350F"/><path d="M13 23c1.5 1.5 4.5 1.5 6 0" stroke="#78350F" stroke-width="1.4" fill="none" stroke-linecap="round"/>',
+  giraffa: '<path d="M14 6h6l3 24h-8Z" fill="#FCD34D" stroke="#92400E" stroke-width="2" stroke-linejoin="round"/><path d="M12 28c0-3 3-5 7-5h12c5 0 8 3 8 7v4c0 2-2 4-4 4H16c-2 0-4-2-4-4Z" fill="#FCD34D" stroke="#92400E" stroke-width="2"/><g fill="#B45309"><rect x="16" y="11" width="3.4" height="3" rx="1"/><rect x="17" y="19" width="3" height="3.4" rx="1"/><rect x="22" y="27" width="4" height="3.4" rx="1"/><rect x="29" y="25.5" width="4" height="3.4" rx="1"/><rect x="34" y="31" width="3.4" height="3" rx="1"/><rect x="16" y="31" width="3.6" height="3" rx="1"/></g><path d="M16 38v6M21 38v6M31 38v6M36 38v6" stroke="#92400E" stroke-width="3" stroke-linecap="round"/><path d="M39 29c3 1 4 4 4 7" stroke="#92400E" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M8 7c0-3 3-5 7-5h4c3 0 4 2 4 4s-2 3-4 3h-8c-2 0-3 0-3-2Z" fill="#FCD34D" stroke="#92400E" stroke-width="2"/><path d="M16 2V0M19 2V0" stroke="#92400E" stroke-width="2" stroke-linecap="round"/><circle cx="15.5" cy="4.6" r="1.2" fill="#1F2937"/>',
+  elefante: '<path d="M14 18c0-6 6-10 14-10s14 5 14 12v14c0 3-2 5-5 5H19c-3 0-5-2-5-5Z" fill="#9CA3AF" stroke="#374151" stroke-width="2"/><path d="M19 39v5M25 39v5M33 39v5M38 39v5" stroke="#374151" stroke-width="3.4" stroke-linecap="round"/><path d="M5 12c0-5 4-8 9-8s9 4 9 9c0 6-3 10-9 10-5 0-9-5-9-11Z" fill="#D1D5DB" stroke="#374151" stroke-width="2"/><path d="M14 20c-2 4-2 9-4 13-1 2-3 3-5 2" stroke="#9CA3AF" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M14 20c-2 4-2 9-4 13-1 2-3 3-5 2" stroke="#374151" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".5"/><circle cx="17.5" cy="13" r="1.6" fill="#1F2937"/><path d="M18 21l5 2" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/><path d="M42 22c3 1 4 4 3 7" stroke="#374151" stroke-width="2" fill="none" stroke-linecap="round"/>',
+  zebra: '<path d="M12 26c0-4 3-7 8-7h14c4 0 7 3 7 7v6c0 3-2 5-5 5H17c-3 0-5-2-5-5Z" fill="#FFFFFF" stroke="#111827" stroke-width="2"/><path d="M18 19l2 18M24 19l-1 18M30 19l1 18M36 20l-2 16" stroke="#111827" stroke-width="2.6"/><path d="M15 37v6M20 37v6M31 37v6M36 37v6" stroke="#111827" stroke-width="3" stroke-linecap="round"/><path d="M41 25c3 1 4 4 3 7" stroke="#111827" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M6 14c0-5 4-8 8-7l4 1 1 13c0 3-2 5-5 5-4 0-8-4-8-12Z" fill="#FFFFFF" stroke="#111827" stroke-width="2" stroke-linejoin="round"/><path d="M9 10l7 1M8 14l9 1M8 18l9 1" stroke="#111827" stroke-width="2"/><path d="M14 7l2-5 2 5M18 8l5-3 1 4-4 1" fill="#111827"/><ellipse cx="9" cy="23" rx="4" ry="3" fill="#4B5563"/><circle cx="12" cy="12.5" r="1.4" fill="#F9FAFB" stroke="#111827" stroke-width="1"/>',
+  pera: '<path d="M24 10c4 0 5 4 5 7 0 3 2 4 4 7 3 4 3 10 0 14-2 3-6 5-9 5s-7-2-9-5c-3-4-3-10 0-14 2-3 4-4 4-7 0-3 1-7 5-7Z" fill="#A3E635" stroke="#4D7C0F" stroke-width="2"/><path d="M24 10V5" stroke="#78350F" stroke-width="2.4" stroke-linecap="round"/><path d="M25 7c3-3 7-3 9-1-3 2-6 3-9 1Z" fill="#16A34A"/><path d="M18 26c-2 3-2 8 0 11" stroke="#ECFCCB" stroke-width="2.6" stroke-linecap="round" fill="none"/>',
+  topo: '<path d="M8 32c0-8 8-14 18-14 8 0 13 5 13 11 0 5-4 8-10 8H13c-3 0-5-2-5-5Z" fill="#9CA3AF" stroke="#4B5563" stroke-width="2"/><path d="M39 31c4 0 6 3 4 6-2 3-6 4-6 7" stroke="#F9A8D4" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="15" cy="17" r="6" fill="#9CA3AF" stroke="#4B5563" stroke-width="2"/><circle cx="15" cy="17" r="3.4" fill="#F9A8D4"/><path d="M8 30l-6 2" stroke="#4B5563" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="30" r="2" fill="#F472B6"/><circle cx="13" cy="26" r="1.6" fill="#1F2937"/><path d="M4 26l5 2M4 33l5-2" stroke="#4B5563" stroke-width="1.2" stroke-linecap="round"/><path d="M17 37v4M28 37v4" stroke="#F9A8D4" stroke-width="2.4" stroke-linecap="round"/>',
+  dado: '<path d="M10 16l14-8 14 8v16l-14 8-14-8Z" fill="#FFFFFF" stroke="#374151" stroke-width="2" stroke-linejoin="round"/><path d="M10 16l14 8 14-8M24 24v16" stroke="#374151" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M24 24l14-8v16l-14 8Z" fill="#E5E7EB"/><path d="M10 16l14 8 14-8M24 24v16" stroke="#374151" stroke-width="2" fill="none"/><ellipse cx="24" cy="16" rx="2" ry="1.3" fill="#DC2626"/><circle cx="15" cy="23" r="1.6" fill="#1F2937"/><circle cx="19" cy="31" r="1.6" fill="#1F2937"/><circle cx="29" cy="25" r="1.5" fill="#1F2937"/><circle cx="33" cy="22.5" r="1.5" fill="#1F2937"/><circle cx="29" cy="33" r="1.5" fill="#1F2937"/><circle cx="33" cy="30.5" r="1.5" fill="#1F2937"/>',
+  rosa: '<path d="M24 26v18" stroke="#15803D" stroke-width="2.6" stroke-linecap="round"/><path d="M24 36c-5-1-8-4-9-8 5 0 8 3 9 8ZM24 33c4-1 7-4 7-7-4 0-7 3-7 7Z" fill="#22C55E" stroke="#15803D" stroke-width="1.4"/><path d="M14 14c0-6 4-9 10-9s10 3 10 9c0 7-4 12-10 12s-10-5-10-12Z" fill="#E11D48" stroke="#881337" stroke-width="2"/><path d="M19 12c2-3 8-3 10 0-1 4-3 6-5 6s-4-2-5-6Z" fill="#F43F5E" stroke="#881337" stroke-width="1.4"/><path d="M22 11c1-1 3-1 4 0" stroke="#881337" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M15 17c2 4 6 6 9 6M33 17c-2 4-6 6-9 6" stroke="#881337" stroke-width="1.4" fill="none" stroke-linecap="round"/>',
+  banana: '<path d="M8 14c2 14 12 24 26 24 4 0 7-1 8-3-1-2-4-2-7-2-11 0-19-8-21-20-1-3-5-3-6 1Z" fill="#FACC15" stroke="#A16207" stroke-width="2" stroke-linejoin="round"/><path d="M13 16c3 10 10 17 20 18" stroke="#FEF08A" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M8 14l-2-5 4-1 2 4" fill="#78350F" stroke="#78350F" stroke-width="1"/><path d="M41 35l3 1-1 2" stroke="#78350F" stroke-width="2" stroke-linecap="round"/>',
+  lumaca: '<path d="M4 38c0-2 2-3 5-3h28c4 0 7-3 7-7v-6" stroke="#65A30D" stroke-width="0" fill="none"/><path d="M5 40h30c5 0 8-3 8-8l2-6" stroke="#84CC16" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M43 26l-2-7M45 26l3-6" stroke="#4D7C0F" stroke-width="1.8" stroke-linecap="round"/><circle cx="41" cy="18.5" r="1.6" fill="#1F2937"/><circle cx="48" cy="19.5" r="1.6" fill="#1F2937"/><circle cx="22" cy="25" r="13" fill="#D97706" stroke="#78350F" stroke-width="2"/><path d="M22 25c0-3 3-4 5-2 3 3 0 8-4 8-5 0-8-5-6-9 3-6 11-6 14-1 4 7-1 15-9 15" stroke="#78350F" stroke-width="2" fill="none" stroke-linecap="round"/>',
+  carota: '<path d="M15 16l20-4c2 0 3 2 2 4L13 40c-2 2-5 0-4-2Z" fill="#F97316" stroke="#9A3412" stroke-width="2" stroke-linejoin="round"/><path d="M18 22l4 1M14 29l4 1M21 18l3 2M17 34l2 1" stroke="#9A3412" stroke-width="1.6" stroke-linecap="round"/><path d="M33 12c0-5 3-8 6-8-1 3-1 5-3 8M35 13c3-3 7-4 9-2-3 2-5 3-8 3M34 12c-2-4-1-8 2-9" stroke="#16A34A" stroke-width="2.6" fill="none" stroke-linecap="round"/>',
+  patata: '<path d="M8 26c0-9 8-15 17-15 9 0 16 5 16 13 0 9-7 14-17 14C14 38 8 34 8 26Z" fill="#D6A15E" stroke="#78350F" stroke-width="2"/><g fill="#92400E"><ellipse cx="16" cy="22" rx="1.6" ry="1"/><ellipse cx="25" cy="18" rx="1.4" ry=".9"/><ellipse cx="33" cy="26" rx="1.6" ry="1"/><ellipse cx="21" cy="31" rx="1.4" ry=".9"/><ellipse cx="29" cy="33" rx="1.2" ry=".8"/></g><path d="M13 17c3-3 7-4 10-4" stroke="#F5D0A1" stroke-width="2.2" fill="none" stroke-linecap="round"/>',
+  gelato: '<path d="M15 24h18l-9 21Z" fill="#E9A85A" stroke="#92400E" stroke-width="2" stroke-linejoin="round"/><path d="M18 27l9 9M22 25l7 7M30 27l-9 9M26 25l-7 7" stroke="#B45309" stroke-width="1.2"/><circle cx="18" cy="18" r="7" fill="#F9A8D4" stroke="#BE185D" stroke-width="2"/><circle cx="30" cy="18" r="7" fill="#FEF3C7" stroke="#B45309" stroke-width="2"/><circle cx="24" cy="10" r="7" fill="#86EFAC" stroke="#15803D" stroke-width="2"/><circle cx="24" cy="3.5" r="2.4" fill="#DC2626"/><path d="M15 24c3 2 15 2 18 0" stroke="#92400E" stroke-width="2" fill="none"/>',
+  matita: '<g transform="rotate(-35 24 24)"><rect x="19" y="6" width="10" height="28" fill="#FACC15" stroke="#A16207" stroke-width="2"/><path d="M22.3 6v28M25.7 6v28" stroke="#EAB308" stroke-width="1.2"/><path d="M19 34h10l-5 10Z" fill="#FDE6C3" stroke="#A16207" stroke-width="2" stroke-linejoin="round"/><path d="M22.5 41h3l-1.5 3Z" fill="#374151"/><rect x="19" y="2" width="10" height="5" rx="1.5" fill="#F472B6" stroke="#9D174D" stroke-width="1.6"/><rect x="19" y="6" width="10" height="2.4" fill="#D1D5DB"/></g>',
+};
+/* Motore «smista» (lo stesso di ECO): gli oggetti di FORME e ANIMALI E CASE si aggiungono a RIFIUTI con la loro
+   categoria; ogni categoria ha il suo cestino/scatola/ambiente con un cartello (immagine). */
+const COL_FORMA = [['#EF4444', '#991B1B'], ['#3B82F6', '#1E3A8A'], ['#FACC15', '#A16207'], ['#22C55E', '#166534'], ['#A855F7', '#581C87'], ['#F97316', '#9A3412']];
+function svgForma(tipo, v, [f, s]) {   // le varianti cambiano grandezza e posizione, mai la forma
+  const st = `fill="${f}" stroke="${s}" stroke-width="2.4" stroke-linejoin="round"`;
+  if (tipo === 'cerchio') return [`<circle cx="24" cy="24" r="16" ${st}/>`, `<circle cx="24" cy="24" r="10" ${st}/>`, `<circle cx="24" cy="25" r="13" ${st}/>`][v];
+  if (tipo === 'quadrato') return [`<rect x="9" y="9" width="30" height="30" rx="1.5" ${st}/>`, `<rect x="13" y="13" width="22" height="22" rx="1.5" ${st} transform="rotate(12 24 24)"/>`, `<rect x="11" y="11" width="26" height="26" rx="1.5" ${st} transform="rotate(-8 24 24)"/>`][v];
+  if (tipo === 'triangolo') return [`<path d="M24 7L42 39H6Z" ${st}/>`, `<path d="M9 9V40H39Z" ${st}/>`, `<path d="M24 5L35 43H13Z" ${st}/>`][v];
+  return [`<rect x="5" y="14" width="38" height="20" rx="1.5" ${st}/>`, `<rect x="15" y="5" width="18" height="38" rx="1.5" ${st}/>`, `<rect x="3" y="19" width="42" height="11" rx="1.5" ${st}/>`][v];   // rettangolo
+}
+const NOME_FORMA = { cerchio: 'CERCHIO', quadrato: 'QUADRATO', triangolo: 'TRIANGOLO', rettangolo: 'RETTANGOLO' };
+const NOMI_COL = ['ROSSO', 'BLU', 'GIALLO', 'VERDE', 'VIOLA', 'ARANCIONE'];
+['cerchio', 'quadrato', 'triangolo', 'rettangolo'].forEach(f => [0, 1, 2].forEach(v => COL_FORMA.forEach((c, i) => {
+  RIFIUTI[`${f}_${v}_${i}`] = [f, `${NOME_FORMA[f]} ${NOMI_COL[i]}`.replace('CERCHIO ROSSO', 'CERCHIO ROSSO'), svgForma(f, v, c)];
+})));
+const ANIMALI_CASA = { fattoria: ['mucca', 'pecora', 'maiale', 'gallina'], bosco: ['volpe', 'gufo', 'scoiattolo', 'lupo'], mare: ['pesce', 'balena', 'granchio', 'polpo'], savana: ['leone', 'giraffa', 'elefante', 'zebra'] };
+const NOME_ANIMALE = { mucca: 'MUCCA', pecora: 'PECORA', maiale: 'MAIALE', gallina: 'GALLINA', volpe: 'VOLPE', gufo: 'GUFO', scoiattolo: 'SCOIATTOLO', lupo: 'LUPO', pesce: 'PESCE', balena: 'BALENA', granchio: 'GRANCHIO', polpo: 'POLPO', leone: 'LEONE', giraffa: 'GIRAFFA', elefante: 'ELEFANTE', zebra: 'ZEBRA' };
+Object.entries(ANIMALI_CASA).forEach(([casa, l]) => l.forEach(a => { RIFIUTI['an_' + a] = [casa, NOME_ANIMALE[a], DISEGNI[a]]; }));
+Object.assign(CAT_ECO, {
+  cerchio: { col: '#B07D4F', scuro: '#7A4E2A' }, quadrato: { col: '#B07D4F', scuro: '#7A4E2A' }, triangolo: { col: '#B07D4F', scuro: '#7A4E2A' }, rettangolo: { col: '#B07D4F', scuro: '#7A4E2A' },
+  fattoria: { col: '#C2410C', scuro: '#7C2D12' }, bosco: { col: '#2E7D32', scuro: '#1B5E20' }, mare: { col: '#2563EB', scuro: '#1E3A8A' }, savana: { col: '#D97706', scuro: '#92400E' },
+});
+/* Cartelli disegnati (300×421 come quelli dei cestini): un nastro con il nome e, sotto, la forma o l'ambiente */
+function cartelloSvg(cat) {
+  const nomi = { cerchio: 'CERCHIO', quadrato: 'QUADRATO', triangolo: 'TRIANGOLO', rettangolo: 'RETTANGOLO', fattoria: 'FATTORIA', bosco: 'BOSCO', mare: 'MARE', savana: 'SAVANA' };
+  const C = CAT_ECO[cat], font = `font-family="Arial Rounded MT Bold, Arial, sans-serif" font-weight="bold"`;
+  const forma = { cerchio: '<circle cx="150" cy="250" r="105"/>', quadrato: '<rect x="55" y="155" width="190" height="190" rx="6"/>', triangolo: '<path d="M150 135L265 345H35Z"/>', rettangolo: '<rect x="25" y="190" width="250" height="120" rx="6"/>' }[cat];
+  let scena;
+  if (forma) scena = `<rect x="0" y="0" width="300" height="421" fill="#FFF8E8"/><g fill="#E5E7EB" stroke="#6B7280" stroke-width="12" stroke-dasharray="26 16" stroke-linejoin="round">${forma}</g>`;
+  else scena = {
+    fattoria: '<rect width="300" height="421" fill="#BAE6FD"/><rect y="250" width="300" height="171" fill="#86C557"/><path d="M60 300V180l90-70 90 70v120Z" fill="#DC2626" stroke="#7F1D1D" stroke-width="6" stroke-linejoin="round"/><path d="M40 190l110-90 110 90" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="115" y="215" width="70" height="85" fill="#FFFFFF"/><path d="M115 215l70 85M185 215l-70 85" stroke="#DC2626" stroke-width="8"/><path d="M0 330h300M0 360h300M20 310v80M80 310v80M220 310v80M280 310v80" stroke="#A16207" stroke-width="8"/><circle cx="250" cy="70" r="28" fill="#FDE047"/>',
+    bosco: '<rect width="300" height="421" fill="#A7F3D0"/><rect y="320" width="300" height="101" fill="#65A30D"/><g fill="#78350F"><rect x="40" y="250" width="18" height="90"/><rect x="140" y="230" width="22" height="110"/><rect x="235" y="255" width="18" height="85"/></g><g fill="#15803D"><circle cx="49" cy="225" r="45"/><circle cx="151" cy="190" r="60"/><circle cx="244" cy="230" r="42"/></g><g fill="#22C55E"><circle cx="35" cy="210" r="20"/><circle cx="135" cy="165" r="25"/><circle cx="230" cy="215" r="18"/></g><path d="M80 360c10-20 30-20 40 0Z" fill="#DC2626"/><circle cx="92" cy="350" r="3" fill="#FFFFFF"/>',
+    mare: '<rect width="300" height="421" fill="#1D4ED8"/><rect width="300" height="200" fill="#3B82F6"/><path d="M0 150c25-15 50 15 75 0s50 15 75 0 50 15 75 0 50 15 75 0" fill="none" stroke="#BFDBFE" stroke-width="8"/><path d="M0 230c25-15 50 15 75 0s50 15 75 0 50 15 75 0 50 15 75 0" fill="none" stroke="#93C5FD" stroke-width="6"/><path d="M0 380c50-20 100-10 150 0s100 15 150-5v50H0Z" fill="#FCD34D"/><path d="M60 385c-10-30 10-50 0-80M70 385c10-25-5-45 5-70M240 385c-8-30 8-45 0-75" stroke="#16A34A" stroke-width="8" fill="none" stroke-linecap="round"/><g fill="#DBEAFE"><circle cx="200" cy="300" r="8"/><circle cx="215" cy="270" r="6"/><circle cx="205" cy="245" r="4"/></g>',
+    savana: '<rect width="300" height="421" fill="#FDBA74"/><circle cx="150" cy="190" r="70" fill="#FDE68A"/><rect y="290" width="300" height="131" fill="#EAB308"/><path d="M0 290c60-12 120-12 180 0s90 6 120 0" fill="none" stroke="#CA8A04" stroke-width="6"/><rect x="205" y="215" width="14" height="90" fill="#78350F"/><path d="M150 220c20-25 110-25 130 0Z" fill="#4D7C0F"/><path d="M30 340l6-20 6 20M60 350l5-18 5 18M250 345l6-20 6 20" stroke="#A16207" stroke-width="4" fill="none"/>',
+  }[cat];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 421">${scena}<g><path d="M14 22h272v58H14Z" fill="${C.col}" stroke="${C.scuro}" stroke-width="6"/><path d="M14 30L2 51l12 21M286 30l12 21-12 21" fill="${C.scuro}"/><text x="150" y="64" text-anchor="middle" font-size="${nomi[cat].length > 8 ? 34 : 40}" fill="#FFFFFF" ${font}>${nomi[cat]}</text></g></svg>`;
+}
+const srcCartello = cat => IMG_DATA['cestino_' + cat] || 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(cartelloSvg(cat));
+const LIVELLI_FORME = [
+  { nome: 'CERCHI E QUADRATI', tipo: 'eco', set: 'forme', cestini: ['cerchio', 'quadrato'], n: 4, w: 7, h: 4, ostacoli: 0, tema: 'prato' },
+  { nome: 'ANCHE I TRIANGOLI', tipo: 'eco', set: 'forme', cestini: ['cerchio', 'quadrato', 'triangolo'], n: 6, w: 8, h: 4, ostacoli: .08, tema: 'prato' },
+  { nome: 'TUTTE LE FORME', tipo: 'eco', set: 'forme', cestini: ['cerchio', 'quadrato', 'triangolo', 'rettangolo'], n: 8, w: 9, h: 5, ostacoli: .12, tema: 'prato' },
+];
+const LIVELLI_ANIMALI = [
+  { nome: 'FATTORIA E MARE', tipo: 'eco', set: 'animali', cestini: ['fattoria', 'mare'], n: 4, w: 7, h: 4, ostacoli: 0, tema: 'prato' },
+  { nome: 'ANCHE IL BOSCO', tipo: 'eco', set: 'animali', cestini: ['fattoria', 'bosco', 'mare'], n: 6, w: 8, h: 4, ostacoli: .08, tema: 'prato' },
+  { nome: 'LA SAVANA', tipo: 'eco', set: 'animali', cestini: ['fattoria', 'bosco', 'mare', 'savana'], n: 8, w: 9, h: 5, ostacoli: .12, tema: 'prato' },
+  { nome: 'TUTTI A CASA', tipo: 'eco', set: 'animali', cestini: ['fattoria', 'bosco', 'mare', 'savana'], n: 11, w: 10, h: 5, ostacoli: .15, tema: 'prato' },
+];
+
+/* =====================================================================
+   Motore «fila»: una fila di caselle (la linea del tempo, o il ritmo) e delle carte sparse sul prato. Si prende una
+   carta (in mano) e, sulla casella giusta della fila, SPAZIO la posa. Sbagliato: la casella si accende in ambra e la
+   carta resta in mano; al secondo errore con la stessa carta si illumina il suo posto. Nei ritmi alcune caselle sono
+   già piene (il motivo da capire) e ci sono carte in più che non servono; nelle storie a volte c'è un «intruso».
+   ===================================================================== */
+const fondo = c => `<rect x="1" y="1" width="46" height="46" rx="7" fill="${c}"/>`;
+const SEQUENZE = {   // vignette 48×48, in ordine
+  candela: [30, 18, 7].map(h => fondo('#E0E7FF') + `<rect x="17" y="${40 - h}" width="14" height="${h}" rx="2" fill="#FDE68A" stroke="#B45309" stroke-width="2"/><path d="M19 ${42 - h}c0 4 2 4 2 7" stroke="#FEF3C7" stroke-width="2" stroke-linecap="round"/><path d="M24 ${40 - h}v-3" stroke="#374151" stroke-width="1.6"/><path d="M24 ${27 - h}c4 4 4 8 0 10-4-2-4-6 0-10Z" fill="#F97316" stroke="#C2410C" stroke-width="1.2"/><rect x="11" y="40" width="26" height="4" rx="2" fill="#94A3B8"/>`),
+  mela: [fondo('#ECFCCB') + '<path d="M24 14c-3-3-12-3-14 5-2 9 4 21 10 21 2 0 3-1 4-1s2 1 4 1c6 0 12-12 10-21-2-8-11-8-14-5Z" fill="#E03A3E" stroke="#9E1B22" stroke-width="1.8"/><path d="M24 14c0-4 1-7 3-9" stroke="#6B4423" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M27 9c3-4 8-4 10-2-2 3-6 5-10 2Z" fill="#2E9B44"/>', fondo('#ECFCCB') + '<path d="M24 14c-3-3-12-3-14 5-2 9 4 21 10 21 2 0 3-1 4-1s2 1 4 1c6 0 12-12 10-21-2-8-11-8-14-5Z" fill="#E03A3E" stroke="#9E1B22" stroke-width="1.8"/><path d="M24 14c0-4 1-7 3-9" stroke="#6B4423" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M27 9c3-4 8-4 10-2-2 3-6 5-10 2Z" fill="#2E9B44"/>' + '<circle cx="38" cy="22" r="7" fill="#ECFCCB"/><circle cx="35" cy="28" r="5" fill="#ECFCCB"/><path d="M33 16c3 2 5 6 3 9-1 3-4 4-6 6" stroke="#FFF7E0" stroke-width="3" fill="none"/>', fondo('#ECFCCB') + RIFIUTI.torsolo[2]],
+  pulcino: [
+    fondo('#FEF3C7') + '<ellipse cx="24" cy="27" rx="11" ry="14" fill="#FFFFFF" stroke="#A8A29E" stroke-width="2"/><path d="M8 42h32" stroke="#D97706" stroke-width="3" stroke-linecap="round"/><path d="M18 22c1-3 3-4 5-4" stroke="#E7E5E4" stroke-width="2" fill="none" stroke-linecap="round"/>',
+    fondo('#FEF3C7') + '<ellipse cx="24" cy="27" rx="11" ry="14" fill="#FFFFFF" stroke="#A8A29E" stroke-width="2"/><path d="M14 24l4 3 3-4 4 4 3-3 4 3" stroke="#57534E" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M8 42h32" stroke="#D97706" stroke-width="3" stroke-linecap="round"/><circle cx="31" cy="14" r="1.6" fill="#FACC15"/>',
+    fondo('#FEF3C7') + '<path d="M12 32c0 6 5 10 12 10s12-4 12-10l-4 3-4-3-4 3-4-3-4 3Z" fill="#FFFFFF" stroke="#A8A29E" stroke-width="2" stroke-linejoin="round"/><circle cx="24" cy="22" r="9" fill="#FACC15" stroke="#A16207" stroke-width="2"/><circle cx="21" cy="20" r="1.4" fill="#1F2937"/><circle cx="27" cy="20" r="1.4" fill="#1F2937"/><path d="M22 23h4l-2 3Z" fill="#F97316"/><path d="M19 12c1 2 3 2 4 1M24 12c1 2 3 2 4 0" stroke="#A16207" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M8 44h32" stroke="#D97706" stroke-width="3" stroke-linecap="round"/>',
+  ],
+  pianta: [0, 1, 2, 3].map(s => fondo('#E0F2FE') + '<path d="M4 38c6-5 34-5 40 0v6H4Z" fill="#92400E"/>' + [
+    '<ellipse cx="24" cy="33" rx="4" ry="2.6" fill="#FDE68A" stroke="#A16207" stroke-width="1.4"/><path d="M14 32h2M32 33h2" stroke="#78350F" stroke-width="2" stroke-linecap="round"/>',
+    '<path d="M24 35v-6" stroke="#16A34A" stroke-width="2.6" stroke-linecap="round"/><path d="M24 30c-3-3-6-2-6 0 3 1 5 1 6 0ZM24 30c3-3 6-2 6 0-3 1-5 1-6 0Z" fill="#22C55E"/>',
+    '<path d="M24 35V16" stroke="#16A34A" stroke-width="2.8" stroke-linecap="round"/><path d="M24 28c-5-4-10-3-10 0 4 2 8 2 10 0ZM24 22c5-4 10-3 10 0-4 2-8 2-10 0ZM24 17c-3-4-6-3-6-1 2 2 4 2 6 1Z" fill="#22C55E" stroke="#15803D" stroke-width="1"/>',
+    '<path d="M24 35V16" stroke="#16A34A" stroke-width="2.8" stroke-linecap="round"/><path d="M24 28c-5-4-10-3-10 0 4 2 8 2 10 0ZM24 24c5-4 10-3 10 0-4 2-8 2-10 0Z" fill="#22C55E" stroke="#15803D" stroke-width="1"/><g fill="#F472B6" stroke="#BE185D" stroke-width="1"><circle cx="24" cy="7" r="4"/><circle cx="30" cy="11" r="4"/><circle cx="28" cy="17" r="4"/><circle cx="20" cy="17" r="4"/><circle cx="18" cy="11" r="4"/></g><circle cx="24" cy="12.5" r="3.2" fill="#FACC15"/>'][s]),
+  giornata: [['#FDBA74', 9, 30, '#FDE68A'], ['#7DD3FC', 24, 10, '#FDE047'], ['#FB923C', 39, 30, '#FCA5A5'], ['#1E3A8A', 0, 0, '']].map(([cielo, sx, sy, sole], i) => fondo(cielo) +
+    (i === 3 ? '<path d="M34 8a8 8 0 1 0 6 12 6.5 6.5 0 1 1-6-12Z" fill="#FDE68A"/><g fill="#FFFFFF"><circle cx="10" cy="10" r="1.2"/><circle cx="18" cy="16" r="1"/><circle cx="26" cy="7" r="1.1"/><circle cx="8" cy="22" r=".9"/></g>' : `<circle cx="${sx}" cy="${sy}" r="7" fill="${sole}" stroke="#F59E0B" stroke-width="1.6"/>`) +
+    `<path d="M1 34c10-5 18-5 26-1s14 4 20 0v14H1Z" fill="${i === 3 ? '#14532D' : '#4ADE80'}"/><path d="M28 38v-8l6-5 6 5v8Z" fill="${i === 3 ? '#57534E' : '#FFFFFF'}" stroke="#78350F" stroke-width="1.4"/><rect x="32" y="31" width="4" height="4" fill="${i === 3 ? '#FDE047' : '#93C5FD'}"/>`),
+  farfalla: [
+    fondo('#ECFCCB') + '<path d="M6 30c8-16 30-18 38-10-10 14-28 16-38 10Z" fill="#4ADE80" stroke="#15803D" stroke-width="2" stroke-linejoin="round"/><path d="M6 30c12-6 24-8 38-10" stroke="#15803D" stroke-width="1.4" fill="none"/><g fill="#FFFFFF" stroke="#A8A29E" stroke-width="1"><circle cx="24" cy="24" r="2"/><circle cx="28" cy="23" r="2"/><circle cx="26" cy="27" r="2"/></g>',
+    fondo('#ECFCCB') + '<path d="M6 34c8-16 30-18 38-10-10 14-28 16-38 10Z" fill="#4ADE80" stroke="#15803D" stroke-width="2" stroke-linejoin="round"/><g fill="#84CC16" stroke="#3F6212" stroke-width="1.2"><circle cx="14" cy="24" r="3.4"/><circle cx="19" cy="22" r="3.4"/><circle cx="24" cy="21" r="3.4"/><circle cx="29" cy="21" r="3.4"/></g><circle cx="33.5" cy="20" r="4" fill="#65A30D" stroke="#3F6212" stroke-width="1.2"/><circle cx="35" cy="19" r="1" fill="#1F2937"/><path d="M34 16l1-3M36 16l2-3" stroke="#3F6212" stroke-width="1.2" stroke-linecap="round"/>',
+    fondo('#ECFCCB') + '<path d="M4 8h40" stroke="#78350F" stroke-width="3.4" stroke-linecap="round"/><path d="M24 8v4" stroke="#78350F" stroke-width="1.6"/><path d="M24 12c-6 2-7 10-5 18 1 5 3 8 5 10 2-2 4-5 5-10 2-8 1-16-5-18Z" fill="#A3B18A" stroke="#4D5D3A" stroke-width="2"/><path d="M20 20h8M19 26h10M21 32h6" stroke="#6B7B4F" stroke-width="1.4"/>',
+    fondo('#ECFCCB') + '<path d="M24 14c-6-10-20-8-18 4 1 6 8 8 18 4ZM24 14c6-10 20-8 18 4-1 6-8 8-18 4Z" fill="#F97316" stroke="#9A3412" stroke-width="2"/><path d="M24 22c-6 2-14 6-12 12 2 5 9 2 12-6ZM24 22c6 2 14 6 12 12-2 5-9 2-12-6Z" fill="#FB923C" stroke="#9A3412" stroke-width="2"/><g fill="#FFFFFF"><circle cx="12" cy="13" r="2"/><circle cx="36" cy="13" r="2"/><circle cx="16" cy="31" r="1.6"/><circle cx="32" cy="31" r="1.6"/></g><rect x="22.5" y="12" width="3" height="20" rx="1.5" fill="#1F2937"/><path d="M23 12c-1-3-3-5-5-5M25 12c1-3 3-5 5-5" stroke="#1F2937" stroke-width="1.4" fill="none" stroke-linecap="round"/>',
+  ],
+  stagioni: [0, 1, 2, 3].map(s => fondo(['#E0F2FE', '#BAE6FD', '#FEF3C7', '#E5E7EB'][s]) + `<path d="M1 40h46v6H1Z" fill="${['#86EFAC', '#4ADE80', '#D9A15E', '#FFFFFF'][s]}"/><path d="M24 42V24M24 30l-7-6M24 27l6-6" stroke="#78350F" stroke-width="3.4" stroke-linecap="round"/>` + [
+    '<g fill="#86EFAC" stroke="#16A34A" stroke-width="1.2"><circle cx="16" cy="18" r="7"/><circle cx="24" cy="13" r="8"/><circle cx="32" cy="18" r="7"/></g><g fill="#F9A8D4"><circle cx="15" cy="15" r="1.8"/><circle cx="22" cy="10" r="1.8"/><circle cx="28" cy="14" r="1.8"/><circle cx="33" cy="20" r="1.8"/><circle cx="19" cy="20" r="1.8"/></g>',
+    '<g fill="#16A34A" stroke="#14532D" stroke-width="1.2"><circle cx="15" cy="19" r="9"/><circle cx="24" cy="12" r="10"/><circle cx="33" cy="19" r="9"/></g><g fill="#DC2626"><circle cx="14" cy="20" r="2.2"/><circle cx="25" cy="10" r="2.2"/><circle cx="31" cy="21" r="2.2"/></g><circle cx="41" cy="7" r="4" fill="#FDE047"/>',
+    '<g fill="#F97316" stroke="#9A3412" stroke-width="1.2"><circle cx="17" cy="19" r="6"/><circle cx="25" cy="15" r="6"/><circle cx="31" cy="21" r="5"/></g><g fill="#FACC15"><circle cx="20" cy="15" r="2.4"/><circle cx="29" cy="18" r="2.4"/></g><g fill="#EA580C"><ellipse cx="10" cy="32" rx="2.4" ry="1.4" transform="rotate(30 10 32)"/><ellipse cx="36" cy="34" rx="2.4" ry="1.4" transform="rotate(-20 36 34)"/><ellipse cx="30" cy="40" rx="2.4" ry="1.4"/></g>',
+    '<path d="M24 24l-5-9M24 22l5-10M17 24l-5-4M30 21l6-4" stroke="#78350F" stroke-width="2.4" stroke-linecap="round"/><path d="M15 15h7M26 12h7M10 19h4M34 16h4" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/><g fill="#FFFFFF"><circle cx="8" cy="8" r="1.4"/><circle cx="20" cy="5" r="1.2"/><circle cx="38" cy="9" r="1.4"/><circle cx="42" cy="26" r="1.2"/><circle cx="6" cy="28" r="1.2"/></g>'][s]),
+};
+const NOME_SEQ = { candela: 'LA CANDELA', mela: 'LA MELA', pulcino: 'IL PULCINO', pianta: 'IL FIORE', giornata: 'LA GIORNATA', farfalla: 'LA FARFALLA', stagioni: 'LE STAGIONI' };
+const RITMO = {   // le carte dei ritmi: forme semplici e colori ben diversi
+  rc: '<circle cx="24" cy="24" r="15" fill="#EF4444" stroke="#991B1B" stroke-width="2.4"/>',
+  bt: '<path d="M24 8L41 38H7Z" fill="#3B82F6" stroke="#1E3A8A" stroke-width="2.4" stroke-linejoin="round"/>',
+  gq: '<rect x="10" y="10" width="28" height="28" rx="2" fill="#FACC15" stroke="#A16207" stroke-width="2.4"/>',
+  vs: '<path d="M24 6l5.3 11 12 1.6-8.8 8.3 2.2 12L24 33l-10.7 5.9 2.2-12-8.8-8.3 12-1.6Z" fill="#22C55E" stroke="#166534" stroke-width="2.2" stroke-linejoin="round"/>',
+  pc: '<path d="M24 40C10 30 6 22 9 15c3-6 11-6 15 0 4-6 12-6 15 0 3 7-1 15-15 25Z" fill="#A855F7" stroke="#581C87" stroke-width="2.4" stroke-linejoin="round"/>',
+  ol: '<path d="M24 6l14 18-14 18-14-18Z" fill="#F97316" stroke="#9A3412" stroke-width="2.4" stroke-linejoin="round"/>',
+};
+const svgCartaFila = k => { const [a, b] = k.split('_'); return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">${b != null ? SEQUENZE[a][+b] : RITMO[a]}</svg>`; };
+const LIVELLI_TEMPO = [
+  { nome: 'PRIMA E DOPO',     tipo: 'fila', modo: 'tempo', pool: ['candela', 'mela', 'pulcino'], intrusi: 0, w: 7, h: 5, tema: 'prato' },
+  { nome: "C'È UN INTRUSO",   tipo: 'fila', modo: 'tempo', pool: ['candela', 'mela', 'pulcino'], intrusi: 1, w: 7, h: 5, tema: 'prato' },
+  { nome: 'QUATTRO MOMENTI',  tipo: 'fila', modo: 'tempo', pool: ['pianta', 'giornata'], intrusi: 0, w: 8, h: 5, tema: 'prato' },
+  { nome: 'STORIE LUNGHE',    tipo: 'fila', modo: 'tempo', pool: ['farfalla', 'stagioni'], intrusi: 1, w: 8, h: 5, tema: 'prato' },
+];
+LIVELLI_FORME.push(
+  { nome: 'RITMI',            tipo: 'fila', modo: 'ritmo', motivi: ['AB'], len: 6, vuoti: 2, distr: 1, w: 8, h: 5, tema: 'prato' },
+  { nome: 'RITMI DIFFICILI',  tipo: 'fila', modo: 'ritmo', motivi: ['AAB', 'ABB', 'ABC'], len: 8, vuoti: 3, distr: 2, w: 10, h: 5, tema: 'prato' },
+);
+function generaFila(d, r) {
+  let fila, carte = [];
+  if (d.modo === 'tempo') {
+    const seq = d.seq || pick(d.pool, r), n = SEQUENZE[seq].length;
+    fila = Array.from({ length: n }, (_, i) => ({ k: `${seq}_${i}`, pieno: (d.pieni || []).includes(i) }));   // pieni: momenti già al loro posto (dimostrazione)
+    fila.forEach(s => { if (!s.pieno) carte.push(s.k); });
+    for (let i = 0; i < (d.intrusi || 0); i++) { const altra = pick(Object.keys(SEQUENZE).filter(s => s !== seq), r); carte.push(`${altra}_${Math.floor(r() * SEQUENZE[altra].length)}`); }
+  } else {
+    const motivo = pick(d.motivi, r), lettere = [...new Set(motivo)], pezzi = shuffle(Object.keys(RITMO), r), mappa = {};
+    lettere.forEach((l, i) => { mappa[l] = pezzi[i]; });
+    fila = Array.from({ length: d.len }, (_, i) => ({ k: mappa[motivo[i % motivo.length]], pieno: true }));
+    const posti = shuffle([...Array(d.len).keys()].filter(i => i >= motivo.length), r).slice(0, d.vuoti);
+    posti.forEach(i => { fila[i].pieno = false; carte.push(fila[i].k); });
+    const altri = pezzi.slice(lettere.length);
+    for (let i = 0; i < (d.distr || 0); i++) carte.push(altri[i % altri.length]);
+  }
+  const n = fila.length, W = Math.max(d.w, n + 2), H = d.h, x0 = Math.floor((W - n) / 2), yf = 1;
+  fila.forEach((s, i) => Object.assign(s, { x: x0 + i, y: yf }));
+  const gr = new Griglia(W, H);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { if (x < W - 1) gr.apri(x, y, DIR.destra); if (y < H - 1) gr.apri(x, y, DIR.giu); }
+  const start = { x: 0, y: H - 1 }, libere = [];
+  for (let y = yf + 2; y < H; y++) for (let x = 0; x < W; x++) if (!(x === start.x && y === start.y)) libere.push({ x, y });
+  const posti = shuffle(libere, r);
+  carte = shuffle(carte, r).map((k, i) => ({ k, x: posti[i].x, y: posti[i].y, preso: false, posato: false, err: 0, giro: (r() - .5) * .3 }));
+  return { gr, w: W, h: H, fila, carte, yf, start, uscita: { x: -9, y: -9 }, items: new Map(), numeriTot: 0, serveChiave: false, stelleTot: 0, minimo: 0, aiutoSlot: null, flashSlot: null };
+}
+
+/* =====================================================================
+   SILLABE: in alto il disegno della parola e tante caselle vuote quante sono le sillabe; sul prato le sillabe
+   sparse (quelle giuste e qualcuna che somiglia). Si cammina sopra le sillabe nell'ordine della parola: quella
+   giusta vola nella sua casella, le altre dondolano (nessuna penalità). La parola non è scritta: la si «legge» dal
+   disegno. Tre parole per livello.
+   CACCIA AL TESORO: una mappa con le lettere in alto e i numeri a sinistra. L'indizio dice la casella (B 3) o, nel
+   livello delle frecce, il percorso da fare; lì si scava con SPAZIO. Casella sbagliata: resta una X ambra.
+   ===================================================================== */
+const PAROLE_SILLABE = {   // [sillabe, disegno] — disegno: P = SVG_PAROLE, D = DISEGNI, R = RIFIUTI
+  due: [[['CA', 'SA'], 'P:CASA'], [['LU', 'NA'], 'P:LUNA'], [['SO', 'LE'], 'P:SOLE'], [['ME', 'LA'], 'P:MELA'], [['MA', 'RE'], 'P:MARE'], [['NA', 'VE'], 'P:NAVE'],
+        [['PE', 'RA'], 'D:pera'], [['TO', 'PO'], 'D:topo'], [['DA', 'DO'], 'D:dado'], [['RO', 'SA'], 'D:rosa'], [['PA', 'NE'], 'R:pane']],
+  tre: [[['BA', 'NA', 'NA'], 'D:banana'], [['PE', 'CO', 'RA'], 'D:pecora'], [['BA', 'LE', 'NA'], 'D:balena'], [['LU', 'MA', 'CA'], 'D:lumaca'],
+        [['CA', 'RO', 'TA'], 'D:carota'], [['PA', 'TA', 'TA'], 'D:patata'], [['GE', 'LA', 'TO'], 'D:gelato'], [['MA', 'TI', 'TA'], 'D:matita']],
+  diff: [[['FIO', 'RE'], 'P:FIORE'], [['GAT', 'TO'], 'P:GATTO'], [['PAL', 'LA'], 'P:PALLA'], [['MUC', 'CA'], 'D:mucca'], [['VOL', 'PE'], 'D:volpe'],
+         [['POL', 'PO'], 'D:polpo'], [['ZE', 'BRA'], 'D:zebra'], [['LE', 'O', 'NE'], 'D:leone']],
+};
+function svgDisegno(f) {
+  const [t, k] = f.split(':'), corpo = t === 'P' ? SVG_PAROLE[k] : t === 'D' ? DISEGNI[k] : RIFIUTI[k][2];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">${corpo}</svg>`;
+}
+const LIVELLI_SILLABE = [
+  { nome: 'DUE SILLABE',        tipo: 'sillabe', pool: 'due',  parole: 3, distr: 2, w: 7, h: 4, tema: 'prato' },
+  { nome: 'SILLABE SIMILI',     tipo: 'sillabe', pool: 'due',  parole: 3, distr: 5, w: 8, h: 4, tema: 'prato' },
+  { nome: 'TRE SILLABE',        tipo: 'sillabe', pool: 'tre',  parole: 3, distr: 4, w: 8, h: 5, tema: 'prato' },
+  { nome: 'SILLABE DIFFICILI',  tipo: 'sillabe', pool: 'diff', parole: 3, distr: 5, w: 9, h: 5, tema: 'prato' },
+];
+const VOCALI = ['A', 'E', 'I', 'O', 'U'], CONS = ['B', 'C', 'D', 'F', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'V'];
+function sillabeSimili(s, r) {   // stessa consonante con un'altra vocale, o stessa vocale con un'altra consonante
+  const v = s[s.length - 1], c = s.slice(0, -1), out = [];
+  if (VOCALI.includes(v)) { VOCALI.forEach(w => { if (w !== v) out.push(c + w); }); if (c.length === 1) CONS.forEach(k => { if (k !== c) out.push(k + v); }); }
+  return shuffle(out.filter(x => !/^(CI|CE|GI|GE)$/.test(x) || true), r);
+}
+function generaSillabe(d, r) {
+  const W = d.w, H = d.h, gr = new Griglia(W, H);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { if (x < W - 1) gr.apri(x, y, DIR.destra); if (y < H - 1) gr.apri(x, y, DIR.giu); }
+  const parole = d.lista || shuffle(PAROLE_SILLABE[d.pool], r).slice(0, d.parole);
+  return { gr, w: W, h: H, parole, tessere: [], start: { x: Math.floor(W / 2), y: H - 1 }, uscita: { x: -9, y: -9 }, items: new Map(), numeriTot: 0, serveChiave: false, stelleTot: 0, minimo: 0 };
+}
+function posaTessere(L, r) {   // le sillabe della parola di adesso (con le sillabe simili) sparse sul prato
+  const [sil] = L.parole[G.parolaS], giuste = sil.slice(), escludi = new Set(sil), dist = [];
+  for (const s of sil) for (const x of sillabeSimili(s, r)) { if (dist.length >= (L.def.distr || 0)) break; if (!escludi.has(x) && !dist.includes(x)) dist.push(x); }
+  const p = G.pl, libere = [];
+  for (let y = 0; y < L.h; y++) for (let x = 0; x < L.w; x++) if (!(x === p.x && y === p.y) && Math.abs(x - p.x) + Math.abs(y - p.y) > 1) libere.push({ x, y });
+  const posti = shuffle(libere, r);
+  L.tessere = shuffle([...giuste, ...dist], r).map((s, i) => ({ s, x: posti[i].x, y: posti[i].y, presa: false, dd: null }));
+}
+const LIVELLI_TESORO = [
+  { nome: 'LA MAPPA',          tipo: 'tesoro', modo: 'coord', w: 4, h: 3, n: 3, guida: 2, tema: 'prato' },
+  { nome: 'LETTERE E NUMERI',  tipo: 'tesoro', modo: 'coord', w: 5, h: 4, n: 3, guida: 1, tema: 'prato' },
+  { nome: "L'ISOLA GRANDE",    tipo: 'tesoro', modo: 'coord', w: 6, h: 5, n: 4, guida: 0, tema: 'prato' },
+  { nome: 'SEGUI LE FRECCE',   tipo: 'tesoro', modo: 'frecce', w: 6, h: 5, n: 3, guida: 0, tema: 'prato' },
+];
+const LETTERE_MAPPA = 'ABCDEFGH';
+function generaTesoro(d, r) {
+  const W = d.w, H = d.h, gr = new Griglia(W, H);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { if (x < W - 1) gr.apri(x, y, DIR.destra); if (y < H - 1) gr.apri(x, y, DIR.giu); }
+  const deco = []; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (r() < .22) deco.push({ x, y, t: pick(['palma', 'sasso', 'conchiglia'], r) });
+  return { gr, w: W, h: H, deco, scavate: new Map(), trovati: 0, start: { x: 0, y: 0 }, uscita: { x: -9, y: -9 }, items: new Map(), numeriTot: 0, serveChiave: false, stelleTot: 0, minimo: 0 };
+}
+function nuovoIndizio(L, r) {   // la prossima casella del tesoro (mai quella dove si è)
+  const p = G.pl;
+  if (L.def.bersaglio && !L.trovati) { L.meta = { x: L.def.bersaglio[0], y: L.def.bersaglio[1] }; L.frecce = null; }
+  else if (L.def.modo === 'frecce') {   // da 3 a 5 frecce dalla posizione di adesso, senza uscire dalla mappa
+    for (let t = 0; t < 200; t++) {
+      let x = p.x, y = p.y; const fr = [], n = 3 + Math.floor(r() * 3);
+      for (let i = 0; i < n; i++) { const d = pick(DIRL, r); if (x + d.dx < 0 || y + d.dy < 0 || x + d.dx >= L.w || y + d.dy >= L.h) continue; x += d.dx; y += d.dy; fr.push(d.k); }
+      if (fr.length >= 3 && !(x === p.x && y === p.y)) { L.meta = { x, y }; L.frecce = fr; break; }
+    }
+  } else {
+    let c; do c = { x: Math.floor(r() * L.w), y: Math.floor(r() * L.h) }; while (c.x === p.x && c.y === p.y);
+    L.meta = c; L.frecce = null;
+  }
+  L.scavate.clear(); G.annuncioParola = G.tempo;
 }
 
 /* Mondo AULA MAGNA: gli stessi labirinti, in 3D sul pavimento dell'aula magna (siepi) */
@@ -1862,13 +2110,13 @@ const LIVELLI_LAB = [
 ].map(d => ({ ...d, w: d.crop[2] - d.crop[0] + 1, h: d.crop[3] - d.crop[1] + 1 }));
 
 /* Il mondo si sceglie dalla home, dal pannello docente o con ?mondo=coding / ?mondo=strade */
-const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, aula: { livelli: LIVELLI_AULA, partenza: 'lab-partenza-aula' }, numeri: { livelli: LIVELLI_NUMERI, partenza: 'lab-partenza-numeri' }, eco: { livelli: LIVELLI_ECO, partenza: 'lab-partenza-eco' }, puzzle: { livelli: LIVELLI_PUZZLE, partenza: 'lab-partenza-puzzle' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' }, scuola: { livelli: LIVELLI_SCUOLA, partenza: 'lab-partenza-scuola' }, fuga: { livelli: LIVELLI_FUGA, partenza: 'lab-partenza-fuga' }, laboratorio: { livelli: LIVELLI_LAB, partenza: 'lab-partenza-laboratorio' }, tastiera: { livelli: LIVELLI_TASTIERA, partenza: 'lab-partenza-tastiera' } };
+const MONDI = { labirinto: { livelli: LIVELLI, partenza: 'lab-partenza' }, aula: { livelli: LIVELLI_AULA, partenza: 'lab-partenza-aula' }, numeri: { livelli: LIVELLI_NUMERI, partenza: 'lab-partenza-numeri' }, eco: { livelli: LIVELLI_ECO, partenza: 'lab-partenza-eco' }, puzzle: { livelli: LIVELLI_PUZZLE, partenza: 'lab-partenza-puzzle' }, tesoro: { livelli: LIVELLI_TESORO, partenza: 'lab-partenza-tesoro' }, sillabe: { livelli: LIVELLI_SILLABE, partenza: 'lab-partenza-sillabe' }, tempo: { livelli: LIVELLI_TEMPO, partenza: 'lab-partenza-tempo' }, animali: { livelli: LIVELLI_ANIMALI, partenza: 'lab-partenza-animali' }, forme: { livelli: LIVELLI_FORME, partenza: 'lab-partenza-forme' }, coding: { livelli: LIVELLI_CODING, partenza: 'lab-partenza-coding' }, strade: { livelli: LIVELLI_STRADE, partenza: 'lab-partenza-strade' }, scuola: { livelli: LIVELLI_SCUOLA, partenza: 'lab-partenza-scuola' }, fuga: { livelli: LIVELLI_FUGA, partenza: 'lab-partenza-fuga' }, laboratorio: { livelli: LIVELLI_LAB, partenza: 'lab-partenza-laboratorio' }, tastiera: { livelli: LIVELLI_TASTIERA, partenza: 'lab-partenza-tastiera' } };
 /* Ordine dei mondi: si gioca in sequenza, finito un mondo si passa al successivo */
-const ORD_MONDI = ['labirinto', 'aula', 'numeri', 'eco', 'puzzle', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding', 'fuga'];
-const MONDI_HOME = ['labirinto', 'aula', 'numeri', 'eco', 'puzzle', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding'];   // il premio finale non si sceglie dalla home
-const NOME_MONDO = { labirinto: 'LABIRINTI', aula: 'AULA MAGNA', numeri: 'NUMERI', eco: 'ECO', puzzle: 'PUZZLE', scuola: 'SCUOLA', strade: 'STRADE', coding: 'CODING', fuga: 'ACCHIAPPARELLA', laboratorio: 'LABORATORIO', tastiera: 'TASTIERA' };
+const ORD_MONDI = ['labirinto', 'aula', 'tesoro', 'numeri', 'forme', 'sillabe', 'tempo', 'animali', 'eco', 'puzzle', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding', 'fuga'];
+const MONDI_HOME = ['labirinto', 'aula', 'tesoro', 'numeri', 'forme', 'sillabe', 'tempo', 'animali', 'eco', 'puzzle', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding'];   // il premio finale non si sceglie dalla home
+const NOME_MONDO = { labirinto: 'LABIRINTI', aula: 'AULA MAGNA', numeri: 'NUMERI', eco: 'ECO', puzzle: 'PUZZLE', tesoro: 'CACCIA AL TESORO', sillabe: 'SILLABE', tempo: 'PRIMA E DOPO', animali: 'ANIMALI E CASE', forme: 'FORME', scuola: 'SCUOLA', strade: 'STRADE', coding: 'CODING', fuga: 'ACCHIAPPARELLA', laboratorio: 'LABORATORIO', tastiera: 'TASTIERA' };
 const mondoDopo = m => ORD_MONDI[ORD_MONDI.indexOf(m) + 1] || null;
-const iconaMondo = m => ({ labirinto: ICO.labirinto, aula: ICO.aula, numeri: ICO.numeri, eco: ICO.eco, puzzle: ICO.puzzle, scuola: ICO.scuola, laboratorio: ICO.lab, tastiera: ICO.tastiera, strade: ICO.auto, coding: ICO.codice, fuga: ICO.stella })[m];
+const iconaMondo = m => ({ labirinto: ICO.labirinto, aula: ICO.aula, numeri: ICO.numeri, eco: ICO.eco, puzzle: ICO.puzzle, tesoro: ICO.tesoro, sillabe: ICO.sillabe, tempo: ICO.tempo, animali: ICO.animali, forme: ICO.forme, scuola: ICO.scuola, laboratorio: ICO.lab, tastiera: ICO.tastiera, strade: ICO.auto, coding: ICO.codice, fuga: ICO.stella })[m];
 function mondoAttivo() {
   const q = new URLSearchParams(location.search).get('mondo');
   if (MONDI[q]) return q;
@@ -1915,9 +2163,9 @@ function iniziaPartita(casa, conDemo) {
 }
 
 function preparaLivello(idx, dDemo) {
-  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S', scuola: '|K', fuga: '|F', laboratorio: '|B', tastiera: '|T', aula: '|A', numeri: '|N', eco: '|E', puzzle: '|P' }[G.mondo] || '|L') + (idx + 1)));
+  const d = dDemo || G.livelli[idx], r = mulberry32(cyrb53(dDemo ? 'DEMO|' + G.mondo + (D.variante ? '|' + D.variante : '') : G.seed + ({ coding: '|C', strade: '|S', scuola: '|K', fuga: '|F', laboratorio: '|B', tastiera: '|T', aula: '|A', numeri: '|N', eco: '|E', puzzle: '|P', tesoro: '|X', sillabe: '|Y', tempo: '|D', animali: '|Z', forme: '|G' }[G.mondo] || '|L') + (idx + 1)));
   G.rng = r;
-  const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', scuola: d.tipo === 'scuola', tastiera: d.tipo === 'tastiera', abbina: d.tipo === 'abbina', eco: d.tipo === 'eco', puzzle: d.tipo === 'puzzle', aula3d: !!d.aula3d, buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
+  const L = { def: d, idx, fuga: d.tipo === 'fuga', coding: d.tipo === 'coding', strade: d.tipo === 'strade', scuola: d.tipo === 'scuola', tastiera: d.tipo === 'tastiera', abbina: d.tipo === 'abbina', eco: d.tipo === 'eco', puzzle: d.tipo === 'puzzle', fila: d.tipo === 'fila', sillabe: d.tipo === 'sillabe', tesoro: d.tipo === 'tesoro', aula3d: !!d.aula3d, buio: !!d.buio, w: d.w, h: d.h, tema: TEMI[d.tema], deco: cyrb53(G.seed + '|deco' + G.mondo + idx) };
   if (L.fuga) { const A = generaArena(d, r); Object.assign(L, { gr: A.gr, start: A.start, arena: A }); }
   else if (L.coding) {
     Object.assign(L, generaCoding(d, r));
@@ -1931,6 +2179,9 @@ function preparaLivello(idx, dDemo) {
   else if (L.abbina) Object.assign(L, generaAbbina(d, r));
   else if (L.eco) Object.assign(L, generaEco(d, r));
   else if (L.puzzle) Object.assign(L, generaPuzzle(d, r));
+  else if (L.fila) Object.assign(L, generaFila(d, r));
+  else if (L.sillabe) Object.assign(L, generaSillabe(d, r));
+  else if (L.tesoro) Object.assign(L, generaTesoro(d, r));
   else Object.assign(L, generaLabirinto(d, r));
   G.L = L;
   Object.assign(G, {
@@ -1938,12 +2189,14 @@ function preparaLivello(idx, dDemo) {
     vite: CONFIG.VITE_FUGA, prese: 0, puntiLivello: 0, sbloccato: !L.fuga && !L.numeriTot && !L.serveChiave, sbloccoT: -9, rivela: 0, entrata: 0, orme: null,
     pings: [], voli: [], fumetti: [], tGioco: 0, ultimoProgresso: 0, chiamaT: -99,
     prog: [], esec: null, erroreIdx: -1, nuova: -1, tentativi: 0, puntiCorsa: 0,
-    colIdx: 0, presiColore: 0, trovati: 0, sbagli: 0, annuncio: null, coppia: 0, traccia: [], linee: [], attesaCoppia: 0, richiamo: null, inMano: null, voliR: [], pezzoMano: null, zoomRif: null,
+    colIdx: 0, presiColore: 0, trovati: 0, sbagli: 0, annuncio: null, coppia: 0, traccia: [], linee: [], attesaCoppia: 0, richiamo: null, inMano: null, voliR: [], pezzoMano: null, zoomRif: null, cartaMano: null, parolaS: 0, presaS: 0, attesaS: 0, scavoT: null,
     parolaIdx: 0, trovIdx: 0, scrittoIdx: 0, fase: 'cammina', salti: 0, erroriScrittura: 0, flashT: null, premutoT: null, voliT: [], prossimaT: null, doppiaT: null, tastoPl: null, annuncioParola: -9,
     pauraT: 0, modoT: 0, modo: 'sparsi', invuln: 0, scossa: 0, flash: 0, dondola: new Map(), visti: new Set(), entraT: 0, presoT: 0,
   });
   G.pl = { x: L.start.x, y: L.start.y, tx: L.start.x, ty: L.start.y, t: 0, moving: false, dir: null, tilt: 0, urto: null };
   if (L.abbina) G.traccia = [{ ...L.start }];
+  if (L.sillabe) posaTessere(L, r);
+  if (L.tesoro) nuovoIndizio(L, r);
   G.inseg = [];
   if (L.fuga) creaInseguitori(L, r);
   if (L.strade) { G.dispo = { ...L.vasca }; G.cur = { x: 0, y: L.r0 }; G.guida = null; G.guasto = null; G.curUrto = -9; G.auto = { X: -.5, Y: L.r0 + .5, dir: 1, tilt: 0 }; }
@@ -1980,6 +2233,20 @@ function obiettivoCorrente() {
     const p = G.pl, da = p.moving ? { x: p.tx, y: p.ty } : { x: p.x, y: p.y }, dist = L.gr.bfs([da]).dist, cur = L.colori[G.colIdx];
     let best = null, bd = 1e9;
     L.items.forEach(it => { if (it.preso || !vale(it, cur)) return; const q = dist[L.gr.i(it.x, it.y)]; if (q >= 0 && q < bd) { bd = q; best = it; } });
+    return best || L.start;
+  }
+  if (L.sillabe) {   // la sillaba che serve più vicina
+    const p = G.pl, da = p.moving ? { x: p.tx, y: p.ty } : { x: p.x, y: p.y }, s = L.parole[G.parolaS] && L.parole[G.parolaS][0][G.presaS];
+    const dist = L.gr.bfs([da]).dist; let best = null, bd = 1e9;
+    L.tessere.forEach(q => { if (q.presa || q.s !== s) return; const v = dist[L.gr.i(q.x, q.y)]; if (v >= 0 && v < bd) { bd = v; best = q; } });
+    return best || L.start;
+  }
+  if (L.tesoro) return L.meta || L.start;
+  if (L.fila) {   // con una carta in mano: il suo posto libero; a mani vuote: la carta più vicina che serve
+    const p = G.pl, da = p.moving ? { x: p.tx, y: p.ty } : { x: p.x, y: p.y };
+    if (G.cartaMano) { const s = L.fila.find(z => !z.pieno && z.k === G.cartaMano.k); if (s) return s; }
+    const dist = L.gr.bfs([da]).dist, serve = new Set(L.fila.filter(z => !z.pieno).map(z => z.k)); let best = null, bd = 1e9;
+    L.carte.forEach(q => { if (q.preso || !serve.has(q.k)) return; const v = dist[L.gr.i(q.x, q.y)]; if (v >= 0 && v < bd) { bd = v; best = q; } });
     return best || L.start;
   }
   if (L.puzzle) {   // con un pezzo in mano: il suo posto; a mani vuote: il pezzo più vicino
@@ -2019,6 +2286,9 @@ function arrivo() {
   const L = G.L, p = G.pl, k = L.gr.i(p.x, p.y), c = centro(p.x, p.y);
   segnaVisti();
   if (L.puzzle) { raccogliPezzo(); return; }
+  if (L.fila) { raccogliCarta(); return; }
+  if (L.sillabe) { calpestaSillaba(); return; }
+  if (L.tesoro) return;
   if (L.eco) { raccogliEco(); if (p.y === L.h - 1 && IN.tenuti[IN.tenuti.length - 1] === 'giu') provaCestino(p.x); return; }
   if (L.abbina) { G.traccia.push({ x: p.x, y: p.y }); if (p.x === L.w - 1 && IN.tenuti[IN.tenuti.length - 1] === 'destra') provaParola(p.y); return; }
   if (L.scuola) { const it = L.items.get(k); if (it && !it.preso) raccogliOggetto(it, k, c); return; }
@@ -2123,6 +2393,8 @@ function avviaTour() {
   if (L.abbina) { ping(L.start, 2, '#FFD24A', .4); return; }
   if (L.eco) { L.rifiuti.forEach((q, k) => ping(q, 1, '#FFD24A', .3 + k * .15)); return; }
   if (L.puzzle) { ping({ x: L.bx + (L.pw - 1) / 2, y: L.by + (L.ph - 1) / 2 }, 2, '#FFD24A', .4); return; }
+  if (L.fila) { L.fila.forEach((s, k) => { if (!s.pieno) ping(s, 1, '#FFD24A', .3 + k * .12); }); return; }
+  if (L.sillabe || L.tesoro) { G.annuncioParola = G.tempo; return; }
   if (L.fuga) L.arena.poteri.forEach(k => tappe.push({ x: k % L.w, y: (k / L.w) | 0 }));
   else {
     [...L.items.values()].filter(i => i.tipo === 'numero').sort((a, b) => a.n - b.n).forEach(i => tappe.push(i));
@@ -2489,6 +2761,11 @@ function completaCoding() {
 /* Livelli mini, senza stelle né lanterna: pochi passaggi, uno alla volta */
 const DEMO = {
   labirinto: { nome: 'GUARDA', tipo: 'labirinto', w: 3, h: 2, tema: 'prato' },
+  forme: { nome: 'GUARDA', tipo: 'eco', set: 'forme', cestini: ['cerchio', 'quadrato'], n: 1, w: 3, h: 2, ostacoli: 0, tema: 'prato' },
+  animali: { nome: 'GUARDA', tipo: 'eco', set: 'animali', cestini: ['fattoria', 'mare'], n: 1, w: 3, h: 2, ostacoli: 0, tema: 'prato' },
+  tempo: { nome: 'GUARDA', tipo: 'fila', modo: 'tempo', seq: 'mela', pieni: [1], intrusi: 0, w: 5, h: 4, tema: 'prato' },
+  sillabe: { nome: 'GUARDA', tipo: 'sillabe', lista: [[['LU', 'NA'], 'P:LUNA']], distr: 1, w: 4, h: 2, tema: 'prato' },
+  tesoro: { nome: 'GUARDA', tipo: 'tesoro', modo: 'coord', w: 3, h: 2, n: 1, guida: 2, bersaglio: [2, 1], tema: 'prato' },
   puzzle:    { nome: 'GUARDA', tipo: 'puzzle', pw: 2, ph: 1, lato: 2, fantasma: .5, tema: 'prato' },
   eco:       { nome: 'GUARDA', tipo: 'eco', cestini: ['carta', 'plastica'], n: 1, w: 3, h: 2, ostacoli: 0, tema: 'prato' },
   numeri:    { nome: 'GUARDA', tipo: 'abbina', w: 3, h: 2, da: 1, a: 3, ostacoli: 0, tema: 'prato' },
@@ -2642,6 +2919,49 @@ async function demoCoding() {
   await finche(() => G.stato !== 'esegue', 20000);
 }
 function zonaCarta(lato, y) { const R = rettCarta(lato, y), r = cv.getBoundingClientRect(); return { x: r.left + R.x - 10, y: r.top + R.y - 10, w: R.w + 20, h: R.h + 20 }; }
+async function demoSillabe() {   // 1 sei tu · 2 il disegno da leggere · 3 la prima sillaba · 4 le frecce
+  const L = G.L, [sil] = L.parole[0], cvr = cv.getBoundingClientRect(), B = rettBarraS(), zb = { x: cvr.left + B.x, y: cvr.top + B.y, w: B.w, h: B.h };
+  await mostra(rettCella(G.pl.x, G.pl.y), scrCella(G.pl.x, G.pl.y, -.25), 1);
+  await mostra(zb, { x: zb.x + zb.h * .5, y: zb.y + zb.h * .6 }, 2);
+  for (let i = 0; i < sil.length; i++) {
+    const q = L.tessere.find(z => !z.presa && z.s === sil[i]); if (!q) break;
+    if (!i) await mostra(rettCella(q.x, q.y), scrCella(q.x, q.y), 3);
+    const cam = L.gr.percorso({ x: G.pl.x, y: G.pl.y }, q);
+    for (let j = 1; j < cam.length; j++) { await premiTasto(dirTra(cam[j - 1], cam[j]), kk => { tastoFreccia(kk); setTimeout(() => { IN.tenuti = IN.tenuti.filter(z => z !== kk); }, 110); }, 4); await finche(() => !G.pl.moving, 2000); }
+    await attendi(500);
+  }
+  await finche(() => G.stato !== 'gioco', 8000);
+}
+async function demoTesoro() {   // 1 sei tu · 2 l'indizio · 3 la lettera · 4 il numero · 5 le frecce · 6 SPAZIO: scavo
+  const L = G.L, m = L.meta, cvr = cv.getBoundingClientRect(), B = rettBarraS(), zb = { x: cvr.left + B.x, y: cvr.top + B.y, w: B.w, h: B.h }, c = lay.cell, lato = c * .62;
+  await mostra(rettCella(G.pl.x, G.pl.y), scrCella(G.pl.x, G.pl.y, -.25), 1);
+  await mostra(zb, { x: zb.x + zb.w / 2, y: zb.y + zb.h * .6 }, 2);
+  await mostra({ x: cvr.left + lay.ox + m.x * c - 6, y: cvr.top + lay.oy - lato - 6, w: c + 12, h: lato + L.h * c + 12 }, { x: cvr.left + lay.ox + (m.x + .5) * c, y: cvr.top + lay.oy - lato / 2 }, 3);
+  await mostra({ x: cvr.left + lay.ox - lato - 6, y: cvr.top + lay.oy + m.y * c - 6, w: lato + L.w * c + 12, h: c + 12 }, { x: cvr.left + lay.ox - lato / 2, y: cvr.top + lay.oy + (m.y + .5) * c }, 4);
+  const cam = L.gr.percorso({ x: G.pl.x, y: G.pl.y }, m);
+  for (let j = 1; j < cam.length; j++) { await premiTasto(dirTra(cam[j - 1], cam[j]), kk => { tastoFreccia(kk); setTimeout(() => { IN.tenuti = IN.tenuti.filter(z => z !== kk); }, 110); }, 5); await finche(() => !G.pl.moving, 2000); }
+  await mostra(rettCella(m.x, m.y), scrCella(m.x, m.y), 6); await premi(); scavaTesoro();
+  await finche(() => G.stato !== 'gioco', 8000);
+}
+async function demoFila() {   // 1 sei tu · 2 una carta · 3 la prendo · 4 il suo posto · 5 SPAZIO
+  const L = G.L, vai = async (dest, n) => {
+    const cam = L.gr.percorso({ x: G.pl.x, y: G.pl.y }, dest);
+    for (let i = 1; i < cam.length; i++) {
+      await premiTasto(dirTra(cam[i - 1], cam[i]), kk => { tastoFreccia(kk); setTimeout(() => { IN.tenuti = IN.tenuti.filter(z => z !== kk); }, 110); }, n);
+      await finche(() => !G.pl.moving, 2000);
+    }
+  };
+  await mostra(rettCella(G.pl.x, G.pl.y), scrCella(G.pl.x, G.pl.y, -.25), 1);
+  for (let i = 0; L.fila.some(z => !z.pieno) && i < 6; i++) {
+    const s = L.fila.find(z => !z.pieno), q = L.carte.find(z => !z.preso && z.k === s.k); if (!q) break;
+    if (!i) await mostra(rettCella(q.x, q.y), scrCella(q.x, q.y), 2);
+    await vai(q, 3);
+    if (!i) await mostra(rettCella(s.x, s.y), scrCella(s.x, s.y), 4);
+    await vai(s, 4);
+    await mostra(rettCella(s.x, s.y), scrCella(s.x, s.y), 5); await premi(); posaCarta(); await attendi(600);
+  }
+  await finche(() => G.stato !== 'gioco', 6000);
+}
 async function demoPuzzle() {   // 1 sei tu · 2 un pezzo · 3 lo prendo · 4 il suo posto · 5 SPAZIO: incastrato!
   const L = G.L, vai = async (dest, n) => {
     const cam = L.gr.percorso({ x: G.pl.x, y: G.pl.y }, dest);
@@ -2741,7 +3061,7 @@ function avviaDemo() {
   const p = $('#puntatore'), st = $('#stage').getBoundingClientRect();
   p.querySelector('.pn').textContent = '';
   p.style.transition = 'none'; p.style.transform = `translate(${Math.round(st.left + st.width / 2)}px,${Math.round(st.top + st.height / 2)}px)`; void p.offsetWidth; p.style.transition = '';
-  const copione = { labirinto: demoLabirinto, aula: demoLabirinto, numeri: demoAbbina, eco: demoEco, puzzle: demoPuzzle, strade: demoStrade, coding: demoCoding, scuola: demoScuola, laboratorio: demoScuola, tastiera: demoTastiera }[G.mondo];
+  const copione = { labirinto: demoLabirinto, aula: demoLabirinto, numeri: demoAbbina, eco: demoEco, puzzle: demoPuzzle, tesoro: demoTesoro, sillabe: demoSillabe, tempo: demoFila, animali: demoEco, forme: demoEco, strade: demoStrade, coding: demoCoding, scuola: demoScuola, laboratorio: demoScuola, tastiera: demoTastiera }[G.mondo];
   (async () => { try { await attendi(900); if (usa3D()) await finche(() => !A3.film && !emergendo(), 30000); await copione(); } catch (e) { /* dimostrazione interrotta */ } })();
 }
 function nascondiDemo() {
@@ -2960,6 +3280,8 @@ function frame(ts) {
       G.tGioco += dt;
       G.entrata = Math.min(1, G.entrata + dt / .65);
       if (G.L.eco) aggiornaEco();
+      if (G.L.sillabe && G.attesaS && G.tempo >= G.attesaS) { G.attesaS = 0; prossimaParolaS(); }
+      if (G.L.tesoro && G.attesaS && G.tempo >= G.attesaS) { G.attesaS = 0; nuovoIndizio(G.L, G.rng); aggiornaObiettivo(); }
       if (G.L.abbina && G.attesaCoppia && G.tempo >= G.attesaCoppia) { G.attesaCoppia = 0; prossimaCoppia(); }
       if (G.L.tastiera) aggiornaTastiera(dt);
       else if (!G.L.coding && !G.L.strade) aggiornaGiocatore(dt);
@@ -2971,7 +3293,7 @@ function frame(ts) {
     } else if (G.stato === 'esegue') {
       G.tGioco += dt; G.L.strade ? aggiornaGuida(dt) : aggiornaEsecuzione(dt);
     } else if (G.stato === 'entra') {
-      G.entraT -= dt; if (G.entraT <= 0) { G.stato = 'completo'; G.demo ? fineDemo() : G.L.abbina ? completaAbbina() : G.L.eco ? completaEco() : G.L.puzzle ? completaPuzzle() : G.L.tastiera ? completaTastiera() : G.L.scuola ? completaScuola() : G.L.strade ? completaStrade() : G.L.coding ? completaCoding() : completaLabirinto(); }
+      G.entraT -= dt; if (G.entraT <= 0) { G.stato = 'completo'; G.demo ? fineDemo() : G.L.abbina ? completaAbbina() : G.L.eco ? completaEco() : G.L.puzzle ? completaPuzzle() : G.L.fila ? completaFila() : G.L.sillabe ? completaSillabe() : G.L.tesoro ? completaTesoro() : G.L.tastiera ? completaTastiera() : G.L.scuola ? completaScuola() : G.L.strade ? completaStrade() : G.L.coding ? completaCoding() : completaLabirinto(); }
     } else if (G.stato === 'preso') {
       G.presoT -= dt; if (G.presoT <= 0) dopoPreso();
     }
@@ -3351,6 +3673,8 @@ function calcolaLayout() {
   if (L.abbina) { impostaLayoutAbbina(W, H, dpr); return; }
   if (L.eco) { impostaLayoutEco(W, H, dpr); return; }
   if (L.puzzle) { impostaLayoutPuzzle(W, H, dpr); return; }
+  if (L.fila) { impostaLayoutFila(W, H, dpr); return; }
+  if (L.sillabe || L.tesoro) { impostaLayoutBarra(W, H, dpr); return; }
   if (L.aula3d && A3.stato === 'pronto') { impostaLayoutAula(W, H, dpr); return; }   // senza Three.js si gioca in 2D
   if (L.strade) {   // una colonna in più a sinistra (parcheggio) e a destra (castello)
     const ris = $('#tray').offsetHeight + 16, cols = L.w + 2, c = Math.floor(Math.min((W - 2 * pad) / cols, (H - ris - 2 * pad) / L.h, 150));
@@ -4219,7 +4543,7 @@ function aggiornaEco() {   // i rifiuti in volo atterrano nel cestino; finiti tu
 }
 function completaEco() {
   const L = G.L;
-  G.log.push({ liv: G.livello + 1, nome: L.def.nome, tipo: 'eco', ok: true, rifiuti: L.rifiuti.map(q => q.k), passi: G.passi, sbagli: G.sbagli, aiuti: G.aiutiUsati, punti: G.puntiLivello });
+  G.log.push({ liv: G.livello + 1, nome: L.def.nome, tipo: 'eco', set: L.def.set || 'eco', ok: true, rifiuti: L.rifiuti.map(q => q.k), passi: G.passi, sbagli: G.sbagli, aiuti: G.aiutiUsati, punti: G.puntiLivello });
   mostraFineLivello();
 }
 function impostaLayoutEco(W, H, dpr) {
@@ -4346,6 +4670,308 @@ function zoomRifiuto(x, e, c) {
     x.fillStyle = '#FFFFFF'; x.fillText(nome, px, py + s * .66 + fs * .25);
   }
   x.restore();
+}
+
+/* =====================================================================
+   SILLABE e TESORO: regole e disegno (in alto una barra: il disegno da leggere o l'indizio)
+   ===================================================================== */
+function calpestaSillaba() {
+  const L = G.L, p = G.pl, q = L.tessere.find(z => !z.presa && z.x === p.x && z.y === p.y);
+  if (!q || G.attesaS) return;
+  const [sil] = L.parole[G.parolaS];
+  if (q.s !== sil[G.presaS]) { q.dd = G.tempo; G.sbagli++; SFX.play('nonAncora'); return; }   // non è quella che serve adesso: dondola
+  q.presa = true; G.presaS++; G.ultimoProgresso = G.tGioco;
+  const c = centro(p.x, p.y); q.vola = { t0: G.tempo, da: { x: c.x, y: c.y } };
+  aggiungiPunti(PUNTI.sillaba, p); SFX.play('numero', G.presaS);
+  if (G.presaS >= sil.length) {
+    aggiungiPunti(PUNTI.parolaS, p, '#9BF0BF'); SFX.play('vittoria'); FX.coriandoli(50, [CASE[G.casa].col, '#FFD24A', '#FFFFFF']);
+    G.attesaS = G.tempo + 1.4;
+  }
+  aggiornaObiettivo();
+}
+function prossimaParolaS() {
+  const L = G.L; G.parolaS++; G.presaS = 0;
+  if (G.parolaS >= L.parole.length) { G.stato = 'entra'; G.entraT = G.demo ? 2.6 : .9; return; }
+  posaTessere(L, G.rng); G.annuncioParola = G.tempo; SFX.play('apri'); aggiornaObiettivo();
+}
+function completaSillabe() {
+  const L = G.L;
+  G.log.push({ liv: G.livello + 1, nome: L.def.nome, tipo: 'sillabe', ok: true, parole: L.parole.map(([s, f]) => [s.join('-'), f]), passi: G.passi, sbagli: G.sbagli, aiuti: G.aiutiUsati, punti: G.puntiLivello });
+  mostraFineLivello();
+}
+function scavaTesoro() {   // (non «scava»: quel nome è già del generatore dei labirinti)
+  const L = G.L, p = G.pl;
+  if (p.moving || G.stato !== 'gioco' || G.attesaS) return;
+  const k = L.gr.i(p.x, p.y), c = centro(p.x, p.y);
+  G.scavoT = { x: p.x, y: p.y, t0: G.tempo };
+  emetti(c.x, c.y + lay.cell * .2, 14, { col: ['#E9C77B', '#D6A85C', '#FFF3C4'], v: 140, vita: .6, r: 4, tipo: 'fumo', g: 120 });
+  if (p.x === L.meta.x && p.y === L.meta.y) {
+    L.trovati++; L.tesoroT = { x: p.x, y: p.y, t0: G.tempo }; G.ultimoProgresso = G.tGioco;
+    aggiungiPunti(PUNTI.tesoro, p); SFX.play('vittoria'); FX.coriandoli(40, ['#FFD24A', '#FFFFFF', '#F59E0B', CASE[G.casa].col]);
+    if (L.trovati >= L.def.n) { G.stato = 'entra'; G.entraT = G.demo ? 2.6 : 1.4; }
+    else G.attesaS = G.tempo + 1.6;
+  } else { L.scavate.set(k, G.tempo); G.sbagli++; SFX.play('nonAncora'); }
+  aggiornaObiettivo();
+}
+function completaTesoro() {
+  const L = G.L;
+  G.log.push({ liv: G.livello + 1, nome: L.def.nome, tipo: 'tesoro', ok: true, tesori: L.trovati, passi: G.passi, sbagli: G.sbagli, aiuti: G.aiutiUsati, punti: G.puntiLivello });
+  mostraFineLivello();
+}
+function impostaLayoutBarra(W, H, dpr) {   // in alto la barra (disegno o indizio), sotto il prato o la mappa
+  const L = G.L, pad = Math.max(24, Math.min(W, H) * .035), bar = 1.75, lato = L.tesoro ? .62 : 0;
+  const cell = Math.floor(Math.min((W - 2 * pad) / (L.w + lato), (H - 2 * pad) / (L.h + bar + lato), 150));
+  const altezza = (L.h + bar + lato) * cell;
+  lay = { W, H, dpr, cell, bar: bar * cell, ox: Math.round((W - cell * (L.w + lato)) / 2 + lato * cell), oy: Math.round((H - altezza) / 2 + (bar + lato) * cell) };
+  costruisciSprite(); costruisciStaticoBarra();
+  IMGS.disegnoS = {}; if (L.sillabe) L.parole.forEach(([, f]) => caricaImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgDisegno(f))).then(i => { IMGS.disegnoS[f] = i; }));
+}
+function costruisciStaticoBarra() {
+  const L = G.L, { cell, ox, oy, dpr } = lay, r = mulberry32(L.deco || 8);
+  stat = nuovaTela(cv.width, cv.height); nebbia = nuovaTela(1, 1);
+  const x = stat.getContext('2d'); x.scale(dpr, dpr);
+  const Wt = L.w * cell, Ht = L.h * cell, m = cell * .3, lato = L.tesoro ? cell * .62 : 0;
+  x.save(); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30; x.shadowOffsetY = 14;
+  rrect(x, ox - m - lato, oy - m - lato, Wt + 2 * m + lato, Ht + 2 * m + lato, cell * .3); x.fillStyle = L.tesoro ? '#7C4A1E' : '#6B4423'; x.fill(); x.restore();
+  rrect(x, ox - m * .55 - lato, oy - m * .55 - lato, Wt + m * 1.1 + lato, Ht + m * 1.1 + lato, cell * .22); x.fillStyle = L.tesoro ? '#A0692F' : '#8B5A2B'; x.fill();
+  if (L.tesoro) {   // la mappa: carta antica con il mare intorno all'isola, lettere in alto e numeri a sinistra
+    x.fillStyle = '#F3E3B5'; x.fillRect(ox - lato, oy - lato, Wt + lato, Ht + lato);
+    x.fillStyle = '#7DD3FC'; x.fillRect(ox, oy, Wt, Ht);
+    rrect(x, ox + cell * .08, oy + cell * .08, Wt - cell * .16, Ht - cell * .16, cell * .5); x.fillStyle = '#F5D78E'; x.fill();
+    for (let k = 0; k < L.w * L.h * 3; k++) { x.fillStyle = r() < .5 ? 'rgba(180,130,60,.18)' : 'rgba(255,255,255,.25)'; x.beginPath(); x.arc(ox + r() * Wt, oy + r() * Ht, cell * .03, 0, 7); x.fill(); }
+    L.deco.forEach(dc => { const cx = ox + (dc.x + .5) * cell, cy = oy + (dc.y + .5) * cell; x.save(); x.globalAlpha = .55;
+      if (dc.t === 'palma') { x.strokeStyle = '#92400E'; x.lineWidth = cell * .05; x.beginPath(); x.moveTo(cx + cell * .22, cy + cell * .35); x.quadraticCurveTo(cx + cell * .3, cy, cx + cell * .2, cy - cell * .2); x.stroke(); x.fillStyle = '#16A34A'; for (let a = 0; a < 5; a++) { x.beginPath(); x.ellipse(cx + cell * .2 + Math.cos(a * 1.25) * cell * .12, cy - cell * .2 + Math.sin(a * 1.25) * cell * .06, cell * .13, cell * .04, a * 1.25, 0, 7); x.fill(); } }
+      else if (dc.t === 'sasso') { x.fillStyle = '#A8A29E'; x.beginPath(); x.ellipse(cx - cell * .25, cy + cell * .28, cell * .1, cell * .07, 0, 0, 7); x.fill(); }
+      else { x.fillStyle = '#FDA4AF'; x.beginPath(); x.arc(cx + cell * .28, cy + cell * .3, cell * .06, Math.PI, 0); x.fill(); }
+      x.restore(); });
+    x.strokeStyle = 'rgba(120,80,30,.45)'; x.lineWidth = Math.max(1.5, cell * .02); x.setLineDash([cell * .08, cell * .06]);
+    for (let i = 0; i <= L.w; i++) { x.beginPath(); x.moveTo(ox + i * cell, oy); x.lineTo(ox + i * cell, oy + Ht); x.stroke(); }
+    for (let j = 0; j <= L.h; j++) { x.beginPath(); x.moveTo(ox, oy + j * cell); x.lineTo(ox + Wt, oy + j * cell); x.stroke(); }
+    x.setLineDash([]);
+    x.fillStyle = '#7C2D12'; x.font = `700 ${cell * .38}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle';
+    for (let i = 0; i < L.w; i++) x.fillText(LETTERE_MAPPA[i], ox + (i + .5) * cell, oy - lato / 2);
+    for (let j = 0; j < L.h; j++) x.fillText(String(j + 1), ox - lato / 2, oy + (j + .5) * cell);
+    return;
+  }
+  x.fillStyle = '#A9D673'; x.fillRect(ox, oy, Wt, Ht);
+  for (let yy = 0; yy < L.h; yy++) for (let xx = 0; xx < L.w; xx++) {
+    const px = ox + xx * cell, py = oy + yy * cell;
+    x.fillStyle = r() < .5 ? '#9BCB66' : '#A9D673'; x.globalAlpha = .55; x.fillRect(px, py, cell, cell); x.globalAlpha = 1;
+    x.strokeStyle = '#7FB84E'; x.lineWidth = Math.max(1.5, cell * .02); x.lineCap = 'round';
+    for (let k = 0; k < 2; k++) { const gx = px + cell * (.2 + r() * .6), gy = py + cell * (.25 + r() * .55); x.beginPath(); x.moveTo(gx - cell * .04, gy); x.lineTo(gx - cell * .06, gy - cell * .07); x.moveTo(gx, gy); x.lineTo(gx, gy - cell * .09); x.stroke(); }
+  }
+}
+function rettBarraS() { const B = lay.bar, top = lay.oy - B - (G.L.tesoro ? lay.cell * .62 : 0) - lay.cell * .15; return { x: lay.ox - (G.L.tesoro ? lay.cell * .62 : 0), y: top, w: G.L.w * lay.cell + (G.L.tesoro ? lay.cell * .62 : 0), h: B * .86 }; }
+function fondoBarra(x, t) {
+  const B = rettBarraS(), ea = t - (G.annuncioParola || -9), pulse = ea >= 0 && ea < .6 ? 1 + .05 * Math.sin(ea / .6 * Math.PI) : 1;
+  x.translate(B.x + B.w / 2, B.y + B.h / 2); x.scale(pulse, pulse); x.translate(-(B.x + B.w / 2), -(B.y + B.h / 2));
+  x.fillStyle = 'rgba(0,0,0,.25)'; rrect(x, B.x, B.y + 6, B.w, B.h, 22); x.fill();
+  x.fillStyle = '#FFF8E8'; rrect(x, B.x, B.y, B.w, B.h, 22); x.fill();
+  return B;
+}
+function renderSillabe() {
+  const x = ctx, L = G.L, t = G.tempo, c = lay.cell, C = CASE[G.casa];
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height);
+  x.setTransform(lay.dpr, 0, 0, lay.dpr, 0, 0);
+  x.drawImage(stat, 0, 0, lay.W, lay.H);
+  const parola = L.parole[Math.min(G.parolaS, L.parole.length - 1)], [sil, f] = parola;
+  // le sillabe sul prato
+  L.tessere.forEach(q => {
+    if (q.presa) return;
+    const cc = centro(q.x, q.y), s = c * .74, e = q.dd != null ? t - q.dd : 9, rot = e < .6 ? Math.sin(e * 30) * .12 * (1 - e / .6) : 0;
+    x.save(); x.translate(cc.x, cc.y); x.rotate(rot);
+    x.fillStyle = 'rgba(0,0,0,.22)'; rrect(x, -s / 2 + c * .03, -s / 2 + c * .06, s, s * .8, c * .14); x.fill();
+    x.fillStyle = '#FFFFFF'; rrect(x, -s / 2, -s / 2, s, s * .8, c * .14); x.fill();
+    x.lineWidth = Math.max(2, c * .03); x.strokeStyle = e < .6 ? '#F59E0B' : '#D6DCE6'; x.stroke();
+    x.fillStyle = '#1F2633'; x.font = `700 ${c * (q.s.length > 2 ? .3 : .36)}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText(q.s, 0, -s * .1 + c * .02); x.restore();
+  });
+  disegnaOrme(x);
+  disegnaGiocatore(x, t);
+  disegnaParticelle(x);
+  // la barra: il disegno (da leggere) e le caselle delle sillabe
+  x.save(); const B = fondoBarra(x, t), img = IMGS.disegnoS && IMGS.disegnoS[f], d = B.h * .84;
+  if (img) x.drawImage(img, B.x + B.h * .12, B.y + (B.h - d) / 2, d, d);
+  const n = sil.length, sz = Math.min(B.h * .7, (B.w - d - B.h * .8 - 60) / n - 14), x0 = B.x + d + B.h * .3 + 20;
+  sil.forEach((s, i) => {
+    const px = x0 + i * (sz + 14), py = B.y + (B.h - sz) / 2, fatta = i < G.presaS, ora = i === G.presaS && !G.attesaS;
+    x.fillStyle = fatta ? '#1E9E57' : '#FFFFFF'; rrect(x, px, py, sz, sz, sz * .2); x.fill();
+    if (ora) { x.lineWidth = Math.max(4, sz * .07); x.strokeStyle = C.col; x.stroke(); }
+    else if (!fatta) { x.setLineDash([sz * .1, sz * .07]); x.lineWidth = 3; x.strokeStyle = '#B9C3DC'; x.stroke(); x.setLineDash([]); }
+    if (fatta) { x.fillStyle = '#FFFFFF'; x.font = `700 ${sz * (s.length > 2 ? .38 : .46)}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(s, px + sz / 2, py + sz / 2 + sz * .03); }
+  });
+  L.parole.forEach((_, i) => { x.fillStyle = i < G.parolaS ? '#1E9E57' : i === G.parolaS ? C.col : '#D6DCE6'; x.beginPath(); x.arc(B.x + B.w - 30 - (L.parole.length - 1 - i) * 26, B.y + B.h / 2, 9, 0, 7); x.fill(); });
+  x.restore();
+  L.tessere.forEach(q => {   // la sillaba presa vola nella sua casella
+    if (!q.vola || t - q.vola.t0 > .6) return;
+    const e = easeOut((t - q.vola.t0) / .6), i = sil.indexOf(q.s), px = x0 + i * (sz + 14) + sz / 2, py = B.y + B.h / 2;
+    const vx = q.vola.da.x + (px - q.vola.da.x) * e, vy = q.vola.da.y + (py - q.vola.da.y) * e - Math.sin(e * Math.PI) * c;
+    x.fillStyle = '#1E9E57'; rrect(x, vx - c * .3, vy - c * .24, c * .6, c * .48, c * .1); x.fill();
+    x.fillStyle = '#FFFFFF'; x.font = `700 ${c * .28}px Fredoka, sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(q.s, vx, vy);
+  });
+  disegnaPing(x); disegnaVoli(x); disegnaTesti(x); disegnaFumetti(x);
+}
+function renderTesoro() {
+  const x = ctx, L = G.L, t = G.tempo, c = lay.cell, C = CASE[G.casa];
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height);
+  x.setTransform(lay.dpr, 0, 0, lay.dpr, 0, 0);
+  x.drawImage(stat, 0, 0, lay.W, lay.H);
+  const m = L.meta, lato = c * .62, gd = L.def.guida;
+  if (m && L.def.modo === 'coord' && gd > 0 && G.stato !== 'completo') {   // la guida: si accendono la lettera e il numero (e, all'inizio, la colonna e la riga)
+    const p = .55 + .45 * Math.sin(t * 4);
+    x.save(); x.globalAlpha = p;
+    x.fillStyle = 'rgba(37,99,235,.28)'; rrect(x, lay.ox + m.x * c + 3, lay.oy - lato + 3, c - 6, lato - 6, 10); x.fill();
+    x.fillStyle = 'rgba(234,88,12,.28)'; rrect(x, lay.ox - lato + 3, lay.oy + m.y * c + 3, lato - 6, c - 6, 10); x.fill();
+    if (gd > 1) { x.globalAlpha = p * .5; x.fillStyle = 'rgba(37,99,235,.18)'; x.fillRect(lay.ox + m.x * c, lay.oy, c, L.h * c); x.fillStyle = 'rgba(234,88,12,.18)'; x.fillRect(lay.ox, lay.oy + m.y * c, L.w * c, c); }
+    x.restore();
+  }
+  L.scavate.forEach((t0, k) => {   // dove si è già scavato senza trovare: una X ambra
+    const cc = centro(k % L.w, (k / L.w) | 0), s = c * .2; x.save(); x.strokeStyle = '#D97706'; x.lineWidth = c * .07; x.lineCap = 'round';
+    x.beginPath(); x.moveTo(cc.x - s, cc.y - s); x.lineTo(cc.x + s, cc.y + s); x.moveTo(cc.x + s, cc.y - s); x.lineTo(cc.x - s, cc.y + s); x.stroke(); x.restore();
+  });
+  if (L.tesoroT && t - L.tesoroT.t0 < 1.6) {   // il forziere che esce dalla sabbia
+    const e = Math.min(1, (t - L.tesoroT.t0) / .4), cc = centro(L.tesoroT.x, L.tesoroT.y), s = c * .6 * easeOutBack(e);
+    x.save(); x.translate(cc.x, cc.y - c * .1);
+    x.fillStyle = '#92400E'; rrect(x, -s / 2, -s * .1, s, s * .55, s * .08); x.fill();
+    x.fillStyle = '#B45309'; rrect(x, -s / 2, -s * .45, s, s * .38, s * .14); x.fill();
+    x.fillStyle = '#FACC15'; x.fillRect(-s / 2, -s * .12, s, s * .08); x.fillRect(-s * .06, -s * .2, s * .12, s * .3);
+    x.fillStyle = '#FDE047'; for (let k = 0; k < 4; k++) { x.beginPath(); x.arc(-s * .3 + k * s * .2, -s * .5, s * .08, 0, 7); x.fill(); }
+    x.restore();
+  }
+  disegnaOrme(x);
+  disegnaGiocatore(x, t);
+  disegnaParticelle(x);
+  // la barra: l'indizio
+  x.save(); const B = fondoBarra(x, t), h = B.h;
+  x.fillStyle = '#7C2D12'; x.font = `700 ${h * .2}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'left'; x.textBaseline = 'middle';
+  if (m && L.def.modo === 'coord') {
+    const sz = h * .7, x0 = B.x + B.w / 2 - sz - 10, y0 = B.y + (h - sz) / 2;
+    [[LETTERE_MAPPA[m.x], '#2563EB'], [String(m.y + 1), '#EA580C']].forEach(([s, col], i) => {
+      x.fillStyle = col; rrect(x, x0 + i * (sz + 20), y0, sz, sz, sz * .2); x.fill();
+      x.fillStyle = '#FFFFFF'; x.font = `700 ${sz * .62}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'center'; x.fillText(s, x0 + i * (sz + 20) + sz / 2, y0 + sz / 2 + sz * .03);
+    });
+  } else if (m && L.frecce) {
+    const sz = Math.min(h * .62, (B.w - 200) / L.frecce.length - 12), x0 = B.x + (B.w - L.frecce.length * (sz + 12)) / 2;
+    L.frecce.forEach((d, i) => {
+      x.fillStyle = C.col; rrect(x, x0 + i * (sz + 12), B.y + (h - sz) / 2, sz, sz, sz * .2); x.fill();
+      x.save(); x.translate(x0 + i * (sz + 12) + sz / 2, B.y + h / 2); x.rotate(ROT[d] * Math.PI / 180); x.fillStyle = '#FFFFFF';
+      x.beginPath(); x.moveTo(0, -sz * .32); x.lineTo(sz * .26, 0); x.lineTo(sz * .1, 0); x.lineTo(sz * .1, sz * .3); x.lineTo(-sz * .1, sz * .3); x.lineTo(-sz * .1, 0); x.lineTo(-sz * .26, 0); x.closePath(); x.fill(); x.restore();
+    });
+  }
+  for (let i = 0; i < L.def.n; i++) {   // i forzieri da trovare
+    const px = B.x + B.w - 36 - (L.def.n - 1 - i) * 34, py = B.y + h / 2;
+    x.fillStyle = i < L.trovati ? '#F59E0B' : '#E5E7EB'; rrect(x, px - 13, py - 10, 26, 20, 5); x.fill();
+    x.fillStyle = i < L.trovati ? '#92400E' : '#CBD5E1'; x.fillRect(px - 13, py - 2, 26, 3);
+  }
+  x.restore();
+  disegnaPing(x); disegnaVoli(x); disegnaTesti(x); disegnaFumetti(x);
+}
+
+/* =====================================================================
+   FILA: regole e disegno
+   ===================================================================== */
+function raccogliCarta() {
+  const L = G.L, p = G.pl;
+  if (G.cartaMano) return;
+  // una carta messa da parte (l'intruso) non si riprende passandoci sopra; quelle che servono sì
+  const q = L.carte.find(z => !z.preso && z.x === p.x && z.y === p.y && !(z.lasciata && !L.fila.some(s => !s.pieno && s.k === z.k))); if (!q) return;
+  q.preso = true; G.cartaMano = q; G.ultimoProgresso = G.tGioco;
+  const c = centro(p.x, p.y); emetti(c.x, c.y, 10, { col: ['#FFFFFF', '#BAE6FD'], v: 110, vita: .5, r: 3, tipo: 'stellina' });
+  SFX.play('carta', 'su'); aggiornaObiettivo();
+}
+function posaCarta() {
+  const L = G.L, p = G.pl, q = G.cartaMano;
+  if (p.moving || G.stato !== 'gioco') return;
+  const s = L.fila.find(z => z.x === p.x && z.y === p.y);
+  if (!q) { if (!s) { SFX.play('tick'); return; } SFX.play('tick'); return; }
+  if (!s) {   // fuori dalla fila: la carta si appoggia qui per terra (si può cambiare carta)
+    if (L.carte.some(z => !z.preso && z.x === p.x && z.y === p.y)) { SFX.play('tick'); return; }
+    Object.assign(q, { preso: false, x: p.x, y: p.y, lasciata: true }); G.cartaMano = null; SFX.play('carta', 'giu'); aggiornaObiettivo(); return;
+  }
+  if (s.pieno) { p.urto = { d: DIR.su, t0: G.tempo }; SFX.play('muro'); return; }
+  const k = L.fila.indexOf(s);
+  if (s.k !== q.k) {
+    L.flashSlot = { k, t0: G.tempo }; q.err++; G.sbagli++; SFX.play('nonAncora');
+    if (q.err >= 2) { const g = L.fila.findIndex(z => !z.pieno && z.k === q.k); if (g >= 0) { L.aiutoSlot = { k: g, t0: G.tempo }; ping(L.fila[g], 3, '#FFD24A'); } }
+    return;
+  }
+  s.pieno = true; s.t0 = G.tempo; q.posato = true; G.cartaMano = null; L.aiutoSlot = null; G.ultimoProgresso = G.tGioco;
+  const cc = centro(s.x, s.y); emetti(cc.x, cc.y, 20, { col: [CASE[G.casa].col, '#FFFFFF', '#FFD24A'], v: 180, vita: .7, r: 4, tipo: 'stellina' });
+  aggiungiPunti(PUNTI.carta, s); SFX.play('numero', L.fila.filter(z => z.pieno).length);
+  aggiornaObiettivo();
+  if (L.fila.every(z => z.pieno)) { G.stato = 'entra'; G.entraT = G.demo ? 2.6 : 1.2; SFX.play('vittoria'); FX.coriandoli(70, [CASE[G.casa].col, '#0891B2', '#FFD24A', '#FFFFFF']); }
+}
+function completaFila() {
+  const L = G.L;
+  G.log.push({ liv: G.livello + 1, nome: L.def.nome, tipo: 'fila', modo: L.def.modo, ok: true, carte: L.fila.map(s => s.k), passi: G.passi, sbagli: G.sbagli, aiuti: G.aiutiUsati, punti: G.puntiLivello });
+  mostraFineLivello();
+}
+function impostaLayoutFila(W, H, dpr) {
+  const L = G.L, pad = Math.max(26, Math.min(W, H) * .04);
+  const cell = Math.floor(Math.min((W - 2 * pad) / L.w, (H - 2 * pad) / L.h, 160));
+  lay = { W, H, dpr, cell, ox: Math.round((W - cell * L.w) / 2), oy: Math.round((H - cell * L.h) / 2) };
+  costruisciSprite(); costruisciStaticoFila();
+}
+function costruisciStaticoFila() {
+  const L = G.L, { cell, ox, oy, dpr } = lay, r = mulberry32(L.deco || 6);
+  stat = nuovaTela(cv.width, cv.height); nebbia = nuovaTela(1, 1);
+  const x = stat.getContext('2d'); x.scale(dpr, dpr);
+  const Wt = L.w * cell, Ht = L.h * cell, m = cell * .3;
+  x.save(); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30; x.shadowOffsetY = 14;
+  rrect(x, ox - m, oy - m, Wt + 2 * m, Ht + 2 * m, cell * .3); x.fillStyle = '#6B4423'; x.fill(); x.restore();
+  rrect(x, ox - m * .55, oy - m * .55, Wt + m * 1.1, Ht + m * 1.1, cell * .22); x.fillStyle = '#8B5A2B'; x.fill();
+  x.fillStyle = '#A9D673'; x.fillRect(ox, oy, Wt, Ht);
+  for (let yy = 0; yy < L.h; yy++) for (let xx = 0; xx < L.w; xx++) {
+    const px = ox + xx * cell, py = oy + yy * cell;
+    x.fillStyle = r() < .5 ? '#9BCB66' : '#A9D673'; x.globalAlpha = .55; x.fillRect(px, py, cell, cell); x.globalAlpha = 1;
+    x.strokeStyle = '#7FB84E'; x.lineWidth = Math.max(1.5, cell * .02); x.lineCap = 'round';
+    for (let k = 0; k < 2; k++) { const gx = px + cell * (.2 + r() * .6), gy = py + cell * (.25 + r() * .55); x.beginPath(); x.moveTo(gx - cell * .04, gy); x.lineTo(gx - cell * .06, gy - cell * .07); x.moveTo(gx, gy); x.lineTo(gx, gy - cell * .09); x.stroke(); }
+  }
+  // la fila: un'asse di legno; nelle storie i numeri 1 2 3 e le frecce fra un momento e l'altro
+  const f = L.fila, x0 = ox + f[0].x * cell, y0 = oy + L.yf * cell, n = f.length;
+  x.save(); x.shadowColor = 'rgba(0,0,0,.35)'; x.shadowBlur = 14; x.shadowOffsetY = 6;
+  rrect(x, x0 - cell * .12, y0 - cell * .12, n * cell + cell * .24, cell * 1.24 + (L.def.modo === 'tempo' ? cell * .32 : 0), cell * .16); x.fillStyle = '#B07D4F'; x.fill(); x.restore();
+  f.forEach((s, i) => {
+    const px = ox + s.x * cell, py = oy + s.y * cell;
+    rrect(x, px + cell * .07, py + cell * .07, cell * .86, cell * .86, cell * .12); x.fillStyle = '#F6EEDA'; x.fill();
+    x.setLineDash([cell * .07, cell * .06]); x.lineWidth = Math.max(1.5, cell * .025); x.strokeStyle = '#9C6B3A'; x.stroke(); x.setLineDash([]);
+    if (L.def.modo === 'tempo') {
+      x.fillStyle = '#FFFFFF'; x.font = `700 ${cell * .24}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.fillText(String(i + 1), px + cell / 2, py + cell * 1.17);
+      if (i < n - 1) { x.fillStyle = '#FFFFFF'; x.beginPath(); x.moveTo(px + cell * .94, py + cell * .42); x.lineTo(px + cell * 1.06, py + cell * .5); x.lineTo(px + cell * .94, py + cell * .58); x.closePath(); x.fill(); }
+    }
+  });
+}
+function cartaFila(x, k, cx, cy, s, ombra) {   // una carta: cartoncino bianco con il disegno
+  const img = IMGS.fila[k]; if (!img) return;
+  if (ombra) { x.fillStyle = 'rgba(0,0,0,.22)'; rrect(x, cx - s / 2 + s * .04, cy - s / 2 + s * .07, s, s, s * .14); x.fill(); }
+  x.fillStyle = '#FFFFFF'; rrect(x, cx - s / 2, cy - s / 2, s, s, s * .14); x.fill(); x.lineWidth = Math.max(1.5, s * .025); x.strokeStyle = '#D6DCE6'; x.stroke();
+  x.drawImage(img, cx - s * .44, cy - s * .44, s * .88, s * .88);
+}
+function renderFila() {
+  const x = ctx, L = G.L, t = G.tempo, c = lay.cell;
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height);
+  x.setTransform(lay.dpr, 0, 0, lay.dpr, 0, 0);
+  if (G.scossa > 0) x.translate((Math.random() - .5) * G.scossa * 22, (Math.random() - .5) * G.scossa * 22);
+  x.drawImage(stat, 0, 0, lay.W, lay.H);
+  L.fila.forEach((s, i) => {
+    const cc = centro(s.x, s.y);
+    if (s.pieno) { const e = s.t0 != null ? (t - s.t0) / .3 : 1, sc = e < 1 ? 1 + .12 * Math.sin(e * Math.PI) : 1; cartaFila(x, s.k, cc.x, cc.y, c * .82 * sc, false); }
+    else { x.fillStyle = '#C7B08A'; x.font = `700 ${c * .4}px Fredoka, 'Arial Rounded MT Bold', sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('?', cc.x, cc.y + c * .02); }
+    if (L.flashSlot && L.flashSlot.k === i && t - L.flashSlot.t0 < .7) { x.save(); x.globalAlpha = 1 - (t - L.flashSlot.t0) / .7; x.lineWidth = c * .08; x.strokeStyle = '#F59E0B'; rrect(x, cc.x - c * .45, cc.y - c * .45, c * .9, c * .9, c * .12); x.stroke(); x.restore(); }
+    if (L.aiutoSlot && L.aiutoSlot.k === i && G.cartaMano && t - L.aiutoSlot.t0 < 5) { const p = .5 + .5 * Math.sin(t * 7); x.save(); x.shadowColor = '#FFD24A'; x.shadowBlur = c * .4 * p; x.lineWidth = c * .07; x.strokeStyle = '#FFD24A'; rrect(x, cc.x - c * .45, cc.y - c * .45, c * .9, c * .9, c * .12); x.stroke(); x.restore(); }
+  });
+  const p = G.pl;
+  if (G.cartaMano && !p.moving && G.stato === 'gioco') { const s = L.fila.find(z => z.x === p.x && z.y === p.y && !z.pieno); if (s) { const cc = centro(s.x, s.y); x.save(); x.globalAlpha = .6 + .4 * Math.sin(t * 6); x.lineWidth = c * .05; x.strokeStyle = CASE[G.casa].col; x.setLineDash([c * .1, c * .07]); rrect(x, cc.x - c * .46, cc.y - c * .46, c * .92, c * .92, c * .12); x.stroke(); x.restore(); } }
+  L.carte.forEach(q => { if (q.preso) return; const cc = centro(q.x, q.y), via = q.lasciata && !L.fila.some(s => !s.pieno && s.k === q.k); x.save(); x.globalAlpha = via ? .55 : 1; x.translate(cc.x, cc.y); x.rotate(q.giro); cartaFila(x, q.k, 0, 0, c * (via ? .62 : .76), true); x.restore(); });
+  disegnaOrme(x);
+  disegnaGiocatore(x, t);
+  if (G.cartaMano && G.stato !== 'completo') { const m = manoPl(); cartaFila(x, G.cartaMano.k, m.x, m.y, c * .44, true); }
+  disegnaParticelle(x);
+  disegnaPing(x);
+  disegnaVoli(x);
+  disegnaTesti(x);
+  disegnaFumetti(x);
 }
 
 /* =====================================================================
@@ -4809,6 +5435,9 @@ function render() {
   if (G.L.abbina) { renderAbbina(); return; }
   if (G.L.eco) { renderEco(); return; }
   if (G.L.puzzle) { renderPuzzle(); return; }
+  if (G.L.fila) { renderFila(); return; }
+  if (G.L.sillabe) { renderSillabe(); return; }
+  if (G.L.tesoro) { renderTesoro(); return; }
   if (G.L.strade) { renderStrade(); return; }
   if (G.L.scuola) { renderScuola(); return; }
   if (G.L.tastiera) { renderTastiera(); return; }
@@ -4892,7 +5521,7 @@ function disegnaGiocatore(x, t) {
   else sy = 1 + .025 * Math.sin(t * 3.2);
   if (p.urto) { const e = t - p.urto.t0; if (e < .2) { const k = Math.sin(e / .2 * Math.PI) * cell * .1; cx += p.urto.d.dx * k; cy += p.urto.d.dy * k; } else p.urto = null; }
   let caduta = 0; if (G.stato === 'gioco' || G.stato === 'preso') caduta = (1 - rimbalzo(G.entrata)) * cell * 2.2;
-  if (G.stato === 'entra') { if (G.L.scuola || G.L.tastiera || G.L.abbina || G.L.eco || G.L.puzzle) bob = -Math.abs(Math.sin(t * 9)) * cell * .3; else sc = Math.max(0, G.entraT / .7); }
+  if (G.stato === 'entra') { if (G.L.scuola || G.L.tastiera || G.L.abbina || G.L.eco || G.L.puzzle || G.L.fila || G.L.sillabe || G.L.tesoro) bob = -Math.abs(Math.sin(t * 9)) * cell * .3; else sc = Math.max(0, G.entraT / .7); }
   if (G.stato === 'preso') sc = Math.max(.15, G.presoT / 1.4);
   const piedi = cy + cell * .34;
   // anello del potere: si svuota quando i rivali stanno per tornare cacciatori
@@ -5064,9 +5693,9 @@ function mostraSchermo(id) {
 const carteEl = {};
 /* Home: tre zone (mondi · case · via = pulsante INIZIA). Si sceglie il mondo, poi la casa, poi INIZIA.
    La casa scelta non resta tra una partita e l'altra (i Mac sono condivisi) */
-const COL_MONDO = { labirinto: '#2563EB', aula: '#3FA142', numeri: '#E0A100', eco: '#2E9B44', puzzle: '#8B5CF6', scuola: '#7C4DEB', laboratorio: '#E8762A', tastiera: '#5E6B7D', strade: '#159DA2', coding: '#1E9E57', fuga: '#F6B70E' };
+const COL_MONDO = { labirinto: '#2563EB', aula: '#3FA142', numeri: '#E0A100', eco: '#2E9B44', puzzle: '#8B5CF6', scuola: '#7C4DEB', laboratorio: '#E8762A', tastiera: '#5E6B7D', strade: '#159DA2', coding: '#1E9E57', forme: '#DB2777', animali: '#C2410C', tempo: '#0891B2', sillabe: '#DC2626', tesoro: '#B45309', fuga: '#F6B70E' };
 const ORDINE_HOME = ['aquila', 'cero', 'tasso', 'quercia'];   // nella home: in alto Aquila e Cero, sotto Tasso e Quercia
-let focusCasa = 0, scegliendo = false, zonaHome = 'mondi', focusMondo = 0, casaScelta = null;   // focusCasa e casaScelta: posizioni in ORDINE_HOME
+let focusCasa = 0, scegliendo = false, zonaHome = 'mondi', focusMondo = 0, casaScelta = null, mondoScelto = null;   // mondoScelto: nome del mondo, null = da scegliere   // focusCasa e casaScelta: posizioni in ORDINE_HOME
 function costruisciHome() {
   const box = $('#carte');
   ORDINE_HOME.forEach((k, i) => {
@@ -5091,17 +5720,33 @@ function costruisciHome() {
   bi.addEventListener('mouseenter', () => { if (!scegliendo) { zonaHome = 'via'; aggiornaFocus(); } });
   apriHome();
 }
-function apriHome() { casaScelta = null; zonaHome = 'mondi'; focusMondo = Math.max(0, MONDI_HOME.indexOf(mondoAttivo())); aggiornaFocus(); }
+/* All'apertura della home (anche dopo una ricarica o una partita) mondo e casa sono da scegliere; solo un link del
+   docente con ?mondo=… arriva con il mondo già scelto */
+/* Le card delle casate (2×2) prendono la stessa altezza delle tre file di mondi: allineate in alto e in basso */
+function allineaCase() {
+  const cm = document.querySelectorAll('#mondi .mondo-card'), c = $('#carte'); if (!cm.length || !c) return;
+  const a = cm[0], b = cm[cm.length - 1], h = b.offsetTop + b.offsetHeight - a.offsetTop;   // offset: non risentono dello zoom della card col fuoco
+  if (h <= 0) return;
+  const g = parseFloat(getComputedStyle(c).rowGap) || 12;
+  c.style.setProperty('--s', ((h - g) / 2).toFixed(1) + 'px');
+}
+addEventListener('resize', () => requestAnimationFrame(allineaCase));
+function apriHome() {
+  requestAnimationFrame(allineaCase);
+  const q = new URLSearchParams(location.search).get('mondo');
+  mondoScelto = MONDI_HOME.includes(q) ? q : null; casaScelta = null; zonaHome = 'mondi';
+  focusMondo = Math.max(0, MONDI_HOME.indexOf(mondoScelto)); aggiornaFocus();
+}
 function aggiornaFocus() {
   ORDINE_HOME.forEach((k, i) => { carteEl[k].classList.toggle('focus', zonaHome === 'case' && i === focusCasa); carteEl[k].classList.toggle('sel', casaScelta === i); });
   document.querySelectorAll('#mondi .mondo-card').forEach((b, i) => b.classList.toggle('focus', zonaHome === 'mondi' && i === focusMondo));
-  const bi = $('#btnInizia'), m = mondoAttivo();
-  bi.classList.toggle('focus', zonaHome === 'via'); bi.classList.toggle('pronto', casaScelta != null);
-  bi.style.setProperty('--mc', COL_MONDO[m]);   // sul pulsante: il mondo e la casa scelti
-  bi.querySelector('.bi-scelte').innerHTML = iconaMondo(m) + (casaScelta != null ? `<img src="${IMG_DATA[ORDINE_HOME[casaScelta] + '_head']}" alt="">` : '');
+  const bi = $('#btnInizia'), m = mondoScelto;
+  bi.classList.toggle('focus', zonaHome === 'via'); bi.classList.toggle('pronto', casaScelta != null && m != null);
+  bi.style.setProperty('--mc', COL_MONDO[m] || '#123E90');   // sul pulsante: il mondo e la casa scelti
+  bi.querySelector('.bi-scelte').innerHTML = (m ? iconaMondo(m) : '') + (casaScelta != null ? `<img src="${IMG_DATA[ORDINE_HOME[casaScelta] + '_head']}" alt="">` : '');
   aggiornaMondi();
 }
-function selezionaMondo(i) { if (scegliendo) return; cambiaMondo(MONDI_HOME[i]); focusMondo = i; zonaHome = 'case'; aggiornaFocus(); }
+function selezionaMondo(i) { if (scegliendo) return; cambiaMondo(MONDI_HOME[i]); mondoScelto = MONDI_HOME[i]; focusMondo = i; zonaHome = casaScelta == null ? 'case' : 'via'; aggiornaFocus(); }
 function selezionaCasa(i) {
   if (scegliendo) return;
   casaScelta = i; focusCasa = i; zonaHome = 'via';
@@ -5109,11 +5754,12 @@ function selezionaCasa(i) {
   SFX.play('scegli'); FX.fuoco(r.left + r.width / 2, r.top + r.height * .3, [CASE[k].col, '#FFFFFF', '#FFD24A']);
   aggiornaFocus();
 }
-function inizia() {   // senza casa scelta il pulsante dice no e il riquadro delle case si illumina
+function inizia() {   // manca il mondo o la casa: il pulsante dice no e si illumina il riquadro da completare
   if (scegliendo) return;
-  if (casaScelta == null) {
-    zonaHome = 'case'; aggiornaFocus(); SFX.play('nonAncora');
-    const bi = $('#btnInizia'), pc = $('#panCase'); [bi, pc].forEach(el => el.classList.remove(el === bi ? 'no' : 'chiama')); void bi.offsetWidth; bi.classList.add('no'); pc.classList.add('chiama');
+  if (mondoScelto == null || casaScelta == null) {
+    const manca = mondoScelto == null ? 'mondi' : 'case';
+    zonaHome = manca; aggiornaFocus(); SFX.play('nonAncora');
+    const bi = $('#btnInizia'), pc = $(manca === 'mondi' ? '#panMondi' : '#panCase'); bi.classList.remove('no'); pc.classList.remove('chiama'); void bi.offsetWidth; bi.classList.add('no'); pc.classList.add('chiama');
     return;
   }
   scegliCasa(ORDINE.indexOf(ORDINE_HOME[casaScelta]));
@@ -5144,6 +5790,22 @@ function aggiornaRisorse() {
 function aggiornaObiettivo() {
   const L = G.L, C = CASE[G.casa]; let h = '';
   const stato = v => `<span class="ob-stato">${v}</span>`;
+  if (L.sillabe) {   // le parole del livello: il disegno, verde quando è fatta
+    h += `<div class="ob-riga"><div class="rif-pan">${L.parole.map(([, f], i) => `<span class="${i < G.parolaS ? 'fatto-s' : i === G.parolaS ? 'mano' : ''}" style="--c:${C.col}">${svgDisegno(f)}</span>`).join('')}</div></div>`;
+    $('#obiettivo').innerHTML = h;
+    return;
+  }
+  if (L.tesoro) {   // i forzieri trovati
+    h += `<div class="ob-riga"><div class="rif-pan">${Array.from({ length: L.def.n }, (_, i) => `<span class="${i < L.trovati ? 'fatto-s' : ''}">${ICO.forziere}</span>`).join('')}</div></div>`;
+    $('#obiettivo').innerHTML = h;
+    return;
+  }
+  if (L.fila) {   // la fila in piccolo: le carte già messe, i posti vuoti con il punto di domanda
+    if (G.cartaMano) h += `<div class="ob-riga"><div class="rif-mano" style="--c:${C.col}">${svgCartaFila(G.cartaMano.k)}<b>${L.def.modo === 'tempo' ? 'METTILA AL SUO POSTO NELLA STORIA' : 'COMPLETA IL RITMO'}</b></div></div>`;
+    h += `<div class="ob-riga"><div class="rif-pan">${L.fila.map(s => s.pieno ? `<span>${svgCartaFila(s.k)}</span>` : '<span class="vuota-f">?</span>').join('')}</div></div>`;
+    $('#obiettivo').innerHTML = h;
+    return;
+  }
   if (L.puzzle) {   // l'immagine in piccolo: scure le caselle ancora vuote
     h += `<div class="ob-riga"><div class="puz-mini" style="aspect-ratio:${L.pw}/${L.ph};grid-template-columns:repeat(${L.pw},1fr);background-image:url(${IMG_DATA[IMG_PUZZLE[L.img]]})">${Array.from({ length: L.pw * L.ph }, (_, k) => `<i class="${L.pezzi[k].posato ? '' : 'vuoto'}"></i>`).join('')}</div></div>`;
     $('#obiettivo').innerHTML = h;
@@ -5266,6 +5928,20 @@ const tile = (html, cls = '') => `<div class="rt ${cls}">${html}</div>`;
 const figImg = k => `<img src="${IMG_DATA[k + '_full']}" alt="">`;
 function ricetta(L) {
   const C = CASE[G.casa], me = tile(figImg(G.casa), 'tok' + (L.buio ? ' buio' : ''));
+  if (L.sillabe) {   // disegno → sillabe in ordine (CA poi SA)
+    const [sil, f] = L.parole[0], cas = s => `<div class="rt carta-n"><span>${s}</span></div>`;
+    return `<div class="rr">${tile(svgDisegno(f), 'tes')}<span class="uguale">=</span>${sil.map(cas).join(FR)}</div><div class="rr">${tile(MINI_TASTI, 'tasti')}${FR}${me}${FR}${cas(sil[0])}</div>`;
+  }
+  if (L.tesoro) {   // indizio → la casella → SPAZIO: scavo
+    const ind = L.def.modo === 'coord' ? `<div class="rt carta-n" style="background:#2563EB"><span style="color:#fff">${LETTERE_MAPPA[L.meta.x]}</span></div><div class="rt carta-n" style="background:#EA580C"><span style="color:#fff">${L.meta.y + 1}</span></div>`
+      : `<div class="rt carta-n"><span style="color:var(--blu);display:flex;gap:4px">${L.frecce.map(d => `<i style="display:inline-grid;width:1em;transform:rotate(${ROT[d]}deg)">${ICO.freccia}</i>`).join('')}</span></div>`;
+    return `<div class="rr">${ind}${FR}${me}</div><div class="rr">${tile('<span class="cap">SPAZIO</span>', 'tasto-sp')}${FR}${tile(`<span style="color:#B45309">${ICO.forziere}</span>`)}</div>`;
+  }
+  if (L.fila) {   // io → carta (la prendo) → nella fila, SPAZIO
+    const s = L.fila.find(z => !z.pieno), carta = k => `<div class="rt" style="background:#FFFFFF">${svgCartaFila(k)}</div>`;
+    return `<div class="rr">${me}${FR}${carta(s.k)}</div>
+      <div class="rr">${carta(s.k)}${FR}${tile('<span class="cap">SPAZIO</span>', 'tasto-sp')}${FR}<div class="rt posto-t" style="display:grid;place-items:center;font-size:clamp(28px,2.4vw,44px);font-weight:700;color:#9C6B3A">?</div></div>`;
+  }
   if (L.puzzle) {   // io → pezzo (lo prendo) → nella cornice, SPAZIO
     const pezzo = (cc, rr) => `<div class="rt pezzo-t" style="background-image:url(${IMG_DATA[IMG_PUZZLE[L.img]]});background-size:${L.pw * 100}% ${L.ph * 100}%;background-position:${L.pw > 1 ? cc / (L.pw - 1) * 100 : 0}% ${L.ph > 1 ? rr / (L.ph - 1) * 100 : 0}%"></div>`;
     return `<div class="rr">${me}${FR}${pezzo(1, 0)}</div>
@@ -5274,7 +5950,7 @@ function ricetta(L) {
   if (L.eco) {   // io → rifiuto (lo prendo) → ↓ nel suo cestino
     const q = L.rifiuti[0], giu = tile(`<span style="display:grid;width:60%;transform:rotate(180deg);color:var(--blu)">${ICO.freccia}</span>`);
     return `<div class="rr">${me}${FR}${tile(svgRifiuto(q.k), 'tes')}</div>
-      <div class="rr">${tile(svgRifiuto(q.k), 'tes')}${FR}${giu}${FR}${tile(`<img src="${IMG_DATA['cestino_' + q.cat]}" alt="">`, 'tes cest')}</div>`;
+      <div class="rr">${tile(svgRifiuto(q.k), 'tes')}${FR}${giu}${FR}${tile(`<img src="${srcCartello(q.cat)}" alt="">`, 'tes cest')}</div>`;
   }
   if (L.abbina) {   // cifra → personaggio → parola; frecce → tratteggio
     const c = L.cifre[0], Q = L.def.quantita, n = Q ? 3 : c.n;
@@ -5347,12 +6023,22 @@ function mostraIntro() {
 function mostraFineLivello() {
   const e = G.log[G.log.length - 1], C = CASE[G.casa], ultimo = G.livello + 1 >= G.livelli.length;
   let tit, corpo;
-  if (e.tipo === 'puzzle') {
+  if (e.tipo === 'sillabe') {
+    tit = 'PAROLE LETTE!';
+    corpo = `<div class="fila">${e.parole.map(([s, f]) => `<div class="gr coppia-fine"><span style="width:clamp(56px,4.4vw,84px);height:clamp(56px,4.4vw,84px)">${svgDisegno(f)}</span>${s}</div>`).join('')}</div>`;
+  } else if (e.tipo === 'tesoro') {
+    tit = 'TESORO TROVATO!';
+    corpo = `<div class="fila"><div class="gr"><span style="color:#B45309">${ICO.forziere}</span>${e.tesori}</div><div class="gr"><span style="color:var(--blu)">${ICO.orme}</span>${e.passi}</div></div>`;
+  } else if (e.tipo === 'fila') {
+    tit = e.modo === 'tempo' ? 'STORIA IN ORDINE!' : 'RITMO COMPLETO!';
+    corpo = `<div class="fila"><div class="rif-pan">${e.carte.map(k => `<span style="width:clamp(56px,4.4vw,84px);height:clamp(56px,4.4vw,84px)">${svgCartaFila(k)}</span>`).join('')}</div></div>
+      <div class="fila"><div class="gr"><span style="color:var(--blu)">${ICO.orme}</span>${e.passi}</div></div>`;
+  } else if (e.tipo === 'puzzle') {
     tit = 'PUZZLE FINITO!';
     corpo = `<div class="fila"><img class="fine-puzzle" style="aspect-ratio:${e.pw}/${e.ph}" src="${IMG_DATA[IMG_PUZZLE[e.img || 0]]}" alt="Le quattro casate"></div>
       <div class="fila"><div class="gr"><span style="color:var(--blu)">${ICO.puzzle}</span>${e.pezzi}</div><div class="gr"><span style="color:var(--blu)">${ICO.orme}</span>${e.passi}</div></div>`;
   } else if (e.tipo === 'eco') {
-    tit = 'CORTILE PULITO!';
+    tit = { forme: 'TUTTO IN ORDINE!', animali: 'TUTTI A CASA!' }[e.set] || 'CORTILE PULITO!';
     corpo = `<div class="fila"><div class="rif-pan">${e.rifiuti.map(k => `<span>${svgRifiuto(k)}</span>`).join('')}</div></div>
       <div class="fila"><div class="gr"><span style="color:var(--blu)">${ICO.orme}</span>${e.passi}</div></div>`;
   } else if (e.tipo === 'abbina') {
@@ -5446,6 +6132,31 @@ const DEBRIEF_FUGA = [
   { ico: ICO.stella, testo: 'PRENDO I SIMBOLI', risp: 'I SIMBOLI NEGLI ANGOLI TI DANNO TEMPO PER SCAPPARE E ACCHIAPPARE.' },
   { ico: ICO.lucina, testo: 'PRENDO LE LUCINE VICINE', risp: 'PRENDERE PRIMA LE LUCINE VICINE TI FA FARE MENO STRADA.' },
 ];
+const DEBRIEF_FORME = [
+  { ico: ICO.occhio, testo: 'CONTO I LATI', risp: 'IL TRIANGOLO HA 3 LATI, QUADRATO E RETTANGOLO NE HANNO 4, IL CERCHIO NESSUNO: CONTARE AIUTA.' },
+  { ico: ICO.forme, testo: 'GUARDO LA FORMA, NON IL COLORE', risp: 'COLORE E GRANDEZZA NON CONTANO: UN TRIANGOLO PICCOLO E GIALLO È SEMPRE UN TRIANGOLO.' },
+  { ico: ICO.riprova, testo: 'PROVO E RIPROVO', risp: 'SE LA SCATOLA DICE NO, GUARDA DI NUOVO I LATI E GLI ANGOLI.' },
+];
+const DEBRIEF_ANIMALI = [
+  { ico: ICO.occhio, testo: 'PENSO A DOVE VIVE', risp: 'CHIEDITI: NUOTA? VIVE TRA GLI ALBERI? NEI PRATI CALDI? NELLA FATTORIA CON IL CONTADINO?' },
+  { ico: ICO.animali, testo: 'GUARDO I CARTELLI', risp: 'OGNI CARTELLO MOSTRA UNA CASA DIVERSA: IMMAGINA L\'ANIMALE LÌ DENTRO.' },
+  { ico: ICO.riprova, testo: 'PROVO E RIPROVO', risp: 'SE LA CASA DICE NO, PENSA A COME SI MUOVE L\'ANIMALE E A COSA MANGIA.' },
+];
+const DEBRIEF_TEMPO = [
+  { ico: ICO.occhio, testo: 'GUARDO COSA CAMBIA', risp: 'IN OGNI DISEGNO QUALCOSA CAMBIA: LA CANDELA SI CONSUMA, IL SOLE SI SPOSTA, LA PIANTA CRESCE.' },
+  { ico: ICO.tempo, testo: 'PENSO A COSA VIENE PRIMA', risp: 'CHIEDITI: CHE COSA È SUCCESSO PER PRIMO? E POI? E ALLA FINE?' },
+  { ico: ICO.riprova, testo: 'PROVO E RIPROVO', risp: 'SE IL POSTO DICE NO, RACCONTA LA STORIA AD ALTA VOCE E RIPROVA.' },
+];
+const DEBRIEF_SILLABE = [
+  { ico: ICO.occhio, testo: 'DICO LA PAROLA PIANO', risp: 'DI\' LA PAROLA PIANO PIANO, BATTENDO LE MANI: CA... SA. OGNI COLPO È UNA SILLABA.' },
+  { ico: ICO.sillabe, testo: 'CERCO IL PRIMO SUONO', risp: 'PARTI SEMPRE DAL PRIMO SUONO DELLA PAROLA E CERCALO SUL PRATO.' },
+  { ico: ICO.riprova, testo: 'PROVO E RIPROVO', risp: 'SE LA SILLABA DONDOLA NON È QUELLA GIUSTA ADESSO: RILEGGILA E CERCA ANCORA.' },
+];
+const DEBRIEF_TESORO = [
+  { ico: ICO.occhio, testo: 'PRIMA LA LETTERA, POI IL NUMERO', risp: 'LA LETTERA È IN ALTO: SCENDI DRITTO. IL NUMERO È A SINISTRA: VAI DRITTO. DOVE SI INCONTRANO C\'È IL TESORO.' },
+  { ico: ICO.forziere, testo: 'CONTO LE CASELLE', risp: 'CONTARE LE CASELLE CON IL DITO AIUTA A NON PERDERSI SULLA MAPPA.' },
+  { ico: ICO.riprova, testo: 'PROVO E RIPROVO', risp: 'LE X TI DICONO DOVE NON C\'È: GUARDA DI NUOVO LA LETTERA E IL NUMERO.' },
+];
 const DEBRIEF_PUZZLE = [
   { ico: ICO.occhio, testo: 'GUARDO IL DISEGNO', risp: 'I COLORI E I PEZZI DI PERSONAGGIO DICONO DOVE VA IL PEZZO: GUARDALI BENE.' },
   { ico: ICO.puzzle, testo: 'PARTO DAI BORDI', risp: 'I PEZZI CON UN LATO DRITTO VANNO SUL BORDO DELLA CORNICE: È UN BUON MODO PER COMINCIARE.' },
@@ -5498,23 +6209,31 @@ function finePartita() {
   G.stato = 'off'; G.debrief = null; G.focusDeb = 0; G.focusFine = 0;
   const C = CASE[G.casa];
   const n = G.log.length, mondo = G.mondo;
-  G.domande = { coding: DEBRIEF_CODING, strade: DEBRIEF_STRADE, scuola: DEBRIEF_SCUOLA, laboratorio: DEBRIEF_LAB, tastiera: DEBRIEF_TASTIERA, numeri: DEBRIEF_NUMERI, eco: DEBRIEF_ECO, puzzle: DEBRIEF_PUZZLE, fuga: DEBRIEF_FUGA }[mondo] || DEBRIEF;
+  G.domande = { coding: DEBRIEF_CODING, strade: DEBRIEF_STRADE, scuola: DEBRIEF_SCUOLA, laboratorio: DEBRIEF_LAB, tastiera: DEBRIEF_TASTIERA, numeri: DEBRIEF_NUMERI, eco: DEBRIEF_ECO, puzzle: DEBRIEF_PUZZLE, tesoro: DEBRIEF_TESORO, sillabe: DEBRIEF_SILLABE, tempo: DEBRIEF_TEMPO, animali: DEBRIEF_ANIMALI, forme: DEBRIEF_FORME, fuga: DEBRIEF_FUGA }[mondo] || DEBRIEF;
   $('#fineTit').textContent = mondo === 'coding' ? `${C.nome} HA PROGRAMMATO ${n} ${n === 1 ? 'PERCORSO' : 'PERCORSI'}`
     : mondo === 'fuga' ? `${C.nome} HA RACCOLTO ${G.log.reduce((s, e) => s + (e.lucine || 0), 0)} LUCINE`
+    : mondo === 'forme' ? `${C.nome} HA SISTEMATO ${G.log.reduce((s, e) => s + (e.rifiuti || e.carte || []).length, 0)} FORME`
+    : mondo === 'animali' ? `${C.nome} HA RIPORTATO A CASA ${G.log.reduce((s, e) => s + (e.rifiuti || []).length, 0)} ANIMALI`
+    : mondo === 'tempo' ? `${C.nome} HA MESSO IN ORDINE ${n} ${n === 1 ? 'STORIA' : 'STORIE'}`
+    : mondo === 'sillabe' ? `${C.nome} HA LETTO ${G.log.reduce((s, e) => s + (e.parole || []).length, 0)} PAROLE`
+    : mondo === 'tesoro' ? `${C.nome} HA TROVATO ${G.log.reduce((s, e) => s + (e.tesori || 0), 0)} TESORI`
     : mondo === 'puzzle' ? `${C.nome} HA COMPLETATO ${n} ${n === 1 ? 'PUZZLE' : 'PUZZLE'}`
     : mondo === 'eco' ? `${C.nome} HA DIFFERENZIATO ${G.log.reduce((s, e) => s + (e.rifiuti || []).length, 0)} RIFIUTI`
     : mondo === 'numeri' ? `${C.nome} HA COLLEGATO ${G.log.reduce((s, e) => s + (e.coppie || []).length, 0)} NUMERI`
     : mondo === 'tastiera' ? `${C.nome} HA SCRITTO ${G.log.reduce((s, e) => s + (e.parole || []).length, 0)} PAROLE`
     : mondo === 'scuola' || mondo === 'laboratorio' ? `${C.nome} HA TROVATO ${G.log.reduce((s, e) => s + (e.trovati || 0), 0)} OGGETTI`
     : mondo === 'strade' ? `${C.nome} HA COSTRUITO ${n} ${n === 1 ? 'STRADA' : 'STRADE'}` : `${C.nome} HA ATTRAVERSATO ${n} ${n === 1 ? 'LABIRINTO' : 'LABIRINTI'}`;
-  $('.debrief .dq').textContent = { coding: 'COME HAI COSTRUITO IL PROGRAMMA?', strade: 'COME HAI COSTRUITO LA STRADA?', scuola: 'COME HAI TROVATO GLI OGGETTI?', laboratorio: 'COME HAI RICONOSCIUTO GLI OGGETTI?', tastiera: 'COME HAI TROVATO LE LETTERE?', numeri: 'COME HAI TROVATO LA PAROLA GIUSTA?', eco: 'COME HAI SCELTO IL CESTINO?', puzzle: 'COME HAI TROVATO IL POSTO DEI PEZZI?', fuga: 'COME HAI FATTO A SCAPPARE?' }[mondo] || 'COME HAI TROVATO LA STRADA?';
+  $('.debrief .dq').textContent = { coding: 'COME HAI COSTRUITO IL PROGRAMMA?', strade: 'COME HAI COSTRUITO LA STRADA?', scuola: 'COME HAI TROVATO GLI OGGETTI?', laboratorio: 'COME HAI RICONOSCIUTO GLI OGGETTI?', tastiera: 'COME HAI TROVATO LE LETTERE?', numeri: 'COME HAI TROVATO LA PAROLA GIUSTA?', eco: 'COME HAI SCELTO IL CESTINO?', puzzle: 'COME HAI TROVATO IL POSTO DEI PEZZI?', tesoro: 'COME HAI TROVATO IL TESORO?', sillabe: 'COME HAI TROVATO LE SILLABE?', tempo: 'COME HAI MESSO IN ORDINE LA STORIA?', animali: 'COME HAI TROVATO LA CASA DEGLI ANIMALI?', forme: 'COME HAI RICONOSCIUTO LE FORME?', fuga: 'COME HAI FATTO A SCAPPARE?' }[mondo] || 'COME HAI TROVATO LA STRADA?';
   $('#fineFig').src = IMG_DATA[G.casa + (mondo === 'strade' ? '_car' : '_full')];
   $('#fineTot').innerHTML = `LA TUA PARTITA<b>${G.punti}</b>PUNTI PER ${C.nome}`;
   $('#fineLivelli').innerHTML = G.livelli.map((d, i) => {
     const e = G.log.find(l => l.liv === i + 1);
     if (!e) return `<div class="lv no"><b>${i + 1}</b><span>${d.nome}</span><small>NON GIOCATO</small></div>`;
+    if (e.tipo === 'sillabe') return `<div class="lv"><b>${i + 1}</b><span>${e.parole.length} PAROLE</span><small>${e.passi} PASSI</small></div>`;
+    if (e.tipo === 'tesoro') return `<div class="lv"><b>${i + 1}</b><span>${e.tesori} TESORI</span><small>${e.passi} PASSI</small></div>`;
+    if (e.tipo === 'fila') return `<div class="lv"><b>${i + 1}</b><span>${e.carte.length} CARTE</span><small>${e.passi} PASSI</small></div>`;
     if (e.tipo === 'puzzle') return `<div class="lv"><b>${i + 1}</b><span>${e.pezzi} PEZZI</span><small>${e.passi} PASSI</small></div>`;
-    if (e.tipo === 'eco') return `<div class="lv"><b>${i + 1}</b><span>${e.rifiuti.length} RIFIUTI</span><small>${e.passi} PASSI</small></div>`;
+    if (e.tipo === 'eco') return `<div class="lv"><b>${i + 1}</b><span>${e.rifiuti.length} ${{ forme: 'FORME', animali: 'ANIMALI' }[e.set] || 'RIFIUTI'}</span><small>${e.passi} PASSI</small></div>`;
     if (e.tipo === 'abbina') return `<div class="lv"><b>${i + 1}</b><span>${e.coppie.length} COPPIE</span><small>${e.passi} PASSI</small></div>`;
     if (e.tipo === 'tastiera') return `<div class="lv"><b>${i + 1}</b><span>${e.parole.join(' ')}</span><small>${e.salti} SALTI</small></div>`;
     if (e.tipo === 'scuola') return `<div class="lv"><b>${i + 1}</b><span>${e.trovati} OGGETTI</span><small>${e.passi} PASSI</small></div>`;
@@ -5567,8 +6286,8 @@ function salvaTelemetria(debrief, completa) {
 
 /* ---------- Pannello docente ---------- */
 function apriDocente() {
-  const log = LS.get('lab-partite', []), deb = [0, 0, 0], debC = [0, 0, 0], debS = [0, 0, 0], debK = [0, 0, 0], debF = [0, 0, 0], debB = [0, 0, 0], debT = [0, 0, 0], debN = [0, 0, 0], debE = [0, 0, 0], debP = [0, 0, 0];
-  log.forEach(p => { if (p.debrief != null) ({ coding: debC, strade: debS, scuola: debK, fuga: debF, laboratorio: debB, tastiera: debT, numeri: debN, eco: debE, puzzle: debP }[p.mondo] || deb)[p.debrief]++; });
+  const log = LS.get('lab-partite', []), deb = [0, 0, 0], debC = [0, 0, 0], debS = [0, 0, 0], debK = [0, 0, 0], debF = [0, 0, 0], debB = [0, 0, 0], debT = [0, 0, 0], debN = [0, 0, 0], debE = [0, 0, 0], debP = [0, 0, 0], debTesoro = [0, 0, 0], debSillabe = [0, 0, 0], debTempo = [0, 0, 0], debAnimali = [0, 0, 0], debForme = [0, 0, 0];
+  log.forEach(p => { if (p.debrief != null) ({ coding: debC, strade: debS, scuola: debK, fuga: debF, laboratorio: debB, tastiera: debT, numeri: debN, eco: debE, puzzle: debP, tesoro: debTesoro, sillabe: debSillabe, tempo: debTempo, animali: debAnimali, forme: debForme }[p.mondo] || deb)[p.debrief]++; });
   const mondo = mondoAttivo(), M = MONDI[mondo], part = LS.get(M.partenza, 1), sync = Classifica.stato.sync, daUrl = !!new URLSearchParams(location.search).get('mondo');
   $('#modBody').innerHTML = `<button class="chiudi" id="mChiudi" tabindex="-1">${ICO.x}</button><h2>Pannello docente</h2>
     <h4>CLASSIFICA</h4><p>${sync ? 'Condivisa tra i Mac tramite Apps Script.' : 'Salvata su questo Mac. Per condividerla tra più Mac, inserire l\'URL dell\'Apps Script in <code>CONFIG.URL_CLASSIFICA</code>.'} Il punteggio è <b>a testa</b>: punti della casata diviso i giocatori entrati in gioco.${CONFIG.AZZERA_OGNI_NOTTE ? ' Riparte da zero ogni notte a mezzanotte (ora italiana): ogni partita conta nel giorno in cui è iniziata.' : ''}</p>
@@ -5581,7 +6300,7 @@ function apriDocente() {
     <p style="margin-top:6px">Quando un bambino sceglie la casata, il mondo si gioca da solo su un livello piccolo e una freccia numerata indica i passaggi (circa 15 secondi). Si salta con INVIO o con il pulsante SALTA. Con <code>?demo=0</code> nell'indirizzo non compare.</p>
     <h4>AUDIO</h4><div class="riga-b"><button class="mb ${SFX.on ? 'on' : ''}" id="mSuoni" tabindex="-1">SUONI ${SFX.on ? 'ATTIVI' : 'SPENTI'}</button></div>
     <h4>MODALITÀ LEZIONE</h4><p>Aggiungendo <code>?seed=2A</code> all'indirizzo, tutti i Mac generano gli stessi labirinti: si può discutere insieme la stessa partita. Con <code>?livello=5</code> si parte da un livello preciso.</p>
-    <h4>SU QUESTO MAC</h4><p>${log.length} partite registrate. Labirinti, «come hai trovato la strada?»: guardo prima ${deb[0]} · provo e riprovo ${deb[1]} · lanterne ${deb[2]}. Coding, «come hai costruito il programma?»: tutto prima ${debC[0]} · un pezzo alla volta ${debC[1]} · provo e correggo ${debC[2]}. Strade, «come hai costruito la strada?»: guardo tutta la strada ${debS[0]} · una tessera alla volta ${debS[1]} · provo e aggiusto ${debS[2]}. Scuola, «come hai trovato gli oggetti?»: guardo la mappa ${debK[0]} · una stanza alla volta ${debK[1]} · seguo il corridoio ${debK[2]}. Laboratorio: guardo la forma ${debB[0]} · un tavolo alla volta ${debB[1]} · passo in mezzo ${debB[2]}. Tastiera: tutta la tastiera ${debT[0]} · una riga alla volta ${debT[1]} · ricordo dove sono ${debT[2]}. Numeri: guardo come inizia ${debN[0]} · leggo piano piano ${debN[1]} · provo e riprovo ${debN[2]}. Eco: di cosa è fatto ${debE[0]} · i cartelli ${debE[1]} · provo e riprovo ${debE[2]}. Puzzle: guardo il disegno ${debP[0]} · parto dai bordi ${debP[1]} · provo e riprovo ${debP[2]}. Acchiapparella, «come hai fatto a scappare?»: guardo dove vanno ${debF[0]} · prendo i simboli ${debF[1]} · lucine vicine ${debF[2]}.</p>
+    <h4>SU QUESTO MAC</h4><p>${log.length} partite registrate. Labirinti, «come hai trovato la strada?»: guardo prima ${deb[0]} · provo e riprovo ${deb[1]} · lanterne ${deb[2]}. Coding, «come hai costruito il programma?»: tutto prima ${debC[0]} · un pezzo alla volta ${debC[1]} · provo e correggo ${debC[2]}. Strade, «come hai costruito la strada?»: guardo tutta la strada ${debS[0]} · una tessera alla volta ${debS[1]} · provo e aggiusto ${debS[2]}. Scuola, «come hai trovato gli oggetti?»: guardo la mappa ${debK[0]} · una stanza alla volta ${debK[1]} · seguo il corridoio ${debK[2]}. Laboratorio: guardo la forma ${debB[0]} · un tavolo alla volta ${debB[1]} · passo in mezzo ${debB[2]}. Tastiera: tutta la tastiera ${debT[0]} · una riga alla volta ${debT[1]} · ricordo dove sono ${debT[2]}. Numeri: guardo come inizia ${debN[0]} · leggo piano piano ${debN[1]} · provo e riprovo ${debN[2]}. Eco: di cosa è fatto ${debE[0]} · i cartelli ${debE[1]} · provo e riprovo ${debE[2]}. Puzzle: guardo il disegno ${debP[0]} · parto dai bordi ${debP[1]} · provo e riprovo ${debP[2]}. Caccia al tesoro: lettera poi numero ${debTesoro[0]} · conto le caselle ${debTesoro[1]} · provo e riprovo ${debTesoro[2]}. Sillabe: la dico piano ${debSillabe[0]} · il primo suono ${debSillabe[1]} · provo e riprovo ${debSillabe[2]}. Prima e dopo: cosa cambia ${debTempo[0]} · cosa viene prima ${debTempo[1]} · provo e riprovo ${debTempo[2]}. Animali e case: dove vive ${debAnimali[0]} · i cartelli ${debAnimali[1]} · provo e riprovo ${debAnimali[2]}. Forme: conto i lati ${debForme[0]} · la forma, non il colore ${debForme[1]} · provo e riprovo ${debForme[2]}. Acchiapparella, «come hai fatto a scappare?»: guardo dove vanno ${debF[0]} · prendo i simboli ${debF[1]} · lucine vicine ${debF[2]}.</p>
     <p style="margin-top:6px">La mappa del mondo SCUOLA è un disegno semplificato del primo piano: senza misure, senza uscite di sicurezza e senza la zona dei padri.</p>`;
   $('#modDocente').classList.add('on');
   $('#mChiudi').onclick = chiudiDocente;
@@ -5598,7 +6317,7 @@ function chiudiDocente() { $('#modDocente').classList.remove('on'); }
 /* Selettore del mondo nella home: clic, oppure ↑ per raggiungerlo e ← → per cambiare */
 function aggiornaMondi() {
   const m = mondoAttivo();
-  document.querySelectorAll('#mondi .mondo-card').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  document.querySelectorAll('#mondi .mondo-card').forEach(b => b.classList.toggle('on', b.dataset.m === mondoScelto));
   document.body.dataset.mondo = m;
 }
 function cambiaMondo(m) {
@@ -5611,7 +6330,7 @@ function cambiaMondo(m) {
   if (m !== prima) {
     SFX.play('scegli');
     const b = $(`#mondi .mondo-card[data-m="${m}"]`), r = b.getBoundingClientRect();
-    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9', scuola: '#A78BFA', laboratorio: '#F08A3C', tastiera: '#9EA5B3', aula: '#3FA142', numeri: '#F2B705', eco: '#2E9B44', puzzle: '#8B5CF6' }[m] || '#6FA3FF']);
+    FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', tesoro: '#B45309', sillabe: '#DC2626', tempo: '#0891B2', animali: '#C2410C', forme: '#DB2777', strade: '#2CC5C9', scuola: '#A78BFA', laboratorio: '#F08A3C', tastiera: '#9EA5B3', aula: '#3FA142', numeri: '#F2B705', eco: '#2E9B44', puzzle: '#8B5CF6' }[m] || '#6FA3FF']);
   }
 }
 
@@ -5642,9 +6361,9 @@ document.addEventListener('keydown', e => {
     const muovi = () => { SFX.play('tick'); aggiornaFocus(); }, N = MONDI_HOME.length;
     if (zonaHome === 'mondi') {
       const c = focusMondo % 5, r = (focusMondo / 5) | 0;
-      if (k === 'destra') { if (c < 4 && focusMondo + 1 < N) focusMondo++; else { zonaHome = 'case'; focusCasa = casaScelta ?? r * 2; } muovi(); }
+      if (k === 'destra') { if (c < 4 && focusMondo + 1 < N) focusMondo++; else { zonaHome = 'case'; focusCasa = casaScelta ?? Math.min(r, 1) * 2; } muovi(); }
       else if (k === 'sinistra') { if (c > 0) { focusMondo--; muovi(); } }
-      else if (k === 'giu') { if (r === 0 && focusMondo + 5 < N) focusMondo += 5; else zonaHome = 'via'; muovi(); }
+      else if (k === 'giu') { if (focusMondo + 5 < N) focusMondo += 5; else zonaHome = 'via'; muovi(); }
       else if (k === 'su') { if (r > 0) { focusMondo -= 5; muovi(); } }
       else if (invio || spazio) selezionaMondo(focusMondo);
     } else if (zonaHome === 'case') {   // 2×2: 0 1 sopra, 2 3 sotto
@@ -5685,7 +6404,7 @@ document.addEventListener('keydown', e => {
     if (G.stato === 'gioco' && G.L.tastiera) { if (k) muoviTasto(k); else if (spazio) usaAiuto(); else if (e.key.length === 1) premiLettera(e.key.toUpperCase()); return; }
     if (G.stato === 'gioco' && G.L.strade) { if (k) muoviCursore(k); else if (spazio) cicla(); else if (canc) togliTessera(); else if (invio) avviaGuida(); return; }
     if (G.stato === 'gioco' && G.L.coding) { if (k) aggiungiCarta(k); else if (invio) avviaEsecuzione(); else if (spazio) usaAiuto(); else if (canc) togliCarta(); return; }
-    if (G.stato === 'gioco' && G.L.puzzle) { if (k) tastoFreccia(k); else if (spazio || invio) posaPezzo(); return; }   // puzzle: SPAZIO posa (aiuto: clic sulle lanterne)
+    if (G.stato === 'gioco' && (G.L.puzzle || G.L.fila || G.L.tesoro)) { if (k) tastoFreccia(k); else if (spazio || invio) (G.L.fila ? posaCarta : G.L.tesoro ? scavaTesoro : posaPezzo)(); return; }   // puzzle: SPAZIO posa (aiuto: clic sulle lanterne)
     if (G.stato === 'gioco') { if (k) tastoFreccia(k); else if (spazio) usaAiuto(); }
     return;
   }
@@ -5746,8 +6465,10 @@ async function avvio() {
   IMGS.lanterna = await svgImg(ICO.lanterna);
   caricaThree();   // per il mondo Aula Magna, in sottofondo
   IMGS.ogg = {}; IMGS.macchia = []; IMGS.reale = {}; IMGS.parola = {}; IMGS.cestino = {}; IMGS.rifiuto = {};
+  IMGS.fila = {}; IMGS.disegnoS = {};
+  await Promise.all([...Object.keys(SEQUENZE).flatMap(s => SEQUENZE[s].map((_, i) => `${s}_${i}`)), ...Object.keys(RITMO)].map(async k => { IMGS.fila[k] = await svgImg(svgCartaFila(k)); }));
   IMGS.puzzle = await Promise.all(IMG_PUZZLE.map(k => caricaImg(IMG_DATA[k])));
-  await Promise.all(ORD_ECO.map(async c => { IMGS.cestino[c] = await caricaImg(IMG_DATA['cestino_' + c]); }));
+  await Promise.all(Object.keys(CAT_ECO).map(async c => { IMGS.cestino[c] = await caricaImg(srcCartello(c)); }));
   await Promise.all(Object.keys(RIFIUTI).map(async k => { IMGS.rifiuto[k] = await svgImg(svgRifiuto(k)); }));
   await Promise.all(Object.keys(SVG_PAROLE).map(async w => { IMGS.parola[w] = await svgImg(svgParola(w)); }));
   IMGS.icoTastiera = await svgImg(ICO.tastiera.replace(/currentColor/g, '#2563EB'));
