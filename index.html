@@ -481,14 +481,16 @@ img{-webkit-user-drag:none;user-select:none}
 /* ---------- Sequenza dei mondi ---------- */
 .tit-mondo{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.18em;margin-right:.45em;color:#CFE0FF}
 .tit-mondo svg{width:100%;height:100%}
-.percorso-mondi{display:flex;align-items:center;gap:.8vw}
-.percorso-mondi .pm{position:relative;width:clamp(44px,3.2vw,60px);aspect-ratio:1;border-radius:16px;background:rgba(255,255,255,.12);color:#DCE6FA;display:grid;place-items:center;opacity:.55}
+.percorso-mondi{display:flex;align-items:center;gap:.35vw;max-width:72vw;flex-wrap:nowrap}
+.bm-num{display:inline-grid;place-items:center;width:1.5em;height:1.5em;border-radius:50%;background:#123E90;color:#FFFFFF;font-size:.8em;font-weight:700}
+.percorso-mondi .pm .pn{font-size:clamp(15px,1.15vw,22px);font-weight:700}
+.percorso-mondi .pm{position:relative;width:clamp(30px,2.3vw,44px);aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.12);color:#DCE6FA;display:grid;place-items:center;opacity:.55}
 .percorso-mondi .pm>svg{width:62%;height:62%}
 .percorso-mondi .pm.fatto{opacity:1;background:var(--crema);color:var(--blu)}
 .percorso-mondi .pm.dopo{opacity:1;background:var(--oro);color:#4A3300;animation:pulsaPlay 1.3s ease-in-out infinite}
 .percorso-mondi .pm i{position:absolute;right:-7px;bottom:-7px;width:44%;height:44%}
 .percorso-mondi .pm i svg{width:100%;height:100%}
-.percorso-mondi .pf{width:clamp(20px,1.5vw,28px);color:rgba(255,255,255,.55)}
+.percorso-mondi .pf{width:clamp(10px,.8vw,16px);color:rgba(255,255,255,.55)}
 .percorso-mondi .pf svg{width:100%;height:auto}
 .bsc .bm{display:inline-block;width:1.25em;height:1.25em}
 .bsc .bm svg{width:100%;height:100%}
@@ -6205,10 +6207,10 @@ function finePartita() {
   G.prossimoMondo = mondoDopo(G.mondo);
   if (!G.prossimoMondo) Classifica.chiudi();   // con un mondo dopo la partita continua: il bambino conta una volta sola
   const bA = $('#bAncora');
-  bA.innerHTML = G.prossimoMondo ? `${ICO.play}<span class="bm">${iconaMondo(G.prossimoMondo)}</span>${NOME_MONDO[G.prossimoMondo]}<span class="cap">INVIO</span>` : `${ICO.riprova}GIOCA ANCORA<span class="cap">INVIO</span>`;
+  bA.innerHTML = G.prossimoMondo ? `${ICO.play}<span class="bm">${G.prossimoMondo === 'fuga' ? iconaMondo('fuga') : `<b class="bm-num">${MONDI_HOME.indexOf(G.prossimoMondo) + 1}</b>`}</span>${NOME_MONDO[G.prossimoMondo]}<span class="cap">INVIO</span>` : `${ICO.riprova}GIOCA ANCORA<span class="cap">INVIO</span>`;
   bA.classList.toggle('prossimo', !!G.prossimoMondo);
   bA.classList.toggle('premio', G.prossimoMondo === 'fuga');
-  $('#percorsoMondi').innerHTML = ORD_MONDI.map((m, i) => `<span class="pm ${m === G.mondo ? 'ora' : ''} ${i < ORD_MONDI.indexOf(G.mondo) || m === G.mondo ? 'fatto' : ''} ${m === G.prossimoMondo ? 'dopo' : ''}">${iconaMondo(m)}${i < ORD_MONDI.indexOf(G.mondo) || m === G.mondo ? `<i>${ICO.ok}</i>` : ''}</span>`).join(`<b class="pf">${S24('<path d="M4.5 12h14M13 6l6 6-6 6"/>', 'stroke-width="3"')}</b>`);
+  $('#percorsoMondi').innerHTML = ORD_MONDI.map((m, i) => `<span class="pm ${m === G.mondo ? 'ora' : ''} ${i < ORD_MONDI.indexOf(G.mondo) || m === G.mondo ? 'fatto' : ''} ${m === G.prossimoMondo ? 'dopo' : ''}">${m === 'fuga' ? iconaMondo(m) : `<b class="pn">${MONDI_HOME.indexOf(m) + 1}</b>`}${i < ORD_MONDI.indexOf(G.mondo) || m === G.mondo ? `<i>${ICO.ok}</i>` : ''}</span>`).join(`<b class="pf">${S24('<path d="M4.5 12h14M13 6l6 6-6 6"/>', 'stroke-width="3"')}</b>`);
   G.stato = 'off'; G.debrief = null; G.focusDeb = 0; G.focusFine = 0;
   const C = CASE[G.casa];
   const n = G.log.length, mondo = G.mondo;
@@ -6262,7 +6264,8 @@ function aggiornaFocusFine() {
   if (G.debrief == null) $('#dopz').querySelectorAll('.dop').forEach((b, k) => b.classList.toggle('focus', k === G.focusDeb));
   $('#bAncora').classList.toggle('focus', G.debrief != null && G.focusFine === 0);
   $('#bCambia').classList.toggle('focus', G.debrief != null && G.focusFine === 1);
-  $('#invioGrande').classList.toggle('on', G.debrief != null && G.focusFine === 0);   // INVIO = il pulsante dorato
+  // il tasto INVIO grande c'è da subito: prima INVIO sceglie la risposta evidenziata, poi porta avanti (il pulsante dorato)
+  $('#invioGrande').classList.toggle('on', G.debrief == null || G.focusFine === 0);
 }
 /* Telemetria formativa: resta su questo Mac (localStorage), consultabile dal pannello docente */
 /* Dopo la schermata finale: il mondo successivo (stessa partita) oppure, finiti tutti, una partita nuova */
@@ -6518,7 +6521,7 @@ async function avvio() {
   $('#bAncora').innerHTML = `${ICO.riprova}GIOCA ANCORA<span class="cap">INVIO</span>`;
   $('#bCambia').innerHTML = `${ICO.casa}CAMBIA CASATA<span class="cap">ESC</span>`;
   $('#bAncora').onclick = () => ancoraOProssimo();
-  $('#invioGrande').onclick = () => ancoraOProssimo();
+  $('#invioGrande').onclick = () => { if (G.debrief == null) rispondiDebrief(G.focusDeb); else ancoraOProssimo(); };
   $('#bCambia').onclick = () => tornaHome();
   $('#modDocente').addEventListener('click', e => { if (e.target.id === 'modDocente') chiudiDocente(); });
   let tr = 0; addEventListener('resize', () => { clearTimeout(tr); tr = setTimeout(() => { FX.resize(); if (G.schermo === 'gioco' && G.L) { aggiornaProg(); aggiornaTray(); calcolaLayout(); } }, 120); });
