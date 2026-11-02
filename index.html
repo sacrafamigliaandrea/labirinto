@@ -147,6 +147,80 @@ img{-webkit-user-drag:none;user-select:none}
 .carta.focus .fig img{animation:saltella .9s cubic-bezier(.3,1.4,.5,1) infinite}
 .carta .play{position:absolute;z-index:2;left:-2%;top:-2%;width:clamp(56px,4.4vw,80px);aspect-ratio:1;border-radius:50%;background:#fff;color:var(--c);display:grid;place-items:center;box-shadow:0 6px 0 rgba(0,0,0,.2);opacity:0;transform:scale(.5);transition:opacity .25s,transform .35s cubic-bezier(.3,1.6,.5,1)}
 .carta .play svg{width:50%;height:50%;margin-left:9%}
+/* ---------- Home a tre zone (10 mondi): titolo · mondi | casate · INIZIA ---------- */
+#home{grid-template-rows:auto minmax(0,1fr) auto auto;grid-template-columns:minmax(0,1fr);padding:2.4vh 2.6vw 1.8vh;gap:1.6vh}
+#home .tit2{font-size:clamp(40px,4.8vw,90px)}
+.home-scelte{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:1.6vw;min-height:0;width:100%;justify-self:stretch}
+.pan-scelta{display:grid;grid-template-rows:auto minmax(0,1fr);gap:1.4vh;min-height:0;padding:1.6vh 1.2vw;border-radius:28px;background:rgba(255,255,255,.08);box-shadow:inset 0 2px 8px rgba(0,0,0,.25)}
+.pan-scelta.chiama{animation:chiamaPan .9s ease-in-out 2}
+@keyframes chiamaPan{50%{box-shadow:inset 0 2px 8px rgba(0,0,0,.25),0 0 0 6px #FFD24A}}
+.ps-tit{display:flex;align-items:center;gap:.6em;font-size:clamp(18px,1.6vw,30px);font-weight:700;letter-spacing:.06em;color:#FFFFFF;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.ps-tit b{display:grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;background:#FFD24A;color:#4A3300;font-size:.9em}
+.griglia-mondi{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:1vw;min-height:0}
+.mondo-card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2vh;padding:1vh .4vw;border-radius:22px;
+  background:rgba(255,255,255,.12);color:#FFFFFF;box-shadow:inset 0 -6px 0 rgba(0,0,0,.18);transition:transform .3s cubic-bezier(.3,1.6,.5,1),background .2s,box-shadow .2s;min-height:0}
+.mondo-card .mn{position:absolute;left:8px;top:8px;width:clamp(26px,2vw,38px);height:clamp(26px,2vw,38px);border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.9);color:#123E90;font-size:clamp(14px,1.05vw,20px);font-weight:700}
+.mondo-card .mi{display:grid;place-items:center;width:clamp(52px,4.6vw,92px);height:clamp(52px,4.6vw,92px);border-radius:50%;background:var(--mc);color:#FFFFFF;box-shadow:0 4px 0 rgba(0,0,0,.22)}
+.mondo-card .mi svg{width:58%;height:58%}
+.mondo-card .mt{font-size:clamp(13px,1.05vw,21px);font-weight:700;letter-spacing:.03em;text-align:center;line-height:1.1}
+.mondo-card .ok{position:absolute;right:8px;top:8px;width:clamp(26px,2vw,38px);height:clamp(26px,2vw,38px);border-radius:50%;display:none;place-items:center;background:var(--mc);color:#FFFFFF}
+.mondo-card .ok svg{width:62%;height:62%}
+.mondo-card:hover{background:rgba(255,255,255,.2)}
+.mondo-card.on .mn{background:#123E90;color:#FFFFFF}
+.mondo-card.on{background:#FFFFFF;color:#123E90;box-shadow:inset 0 -6px 0 rgba(0,0,0,.1),0 0 0 4px var(--mc)}
+.mondo-card.on .ok{display:grid}
+.mondo-card.focus{transform:scale(1.07);box-shadow:inset 0 -6px 0 rgba(0,0,0,.1),0 0 0 4px #FFFFFF,0 0 0 9px var(--mc);z-index:2}
+#panCase .carte{grid-template-columns:repeat(4,minmax(0,1fr));gap:1vw;align-items:stretch;padding:0;width:100%;height:100%;min-height:0}
+#panCase .carta{height:100%;border-radius:24px}
+#panCase .carta .fig{bottom:30%;height:68%;width:122%}
+#panCase .carta .nome{bottom:19%;font-size:clamp(14px,1.2vw,24px)}
+#panCase .carta .stat{bottom:4%;height:13%;border-radius:14px;left:6%;right:6%}
+#panCase .carta .stat .n{font-size:clamp(17px,1.5vw,30px)}
+#panCase .carta .stat .g{font-size:clamp(10px,.7vw,14px)}
+#panCase .carta .rank{width:clamp(32px,2.5vw,46px);bottom:calc(17% - clamp(16px,1.25vw,23px))}
+#panCase .carta .emb{width:30%}
+#panCase .carta .play{display:none}
+#panCase .carta:hover,#panCase .carta.focus{transform:translateY(-1vh) scale(1.03)}
+#panCase .carta.sel{box-shadow:inset 0 -12px 0 rgba(0,0,0,.18),0 0 0 5px #FFD24A,0 0 0 10px #FFFFFF,0 26px 44px rgba(0,0,0,.45)}
+#panCase .carta .spunta{position:absolute;z-index:3;right:-6px;top:-6px;width:clamp(38px,3vw,56px);height:clamp(38px,3vw,56px);border-radius:50%;display:none;place-items:center;background:#FFD24A;color:#4A3300;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+#panCase .carta .spunta svg{width:60%;height:60%}
+#panCase .carta.sel .spunta{display:grid}
+/* card quadrate: il lato --s è il più grande che fa stare la griglia nel riquadro (unità del contenitore) */
+.ps-corpo{container-type:size;min-height:0;min-width:0}
+.griglia-mondi{--g:clamp(8px,.9vw,16px);--s:min(calc((100cqw - 4 * var(--g)) / 5),calc((100cqh - var(--g)) / 2));grid-template-columns:repeat(5,var(--s));grid-template-rows:repeat(2,var(--s));gap:var(--g);justify-content:center;align-content:center;height:100%}
+.mondo-card{width:var(--s);height:var(--s);gap:calc(var(--s) * .06);padding:0;border-radius:calc(var(--s) * .16)}
+.mondo-card .mi{width:calc(var(--s) * .46);height:calc(var(--s) * .46)}
+.mondo-card .mt{font-size:calc(var(--s) * .115)}
+.mondo-card .mn,.mondo-card .ok{width:calc(var(--s) * .2);height:calc(var(--s) * .2);font-size:calc(var(--s) * .11);left:calc(var(--s) * .06);top:calc(var(--s) * .06)}
+.mondo-card .ok{left:auto;right:calc(var(--s) * .06)}
+#panCase .carte{--g:clamp(10px,1vw,18px);--s:min(calc((100cqw - var(--g)) / 2),calc((100cqh - var(--g)) / 2));grid-template-columns:repeat(2,var(--s));grid-template-rows:repeat(2,var(--s));gap:var(--g);justify-content:center;align-content:center;height:100%}
+#panCase .carta{width:var(--s);height:var(--s);border-radius:calc(var(--s) * .12);overflow:visible}
+#panCase .carta .fig{bottom:30%;height:66%;width:100%}
+#panCase .carta .fig img{animation:none}
+#panCase .carta .nome{bottom:18.5%;font-size:calc(var(--s) * .088)}
+#panCase .carta .stat{bottom:4%;height:14%;left:16%;right:16%;border-radius:calc(var(--s) * .05)}
+#panCase .carta .stat .n{font-size:calc(var(--s) * .085)}
+#panCase .carta .stat .n small{font-size:.48em}
+#panCase .carta .stat .g{font-size:calc(var(--s) * .04);margin-top:0}
+#panCase .carta .rank{width:calc(var(--s) * .15);left:4%;bottom:calc(11% - var(--s) * .075);font-size:calc(var(--s) * .065)}
+#panCase .carta .emb{width:22%;right:5%;top:5%}
+#panCase .carta .spunta{width:calc(var(--s) * .17);height:calc(var(--s) * .17)}
+#panCase .carta:hover,#panCase .carta.focus{transform:scale(1.04)}
+#panCase .carta.focus .fig img{animation:saltella .9s cubic-bezier(.3,1.4,.5,1) infinite}
+.via-home{display:flex;justify-content:center}
+.btn-inizia{display:flex;align-items:center;gap:1.2vw;padding:1.4vh 3vw;min-width:min(36vw,620px);justify-content:center;border-radius:999px;background:linear-gradient(180deg,#FFE27A,#F6B70E);color:#4A3300;
+  font-size:clamp(28px,2.7vw,52px);font-weight:700;letter-spacing:.08em;box-shadow:inset 0 -7px 0 rgba(0,0,0,.15),0 8px 0 #B07D00,0 16px 30px rgba(0,0,0,.35);transition:transform .25s cubic-bezier(.3,1.6,.5,1),opacity .25s,filter .25s}
+.btn-inizia .bi-play{display:grid;place-items:center;width:1.3em;height:1.3em;border-radius:50%;background:#FFFFFF;color:#E0A100}
+.btn-inizia .bi-play svg{width:55%;height:55%;margin-left:8%}
+.btn-inizia .bi-scelte{display:flex;align-items:center;gap:.25em}
+.btn-inizia .bi-scelte svg{width:1.1em;height:1.1em;padding:.12em;border-radius:50%;background:var(--mc,#123E90);color:#FFFFFF}
+.btn-inizia .bi-scelte img{width:1.35em;height:1.35em;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.btn-inizia .cap{font-size:.42em}
+.btn-inizia:not(.pronto){filter:saturate(.35);opacity:.75}
+.btn-inizia.pronto{animation:pulsaPlay 1.4s ease-in-out infinite}
+.btn-inizia.focus{box-shadow:inset 0 -7px 0 rgba(0,0,0,.15),0 8px 0 #B07D00,0 0 0 6px #FFFFFF,0 0 0 12px #FFD24A,0 16px 30px rgba(0,0,0,.35)}
+.btn-inizia.no{animation:no .45s}
+@keyframes no{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
 .carta.focus .play{opacity:1;transform:scale(1);animation:pulsaPlay 1.3s ease-in-out .35s infinite}
 @keyframes pulsaPlay{50%{transform:scale(1.12)}}
 @keyframes saltella{0%,100%{transform:translateY(0) scale(1,1)}30%{transform:translateY(-3.2vh) scale(.97,1.04)}55%{transform:translateY(0) scale(1.04,.96)}70%{transform:translateY(0) scale(1)}}
@@ -578,14 +652,16 @@ img{-webkit-user-drag:none;user-select:none}
   <header class="testata">
     <div class="tit1">IL LABIRINTO</div>
     <div class="tit2">DELLE CASATE</div>
-    <div class="mondi" id="mondi" role="tablist" aria-label="Mondo di gioco"><button class="mondo-btn" data-m="labirinto" tabindex="-1"></button><button class="mondo-btn" data-m="aula" tabindex="-1"></button><button class="mondo-btn" data-m="numeri" tabindex="-1"></button><button class="mondo-btn" data-m="eco" tabindex="-1"></button><button class="mondo-btn" data-m="puzzle" tabindex="-1"></button><button class="mondo-btn" data-m="scuola" tabindex="-1"></button><button class="mondo-btn" data-m="laboratorio" tabindex="-1"></button><button class="mondo-btn" data-m="tastiera" tabindex="-1"></button><button class="mondo-btn" data-m="strade" tabindex="-1"></button><button class="mondo-btn" data-m="coding" tabindex="-1"></button></div>
   </header>
-  <div class="carte" id="carte"></div>
+  <div class="home-scelte">
+    <div class="pan-scelta" id="panMondi"><div class="ps-tit"><b>1</b>SCEGLI IL MONDO</div><div class="ps-corpo"><div class="griglia-mondi" id="mondi" role="listbox" aria-label="Mondo di gioco"></div></div></div>
+    <div class="pan-scelta" id="panCase"><div class="ps-tit"><b>2</b>SCEGLI LA TUA CASA</div><div class="ps-corpo"><div class="carte" id="carte"></div></div></div>
+  </div>
+  <div class="via-home"><button class="btn-inizia" id="btnInizia" tabindex="-1"><span class="bi-play"></span><span class="bi-scelte"></span><span class="bi-t">INIZIA</span><span class="cap">INVIO</span></button></div>
   <footer class="piede">
-    <div class="gr"><span class="cap" data-ico="sinistra"></span><span class="cap" data-ico="destra"></span> SCEGLI</div>
-    <div class="gr"><span class="cap">INVIO</span> GIOCA</div>
-    <div class="gr"><span class="cap" data-ico="su"></span> MONDO</div>
-    <div class="gr">OPPURE CLICCA SUL PERSONAGGIO</div>
+    <div class="gr"><span class="cap" data-ico="sinistra"></span><span class="cap" data-ico="su"></span><span class="cap" data-ico="giu"></span><span class="cap" data-ico="destra"></span> SCEGLI</div>
+    <div class="gr"><span class="cap">INVIO</span> CONFERMA</div>
+    <div class="gr">OPPURE CLICCA</div>
     <span class="live" id="liveHome"><i></i>CLASSIFICA LIVE</span>
   </footer>
   <button class="btn-docente" id="btnDocente" tabindex="-1" aria-label="Pannello docente"></button>
@@ -736,6 +812,7 @@ const ICO = {
   auto: S24('<path d="M2.5 15.5v-2.4c0-.9.6-1.6 1.4-1.8l2.6-.6 2.4-3.1c.4-.5 1-.8 1.6-.8h4.2c.6 0 1.2.3 1.6.8l2.5 3.1 1.9.5c.8.2 1.3.9 1.3 1.7v2.6"/><path d="M2.5 15.5h2.3M9.6 15.5h4.8M19.3 15.5h2.2M10 7.3v3.8M3.8 11.2h16.6"/><circle cx="7.2" cy="15.7" r="2.3"/><circle cx="16.8" cy="15.7" r="2.3"/>'),
   puzzle: S24('<path d="M4 8h4.2a2.2 2.2 0 1 1 4.4 0H17v4.4a2.2 2.2 0 1 0 0 4.4V21H4z"/>'),
   eco: S24('<path d="M5 7h14M9.5 7V4.5h5V7M6.5 7l1.2 13h8.6l1.2-13"/><path d="M10 11v5.5M14 11v5.5"/>'),
+  codice: S24('<path d="M8.5 7L3.5 12l5 5M15.5 7l5 5-5 5M13.5 5l-3 14"/>'),
   numeri: S24('<path d="M4.5 8.5L7.5 6v12"/><path d="M12.5 9a3 3 0 1 1 5.2 2.1L12.5 18h6"/>'),
   aula: S24('<path d="M3 8.5L12 4l9 4.5-9 4.5z"/><path d="M3 8.5v7L12 20l9-4.5v-7"/><path d="M12 13v7M7.5 10.8v6.9M16.5 10.8v6.9"/>'),
   tastiera: S24('<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 9.5h1M9.5 9.5h1M13 9.5h1M16.5 9.5h1M6 12.5h1M9.5 12.5h1M13 12.5h1M16.5 12.5h1M8 15.5h8"/>'),
@@ -1791,7 +1868,7 @@ const ORD_MONDI = ['labirinto', 'aula', 'numeri', 'eco', 'puzzle', 'scuola', 'la
 const MONDI_HOME = ['labirinto', 'aula', 'numeri', 'eco', 'puzzle', 'scuola', 'laboratorio', 'tastiera', 'strade', 'coding'];   // il premio finale non si sceglie dalla home
 const NOME_MONDO = { labirinto: 'LABIRINTI', aula: 'AULA MAGNA', numeri: 'NUMERI', eco: 'ECO', puzzle: 'PUZZLE', scuola: 'SCUOLA', strade: 'STRADE', coding: 'CODING', fuga: 'ACCHIAPPARELLA', laboratorio: 'LABORATORIO', tastiera: 'TASTIERA' };
 const mondoDopo = m => ORD_MONDI[ORD_MONDI.indexOf(m) + 1] || null;
-const iconaMondo = m => ({ labirinto: ICO.labirinto, aula: ICO.aula, numeri: ICO.numeri, eco: ICO.eco, puzzle: ICO.puzzle, scuola: ICO.scuola, laboratorio: ICO.lab, tastiera: ICO.tastiera, strade: ICO.auto, coding: ICO.carta, fuga: ICO.stella })[m];
+const iconaMondo = m => ({ labirinto: ICO.labirinto, aula: ICO.aula, numeri: ICO.numeri, eco: ICO.eco, puzzle: ICO.puzzle, scuola: ICO.scuola, laboratorio: ICO.lab, tastiera: ICO.tastiera, strade: ICO.auto, coding: ICO.codice, fuga: ICO.stella })[m];
 function mondoAttivo() {
   const q = new URLSearchParams(location.search).get('mondo');
   if (MONDI[q]) return q;
@@ -4978,30 +5055,72 @@ const FX = (() => {
    INTERFACCIA
    ===================================================================== */
 function mostraSchermo(id) {
+  if (id === 'home' && G.schermo !== 'home' && typeof apriHome === 'function' && carteEl.tasso) apriHome();
   G.schermo = id;
   ['home', 'gioco', 'fine'].forEach(s => $('#' + s).classList.toggle('on', s === id));
 }
 
 /* ---------- Home ---------- */
 const carteEl = {};
-let focusCasa = 0, scegliendo = false;
+/* Home: tre zone (mondi · case · via = pulsante INIZIA). Si sceglie il mondo, poi la casa, poi INIZIA.
+   La casa scelta non resta tra una partita e l'altra (i Mac sono condivisi) */
+const COL_MONDO = { labirinto: '#2563EB', aula: '#3FA142', numeri: '#E0A100', eco: '#2E9B44', puzzle: '#8B5CF6', scuola: '#7C4DEB', laboratorio: '#E8762A', tastiera: '#5E6B7D', strade: '#159DA2', coding: '#1E9E57', fuga: '#F6B70E' };
+const ORDINE_HOME = ['aquila', 'cero', 'tasso', 'quercia'];   // nella home: in alto Aquila e Cero, sotto Tasso e Quercia
+let focusCasa = 0, scegliendo = false, zonaHome = 'mondi', focusMondo = 0, casaScelta = null;   // focusCasa e casaScelta: posizioni in ORDINE_HOME
 function costruisciHome() {
   const box = $('#carte');
-  ORDINE.forEach((k, i) => {
+  ORDINE_HOME.forEach((k, i) => {
     const C = CASE[k], b = document.createElement('button');
     b.className = 'carta'; b.tabIndex = -1; b.dataset.casa = k;
     b.style.cssText = `--c:${C.col};--cs:${C.scuro};--ct:${C.testo};--ritardo:${i * .35}s`;
     b.innerHTML = `<div class="emb">${EMBLEMI[k]}</div><div class="rank">–</div><div class="fig"><img src="${IMG_DATA[k + '_full']}" alt="${C.parlato}"></div><div class="play">${ICO.play}</div><div class="nome">${C.nome}</div><div class="stat"><div class="n">0<small>A TESTA</small></div><div class="g">0 GIOCATORI</div></div>`;
-    b.addEventListener('mouseenter', () => { if (!scegliendo) { focusMondi = false; focusCasa = i; aggiornaFocus(); } });
-    b.addEventListener('click', () => scegliCasa(i));
+    b.insertAdjacentHTML('beforeend', `<span class="spunta">${ICO.ok}</span>`);
+    b.addEventListener('mouseenter', () => { if (!scegliendo) { zonaHome = 'case'; focusCasa = i; aggiornaFocus(); } });
+    b.addEventListener('click', () => selezionaCasa(i));
     box.appendChild(b); carteEl[k] = b;
   });
+  const gm = $('#mondi');
+  gm.innerHTML = MONDI_HOME.map((m, i) => `<button class="mondo-card" data-m="${m}" data-i="${i}" tabindex="-1" style="--mc:${COL_MONDO[m]}"><b class="mn">${i + 1}</b><span class="mi">${iconaMondo(m)}</span><span class="mt">${NOME_MONDO[m]}</span><i class="ok">${ICO.ok}</i></button>`).join('');
+  gm.querySelectorAll('.mondo-card').forEach(b => {
+    b.addEventListener('click', () => selezionaMondo(+b.dataset.i));
+    b.addEventListener('mouseenter', () => { if (!scegliendo) { zonaHome = 'mondi'; focusMondo = +b.dataset.i; aggiornaFocus(); } });
+  });
+  const bi = $('#btnInizia');
+  bi.querySelector('.bi-play').innerHTML = ICO.play;
+  bi.addEventListener('click', () => inizia());
+  bi.addEventListener('mouseenter', () => { if (!scegliendo) { zonaHome = 'via'; aggiornaFocus(); } });
+  apriHome();
+}
+function apriHome() { casaScelta = null; zonaHome = 'mondi'; focusMondo = Math.max(0, MONDI_HOME.indexOf(mondoAttivo())); aggiornaFocus(); }
+function aggiornaFocus() {
+  ORDINE_HOME.forEach((k, i) => { carteEl[k].classList.toggle('focus', zonaHome === 'case' && i === focusCasa); carteEl[k].classList.toggle('sel', casaScelta === i); });
+  document.querySelectorAll('#mondi .mondo-card').forEach((b, i) => b.classList.toggle('focus', zonaHome === 'mondi' && i === focusMondo));
+  const bi = $('#btnInizia'), m = mondoAttivo();
+  bi.classList.toggle('focus', zonaHome === 'via'); bi.classList.toggle('pronto', casaScelta != null);
+  bi.style.setProperty('--mc', COL_MONDO[m]);   // sul pulsante: il mondo e la casa scelti
+  bi.querySelector('.bi-scelte').innerHTML = iconaMondo(m) + (casaScelta != null ? `<img src="${IMG_DATA[ORDINE_HOME[casaScelta] + '_head']}" alt="">` : '');
+  aggiornaMondi();
+}
+function selezionaMondo(i) { if (scegliendo) return; cambiaMondo(MONDI_HOME[i]); focusMondo = i; zonaHome = 'case'; aggiornaFocus(); }
+function selezionaCasa(i) {
+  if (scegliendo) return;
+  casaScelta = i; focusCasa = i; zonaHome = 'via';
+  const k = ORDINE_HOME[i], r = carteEl[k].getBoundingClientRect();
+  SFX.play('scegli'); FX.fuoco(r.left + r.width / 2, r.top + r.height * .3, [CASE[k].col, '#FFFFFF', '#FFD24A']);
   aggiornaFocus();
 }
-function aggiornaFocus() { ORDINE.forEach((k, i) => carteEl[k].classList.toggle('focus', !focusMondi && i === focusCasa)); aggiornaMondi(); }
+function inizia() {   // senza casa scelta il pulsante dice no e il riquadro delle case si illumina
+  if (scegliendo) return;
+  if (casaScelta == null) {
+    zonaHome = 'case'; aggiornaFocus(); SFX.play('nonAncora');
+    const bi = $('#btnInizia'), pc = $('#panCase'); [bi, pc].forEach(el => el.classList.remove(el === bi ? 'no' : 'chiama')); void bi.offsetWidth; bi.classList.add('no'); pc.classList.add('chiama');
+    return;
+  }
+  scegliCasa(ORDINE.indexOf(ORDINE_HOME[casaScelta]));
+}
 function scegliCasa(i) {
   if (scegliendo) return;
-  scegliendo = true; focusCasa = i; aggiornaFocus();
+  scegliendo = true; focusCasa = ORDINE_HOME.indexOf(ORDINE[i]); aggiornaFocus();   // i = posizione in ORDINE
   const k = ORDINE[i], card = carteEl[k];
   card.classList.add('scelta');
   SFX.play('scegli');
@@ -5477,11 +5596,9 @@ function apriDocente() {
 }
 function chiudiDocente() { $('#modDocente').classList.remove('on'); }
 /* Selettore del mondo nella home: clic, oppure ↑ per raggiungerlo e ← → per cambiare */
-let focusMondi = false;
 function aggiornaMondi() {
   const m = mondoAttivo();
-  document.querySelectorAll('#mondi .mondo-btn').forEach(b => b.classList.toggle('on', b.dataset.m === m));
-  $('#mondi').classList.toggle('focus', focusMondi);
+  document.querySelectorAll('#mondi .mondo-card').forEach(b => b.classList.toggle('on', b.dataset.m === m));
   document.body.dataset.mondo = m;
 }
 function cambiaMondo(m) {
@@ -5493,7 +5610,7 @@ function cambiaMondo(m) {
   aggiornaMondi();
   if (m !== prima) {
     SFX.play('scegli');
-    const b = $(`#mondi .mondo-btn[data-m="${m}"]`), r = b.getBoundingClientRect();
+    const b = $(`#mondi .mondo-card[data-m="${m}"]`), r = b.getBoundingClientRect();
     FX.fuoco(r.left + r.width / 2, r.top + r.height / 2, ['#FFFFFF', '#FFD24A', { coding: '#2BD67B', strade: '#2CC5C9', scuola: '#A78BFA', laboratorio: '#F08A3C', tastiera: '#9EA5B3', aula: '#3FA142', numeri: '#F2B705', eco: '#2E9B44', puzzle: '#8B5CF6' }[m] || '#6FA3FF']);
   }
 }
@@ -5520,17 +5637,28 @@ document.addEventListener('keydown', e => {
   if (k || invio || spazio || canc) e.preventDefault();
   if ($('#modDocente').classList.contains('on')) { if (esc) chiudiDocente(); return; }
 
-  if (G.schermo === 'home') {
+  if (G.schermo === 'home') {   // zone: mondi (5×2) · case (4) · via (INIZIA)
     if (scegliendo) return;
-    if (focusMondi) {
-      if (k === 'sinistra' || k === 'destra') { const i = Math.max(0, MONDI_HOME.indexOf(mondoAttivo())); cambiaMondo(MONDI_HOME[clamp(i + (k === 'destra' ? 1 : -1), 0, MONDI_HOME.length - 1)]); }
-      else if (k === 'giu' || invio || spazio || esc) { focusMondi = false; aggiornaFocus(); SFX.play('tick'); }
-      return;
+    const muovi = () => { SFX.play('tick'); aggiornaFocus(); }, N = MONDI_HOME.length;
+    if (zonaHome === 'mondi') {
+      const c = focusMondo % 5, r = (focusMondo / 5) | 0;
+      if (k === 'destra') { if (c < 4 && focusMondo + 1 < N) focusMondo++; else { zonaHome = 'case'; focusCasa = casaScelta ?? r * 2; } muovi(); }
+      else if (k === 'sinistra') { if (c > 0) { focusMondo--; muovi(); } }
+      else if (k === 'giu') { if (r === 0 && focusMondo + 5 < N) focusMondo += 5; else zonaHome = 'via'; muovi(); }
+      else if (k === 'su') { if (r > 0) { focusMondo -= 5; muovi(); } }
+      else if (invio || spazio) selezionaMondo(focusMondo);
+    } else if (zonaHome === 'case') {   // 2×2: 0 1 sopra, 2 3 sotto
+      const c = focusCasa % 2, r = (focusCasa / 2) | 0;
+      if (k === 'destra') { if (c === 0) { focusCasa++; muovi(); } }
+      else if (k === 'sinistra') { if (c === 1) focusCasa--; else { zonaHome = 'mondi'; focusMondo = Math.min(r * 5 + 4, N - 1); } muovi(); }
+      else if (k === 'giu') { if (r === 0) focusCasa += 2; else zonaHome = 'via'; muovi(); }
+      else if (k === 'su') { if (r === 1) { focusCasa -= 2; muovi(); } }
+      else if (invio || spazio) selezionaCasa(focusCasa);
+    } else {
+      if (k === 'su') { zonaHome = casaScelta == null ? 'case' : 'case'; muovi(); }
+      else if (k === 'sinistra') { zonaHome = 'mondi'; muovi(); }
+      else if (invio || spazio) inizia();
     }
-    if (k === 'su') { focusMondi = true; aggiornaFocus(); SFX.play('tick'); }
-    else if (k === 'destra' || k === 'giu') { focusCasa = (focusCasa + 1) % 4; aggiornaFocus(); SFX.play('tick'); }
-    else if (k === 'sinistra') { focusCasa = (focusCasa + 3) % 4; aggiornaFocus(); SFX.play('tick'); }
-    else if (invio || spazio) scegliCasa(focusCasa);
     return;
   }
 
@@ -5652,10 +5780,6 @@ async function avvio() {
   cv.addEventListener('contextmenu', e => { if (G.L && G.L.strade) e.preventDefault(); });
   $('#bVia').onclick = () => avviaEsecuzione();
   $('#slots').addEventListener('click', e => { const c = e.target.closest('.cp.carta'); if (c && G.stato === 'gioco') togliCarta(+c.dataset.i); });
-  document.querySelectorAll('#mondi .mondo-btn').forEach(b => {
-    b.innerHTML = { aula: `${ICO.aula}<span>AULA MAGNA</span>`, numeri: `${ICO.numeri}<span>NUMERI</span>`, eco: `${ICO.eco}<span>ECO</span>`, puzzle: `${ICO.puzzle}<span>PUZZLE</span>`, coding: `${ICO.carta}<span>CODING</span>`, strade: `${ICO.auto}<span>STRADE</span>`, scuola: `${ICO.scuola}<span>SCUOLA</span>`, laboratorio: `${ICO.lab}<span>LABORATORIO</span>`, tastiera: `${ICO.tastiera}<span>TASTIERA</span>` }[b.dataset.m] || `${ICO.labirinto}<span>LABIRINTI</span>`;
-    b.onclick = () => { focusMondi = false; cambiaMondo(b.dataset.m); aggiornaFocus(); };
-  });
   aggiornaMondi();
   $('#btnHome').innerHTML = ICO.casa;
   $('#dbOcchio').innerHTML = ICO.occhio;
