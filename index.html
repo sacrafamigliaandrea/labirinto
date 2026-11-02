@@ -195,6 +195,9 @@ img{-webkit-user-drag:none;user-select:none}
 .mondo-card{width:var(--s);height:var(--s);gap:calc(var(--s) * .06);padding:0;border-radius:calc(var(--s) * .16)}
 .mondo-card .mi{width:calc(var(--s) * .46);height:calc(var(--s) * .46)}
 .mondo-card .mt{font-size:calc(var(--s) * .115)}
+/* semplice: un grande pallino bianco con il numero del mondo e il titolo («andate al mondo 7») */
+.mondo-card .mi.num{width:calc(var(--s) * .5);height:calc(var(--s) * .5);background:#FFFFFF;color:#123E90;font-size:calc(var(--s) * .27);font-weight:700;line-height:1;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.mondo-card.on .mi.num{background:#123E90;color:#FFFFFF}
 .mondo-card .mn,.mondo-card .ok{width:calc(var(--s) * .2);height:calc(var(--s) * .2);font-size:calc(var(--s) * .11);left:calc(var(--s) * .06);top:calc(var(--s) * .06)}
 .mondo-card .ok{left:auto;right:calc(var(--s) * .06)}
 #panCase .carte{--g:clamp(10px,1vw,18px);--s:min(calc((100cqw - var(--g)) / 2),calc((100cqh - var(--g)) / 2));grid-template-columns:repeat(2,var(--s));grid-template-rows:repeat(2,var(--s));gap:var(--g);justify-content:center;align-content:center;height:100%}
@@ -218,6 +221,7 @@ img{-webkit-user-drag:none;user-select:none}
 .btn-inizia .bi-play svg{width:55%;height:55%;margin-left:8%}
 .btn-inizia .bi-scelte{display:flex;align-items:center;gap:.25em}
 .btn-inizia .bi-scelte svg{width:1.1em;height:1.1em;padding:.12em;border-radius:50%;background:var(--mc,#123E90);color:#FFFFFF}
+.btn-inizia .bi-num{display:grid;place-items:center;width:1.25em;height:1.25em;border-radius:50%;background:#123E90;color:#FFFFFF;font-size:.75em}
 .btn-inizia .bi-scelte img{width:1.35em;height:1.35em;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
 .btn-inizia .cap{font-size:.42em}
 .btn-inizia:not(.pronto){filter:saturate(.35);opacity:.75}
@@ -5709,7 +5713,7 @@ function costruisciHome() {
     box.appendChild(b); carteEl[k] = b;
   });
   const gm = $('#mondi');
-  gm.innerHTML = MONDI_HOME.map((m, i) => `<button class="mondo-card" data-m="${m}" data-i="${i}" tabindex="-1" style="--mc:${COL_MONDO[m]}"><b class="mn">${i + 1}</b><span class="mi">${iconaMondo(m)}</span><span class="mt">${NOME_MONDO[m]}</span><i class="ok">${ICO.ok}</i></button>`).join('');
+  gm.innerHTML = MONDI_HOME.map((m, i) => `<button class="mondo-card" data-m="${m}" data-i="${i}" tabindex="-1" style="--mc:${COL_MONDO[m]}"><span class="mi num">${i + 1}</span><span class="mt">${NOME_MONDO[m]}</span><i class="ok">${ICO.ok}</i></button>`).join('');
   gm.querySelectorAll('.mondo-card').forEach(b => {
     b.addEventListener('click', () => selezionaMondo(+b.dataset.i));
     b.addEventListener('mouseenter', () => { if (!scegliendo) { zonaHome = 'mondi'; focusMondo = +b.dataset.i; aggiornaFocus(); } });
@@ -5743,7 +5747,7 @@ function aggiornaFocus() {
   const bi = $('#btnInizia'), m = mondoScelto;
   bi.classList.toggle('focus', zonaHome === 'via'); bi.classList.toggle('pronto', casaScelta != null && m != null);
   bi.style.setProperty('--mc', COL_MONDO[m] || '#123E90');   // sul pulsante: il mondo e la casa scelti
-  bi.querySelector('.bi-scelte').innerHTML = (m ? iconaMondo(m) : '') + (casaScelta != null ? `<img src="${IMG_DATA[ORDINE_HOME[casaScelta] + '_head']}" alt="">` : '');
+  bi.querySelector('.bi-scelte').innerHTML = (m ? `<b class="bi-num">${MONDI_HOME.indexOf(m) + 1}</b>` : '') + (casaScelta != null ? `<img src="${IMG_DATA[ORDINE_HOME[casaScelta] + '_head']}" alt="">` : '');
   aggiornaMondi();
 }
 function selezionaMondo(i) { if (scegliendo) return; cambiaMondo(MONDI_HOME[i]); mondoScelto = MONDI_HOME[i]; focusMondo = i; zonaHome = casaScelta == null ? 'case' : 'via'; aggiornaFocus(); }
